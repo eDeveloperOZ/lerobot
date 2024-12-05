@@ -18,7 +18,7 @@ max_relative_target: null
 leader_arms:
   main:
     _target_: lerobot.common.robot_devices.motors.feetech.FeetechMotorsBus
-    port: /dev/tty.usbmodem585A0077581
+    port: /dev/tty.usbmodem58CD1768061
     motors:
       # name: (index, model)
       shoulder_pan: [1, "sts3215"]
@@ -27,11 +27,17 @@ leader_arms:
       wrist_flex: [4, "sts3215"]
       wrist_roll: [5, "sts3215"]
       gripper: [6, "sts3215"]
+      shoulder_pan: [7, "sts3215"]
+      shoulder_lift: [8, "sts3215"]
+      elbow_flex: [9, "sts3215"]
+      wrist_flex: [10, "sts3215"]
+      wrist_roll: [11, "sts3215"]
+      gripper: [12, "sts3215"]
 
 follower_arms:
   main:
     _target_: lerobot.common.robot_devices.motors.feetech.FeetechMotorsBus
-    port: /dev/tty.usbmodem585A0080971
+    port: /dev/tty.usbmodem58CD1770461
     motors:
       # name: (index, model)
       shoulder_pan: [1, "sts3215"]
@@ -40,6 +46,17 @@ follower_arms:
       wrist_flex: [4, "sts3215"]
       wrist_roll: [5, "sts3215"]
       gripper: [6, "sts3215"]
+  not_main:
+    _target_: lerobot.common.robot_devices.motors.feetech.FeetechMotorsBus
+    port: /dev/tty.other_port
+    motors:
+      # name: (index, model)
+      shoulder_pan: [7, "sts3215"]
+      shoulder_lift: [8, "sts3215"]
+      elbow_flex: [9, "sts3215"]
+      wrist_flex: [10, "sts3215"]
+      wrist_roll: [11, "sts3215"]
+      gripper: [12, "sts3215"]
 
 cameras:
   laptop:
@@ -54,3 +71,10 @@ cameras:
     fps: 30
     width: 640
     height: 480
+  network_camera:
+    _target_: lerobot.common.robot_devices.cameras.opencv.OpenCVCamera
+    camera_index: 0
+    fps: 25
+    width: 1920
+    height: 1080
+    url: "192.168.1.238:8080"
