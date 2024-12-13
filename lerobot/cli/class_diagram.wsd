@@ -1,0 +1,136 @@
+@startuml LeRobot CLI 
+' Class definitions
+class LeRobotCLI {
+    -commands: Dict[str, BaseCommand]
+    -parser: ArgumentParser
+    +__init__()
+    +init_parser()
+    +register_commands()
+    +register_command(command)
+    +run(args: Optional[List[str]]): int
+}
+
+abstract class BaseCommand {
+    +name: str
+    +help: str
+    +description: Optional[str]
+    +register_parser(subparsers)
+    +execute(args): int∂
+}
+
+class SharedArguments << (U,orchid) utility >> {
+    +add_robot_args(parser)
+    +add_dataset_args(parser)
+    +add_policy_args(parser)
+    +add_video_args(parser)
+}
+
+' Robot Commands
+abstract class RobotCommand {
+    #_init_robot(args)
+    #_validate_robot_args(args)
+}
+
+class CalibrateCommand {
+    +name = "calibrate"
+    +execute(args)
+}
+
+class TelepoperateCommand {
+    +name = "teleoperate"
+    +execute(args)
+}
+
+class RecordCommand {
+    +name = "record"
+    +execute(args)
+}
+
+class SimulateCommand {
+    +name = "simulate"
+    +execute(args)
+}
+
+class ConfigureMotorCommand {
+    +name = "configure-motor"
+    +execute(args)
+}
+
+' Dataset Commands
+abstract class DatasetCommand {
+    #_init_dataset(args)
+    #_validate_dataset_args(args)
+}
+
+class PushCommand {
+    +name = "push"
+    +execute(args)
+}
+
+class VisualizeCommand {
+    +name = "visualize"
+    +execute(args)
+}
+
+class ConvertCommand {
+    +name = "convert"
+    +execute(args)
+}
+
+' Model Commands
+abstract class ModelCommand {
+    #_init_model(args)
+    #_validate_model_args(args)
+}
+
+class TrainCommand {
+    +name = "train"
+    +execute(args)
+}
+
+class EvalCommand {
+    +name = "eval"
+    +execute(args)
+}
+
+' Benchmark Commands
+abstract class BenchmarkCommand {
+    #_init_benchmark(args)
+}
+
+class VideoBenchmarkCommand {
+    +name = "video"
+    +execute(args)
+}
+
+class CameraBenchmarkCommand {
+    +name = "camera"
+    +execute(args)
+}
+
+' Relationships
+LeRobotCLI o-- BaseCommand : has many >
+BaseCommand <|-- RobotCommand
+BaseCommand <|-- DatasetCommand
+BaseCommand <|-- ModelCommand
+BaseCommand <|-- BenchmarkCommand
+
+RobotCommand <|-- CalibrateCommand
+RobotCommand <|-- TelepoperateCommand
+RobotCommand <|-- RecordCommand
+RobotCommand <|-- SimulateCommand
+RobotCommand <|-- ConfigureMotorCommand
+
+DatasetCommand <|-- PushCommand
+DatasetCommand <|-- VisualizeCommand
+DatasetCommand <|-- ConvertCommand
+
+ModelCommand <|-- TrainCommand
+ModelCommand <|-- EvalCommand
+
+BenchmarkCommand <|-- VideoBenchmarkCommand
+BenchmarkCommand <|-- CameraBenchmarkCommand
+
+SharedArguments ..> BaseCommand : uses >
+
+@enduml
