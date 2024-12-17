@@ -4,6 +4,8 @@ from importlib import import_module
 from pathlib import Path
 from .base import BaseCommand
 
+# TODO: add a guide how to add a commdns
+
 
 class LeRobotCLI:
     """Command Line Interface for LeRobot.
@@ -17,38 +19,43 @@ class LeRobotCLI:
 
         self.commands: Dict[str, BaseCommand] = self._load_command_objects()
         self.parser: Optional[argparse.ArgumentParser] = None
-        self.init_parser()                  
+        self._init_parser()                  
 
     def _load_command_objects(self) -> Dict[str, BaseCommand]:
-        """Load all commands from the /commands directory.
-        
-        Commands must follow the {name}Command naming convention and inherit from BaseCommand.
-        
-        Returns:
-            Dict[str, BaseCommand]: Dictionary of command name to command instance mappings.
-        """
         commands = {}
         try:
             base_path = Path(__file__).parent / "commands"
+            print(f'base path: {base_path}\n')
             for command_path in base_path.rglob("*.py"):
                 if "base.py" in str(command_path):
                     continue
                     
                 try:
                     relative_path = command_path.relative_to(base_path)
-                    module_name = f"lerobot.cli.commands.{relative_path.parent}.{command_path.stem}"
-                    module = import_module(module_name)
+                    module_parts = list(relative_path.with_suffix('').parts)
+                    module_name = f"lerobot.cli.commands.{'.'.join(module_parts)}"
                     
-                    command_class_name = f"{command_path.stem}Command"
+                    print(f"Loading module: {module_name}")
+                    
+                    module = import_module(module_name)
+                    command_class_name = f"{command_path.stem.capitalize()}Command"  # Capitalize first letter
+                    
+                    print(f"Looking for class: {command_class_name}")
+                    
                     command_class = getattr(module, command_class_name, None)
                     
+                    if command_class:
+                        print(f"Found class {command_class}")
+                        
                     if (command_class and 
                         isinstance(command_class, type) and 
                         issubclass(command_class, BaseCommand) and 
                         command_class != BaseCommand):
                         
                         command_instance = command_class()
-                        commands[command_class.name] = command_instance
+                        # Use the instance's name attribute after initialization
+                        commands[command_instance.name] = command_instance
+                        print(f"\n\nSuccessfully loaded command: {command_instance.name}\n\n")
                         
                 except Exception as e:
                     print(f"Warning: Failed to load command from {command_path}: {e}")
@@ -58,11 +65,11 @@ class LeRobotCLI:
                 raise ValueError("No valid commands were found")
 
             return commands
-            
+                
         except Exception as e:
             raise RuntimeError(f"Error loading commands: {e}")
 
-    def init_parser(self) -> None:
+    def _init_parser(self) -> None:
         """Initialize the argument parser and register command subparsers."""
         if not self.commands:
             raise ValueError("No commands were loaded")

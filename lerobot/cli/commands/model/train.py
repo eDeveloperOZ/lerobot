@@ -8,8 +8,13 @@ from .base import ModelCommand
 from lerobot.scripts.train import train
 
 class TrainCommand(ModelCommand):
-    name = "train"
-    help = "Train a policy model using hydra configuration"
+    COMMAND='train'
+
+    def __init__(self):
+        super().__init__(
+            name=self.COMMAND,
+            help_text="Train a policy model using hydra configuration"
+        )
     
     def register_parser(self, subparsers: argparse._SubParsersAction) -> None:
         parser = subparsers.add_parser(

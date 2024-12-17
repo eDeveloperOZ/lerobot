@@ -28,7 +28,7 @@ import numpy as np
 import torch
 from omegaconf import DictConfig
 
-
+# TODO: CLI - check if other places in the code use this, if not, remove.
 def none_or_int(value):
     if value == "None":
         return None

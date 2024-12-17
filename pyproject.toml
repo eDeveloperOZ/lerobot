@@ -25,6 +25,8 @@ classifiers=[
 ]
 packages = [{include = "lerobot"}]
 
+[tool.poetry.scripts]
+lerobot = "lerobot.cli.__main__:main"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"

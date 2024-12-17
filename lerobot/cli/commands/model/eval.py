@@ -6,10 +6,11 @@ from .base import ModelCommand
 from lerobot.scripts.eval import get_pretrained_policy_path, main as eval_main
 
 class EvalCommand(ModelCommand):
+    COMMAND='eval'
     
     def __init__(self):
         super().__init__(
-            name="eval",
+            name=self.COMMAND,
             help_text="Evaluate a policy model on an environment by running rollouts"
         )
 

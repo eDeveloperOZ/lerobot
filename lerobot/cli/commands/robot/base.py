@@ -8,7 +8,7 @@ class RobotCommand(BaseCommand):
     def __init__(self, name: str, help_text: str, description: str | None = None):
         super().__init__(name, help_text, description)
 
-    def add_robot_args(self, parser: argparse.ArgumentParser) -> None:
+    def _register_parser(self, parser: argparse.ArgumentParser) -> None:
         """Add common robot arguments"""
         parser.add_argument(
             "--robot-path",
