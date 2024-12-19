@@ -130,16 +130,16 @@ def configure_motor(port, brand, model, motor_idx_des, baudrate_des):
         motor_bus.disconnect()
         print("Disconnected from motor bus.")
 
+# TODO: CLI remove this lines
+# if __name__ == "__main__":
+#     # parser = argparse.ArgumentParser()
+#     parser.add_argument("--port", type=str, required=True, help="Motors bus port (e.g. dynamixel,feetech)")
+#     parser.add_argument("--brand", type=str, required=True, help="Motor brand (e.g. dynamixel,feetech)")
+#     parser.add_argument("--model", type=str, required=True, help="Motor model (e.g. xl330-m077,sts3215)")
+#     parser.add_argument("--ID", type=int, required=True, help="Desired ID of the current motor (e.g. 1,2,3)")
+#     parser.add_argument(
+#         "--baudrate", type=int, default=1000000, help="Desired baudrate for the motor (default: 1000000)"
+#     )
+#     args = parser.parse_args()
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=str, required=True, help="Motors bus port (e.g. dynamixel,feetech)")
-    parser.add_argument("--brand", type=str, required=True, help="Motor brand (e.g. dynamixel,feetech)")
-    parser.add_argument("--model", type=str, required=True, help="Motor model (e.g. xl330-m077,sts3215)")
-    parser.add_argument("--ID", type=int, required=True, help="Desired ID of the current motor (e.g. 1,2,3)")
-    parser.add_argument(
-        "--baudrate", type=int, default=1000000, help="Desired baudrate for the motor (default: 1000000)"
-    )
-    args = parser.parse_args()
-
-    configure_motor(args.port, args.brand, args.model, args.ID, args.baudrate)
+#     configure_motor(args.port, args.brand, args.model, args.ID, args.baudrate)

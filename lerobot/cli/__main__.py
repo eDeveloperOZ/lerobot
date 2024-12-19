@@ -25,7 +25,6 @@ class LeRobotCLI:
         commands = {}
         try:
             base_path = Path(__file__).parent / "commands"
-            print(f'base path: {base_path}\n')
             for command_path in base_path.rglob("*.py"):
                 if "base.py" in str(command_path):
                     continue
@@ -34,18 +33,11 @@ class LeRobotCLI:
                     relative_path = command_path.relative_to(base_path)
                     module_parts = list(relative_path.with_suffix('').parts)
                     module_name = f"lerobot.cli.commands.{'.'.join(module_parts)}"
-                    
-                    print(f"Loading module: {module_name}")
-                    
+                                        
                     module = import_module(module_name)
                     command_class_name = f"{command_path.stem.capitalize()}Command"  # Capitalize first letter
-                    
-                    print(f"Looking for class: {command_class_name}")
-                    
+                                        
                     command_class = getattr(module, command_class_name, None)
-                    
-                    if command_class:
-                        print(f"Found class {command_class}")
                         
                     if (command_class and 
                         isinstance(command_class, type) and 
@@ -55,7 +47,6 @@ class LeRobotCLI:
                         command_instance = command_class()
                         # Use the instance's name attribute after initialization
                         commands[command_instance.name] = command_instance
-                        print(f"\n\nSuccessfully loaded command: {command_instance.name}\n\n")
                         
                 except Exception as e:
                     print(f"Warning: Failed to load command from {command_path}: {e}")
