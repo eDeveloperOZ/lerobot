@@ -6,6 +6,8 @@ from lerobot.common.utils.utils import init_hydra_config, init_logging
 from lerobot.common.robot_devices.robots.factory import make_robot
 from ...uitls import *
 from lerobot.scripts.control_robot import replay
+from lerobot.scripts.control_sim_robot import replay as replay_sim
+
 
 class ReplayCommand(RobotCommand):
     COMMAND='replay'
@@ -21,7 +23,14 @@ class ReplayCommand(RobotCommand):
         init_logging()
         robot_cfg = init_hydra_config(args.robot_path, args.robot_overrides)
         robot = make_robot(robot_cfg)
-        self.exec(robot, args)
+        env_constructor, env_cfg = self._init_simulation(args.sim)
+        if env_cfg:
+            # Simulation mode
+            replay_sim(env_constructor, **vars(args))
+        else:
+            # Real robot mode
+            self.exec(robot, **vars(args))
+
         return 0
     
     def register_parser(self, subparsers: argparse._SubParsersAction) -> None:

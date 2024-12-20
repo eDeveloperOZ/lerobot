@@ -61,7 +61,6 @@ local$ rerun ws://localhost:9087
 
 """
 
-import argparse
 import gc
 import logging
 import time
@@ -192,96 +191,3 @@ def visualize_dataset(
             print("Ctrl-C received. Exiting.")
 
 
-def main():
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "--repo-id",
-        type=str,
-        required=True,
-        help="Name of hugging face repositery containing a LeRobotDataset dataset (e.g. `lerobot/pusht`).",
-    )
-    parser.add_argument(
-        "--episode-index",
-        type=int,
-        required=True,
-        help="Episode to visualize.",
-    )
-    parser.add_argument(
-        "--local-files-only",
-        type=int,
-        default=0,
-        help="Use local files only. By default, this script will try to fetch the dataset from the hub if it exists.",
-    )
-    parser.add_argument(
-        "--root",
-        type=Path,
-        default=None,
-        help="Root directory for the dataset stored locally (e.g. `--root data`). By default, the dataset will be loaded from hugging face cache folder, or downloaded from the hub if available.",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=None,
-        help="Directory path to write a .rrd file when `--save 1` is set.",
-    )
-    parser.add_argument(
-        "--batch-size",
-        type=int,
-        default=32,
-        help="Batch size loaded by DataLoader.",
-    )
-    parser.add_argument(
-        "--num-workers",
-        type=int,
-        default=4,
-        help="Number of processes of Dataloader for loading the data.",
-    )
-    parser.add_argument(
-        "--mode",
-        type=str,
-        default="local",
-        help=(
-            "Mode of viewing between 'local' or 'distant'. "
-            "'local' requires data to be on a local machine. It spawns a viewer to visualize the data locally. "
-            "'distant' creates a server on the distant machine where the data is stored. "
-            "Visualize the data by connecting to the server with `rerun ws://localhost:PORT` on the local machine."
-        ),
-    )
-    parser.add_argument(
-        "--web-port",
-        type=int,
-        default=9090,
-        help="Web port for rerun.io when `--mode distant` is set.",
-    )
-    parser.add_argument(
-        "--ws-port",
-        type=int,
-        default=9087,
-        help="Web socket port for rerun.io when `--mode distant` is set.",
-    )
-    parser.add_argument(
-        "--save",
-        type=int,
-        default=0,
-        help=(
-            "Save a .rrd file in the directory provided by `--output-dir`. "
-            "It also deactivates the spawning of a viewer. "
-            "Visualize the data by running `rerun path/to/file.rrd` on your local machine."
-        ),
-    )
-
-    args = parser.parse_args()
-    kwargs = vars(args)
-    repo_id = kwargs.pop("repo_id")
-    root = kwargs.pop("root")
-    local_files_only = kwargs.pop("local_files_only")
-
-    logging.info("Loading dataset")
-    dataset = LeRobotDataset(repo_id, root=root, local_files_only=local_files_only)
-
-    visualize_dataset(dataset, **vars(args))
-
-
-if __name__ == "__main__":
-    main()

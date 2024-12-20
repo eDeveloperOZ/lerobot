@@ -16,6 +16,9 @@ class ConfigureCommand(RobotCommand):
         self.exec = configure_motor
 
     def execute(self, args: argparse.Namespace) -> int:
+        if args.sim:
+            raise ValueError("Motor configuration is not supported in simulation mode")
+          
         self.exec(
             port=self.args.port,
             brand=self.args.brand,

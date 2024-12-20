@@ -52,7 +52,6 @@ python lerobot/scripts/visualize_dataset_html.py \
 ```
 """
 
-import argparse
 import logging
 import shutil
 from pathlib import Path
@@ -224,75 +223,3 @@ def visualize_dataset_html(
     if serve:
         run_server(dataset, episodes, host, port, static_dir, template_dir)
 
-
-def main():
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "--repo-id",
-        type=str,
-        required=True,
-        help="Name of hugging face repositery containing a LeRobotDataset dataset (e.g. `lerobot/pusht` for https://huggingface.co/datasets/lerobot/pusht).",
-    )
-    parser.add_argument(
-        "--local-files-only",
-        type=int,
-        default=0,
-        help="Use local files only. By default, this script will try to fetch the dataset from the hub if it exists.",
-    )
-    parser.add_argument(
-        "--root",
-        type=Path,
-        default=None,
-        help="Root directory for a dataset stored locally (e.g. `--root data`). By default, the dataset will be loaded from hugging face cache folder, or downloaded from the hub if available.",
-    )
-    parser.add_argument(
-        "--episodes",
-        type=int,
-        nargs="*",
-        default=None,
-        help="Episode indices to visualize (e.g. `0 1 5 6` to load episodes of index 0, 1, 5 and 6). By default loads all episodes.",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=None,
-        help="Directory path to write html files and kickoff a web server. By default write them to 'outputs/visualize_dataset/REPO_ID'.",
-    )
-    parser.add_argument(
-        "--serve",
-        type=int,
-        default=1,
-        help="Launch web server.",
-    )
-    parser.add_argument(
-        "--host",
-        type=str,
-        default="127.0.0.1",
-        help="Web host used by the http server.",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=9090,
-        help="Web port used by the http server.",
-    )
-    parser.add_argument(
-        "--force-override",
-        type=int,
-        default=0,
-        help="Delete the output directory if it exists already.",
-    )
-
-    args = parser.parse_args()
-    kwargs = vars(args)
-    repo_id = kwargs.pop("repo_id")
-    root = kwargs.pop("root")
-    local_files_only = kwargs.pop("local_files_only")
-
-    dataset = LeRobotDataset(repo_id, root=root, local_files_only=local_files_only)
-    visualize_dataset_html(dataset, **kwargs)
-
-
-if __name__ == "__main__":
-    main()

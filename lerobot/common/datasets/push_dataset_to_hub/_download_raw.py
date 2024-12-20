@@ -175,28 +175,3 @@ def download_all_raw_datasets(data_dir: Path | None = None):
         download_raw(raw_dir, repo_id)
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description=f"""A script to download raw datasets from Hugging Face hub to a local directory. Here is a
-            non exhaustive list of available repositories to use in `--repo-id`: {list(AVAILABLE_RAW_REPO_IDS.keys())}""",
-    )
-
-    parser.add_argument(
-        "--raw-dir",
-        type=Path,
-        required=True,
-        help="Directory containing input raw datasets (e.g. `data/aloha_mobile_chair_raw` or `data/pusht_raw).",
-    )
-    parser.add_argument(
-        "--repo-id",
-        type=str,
-        required=True,
-        help="""Repositery identifier on Hugging Face: a community or a user name `/` the name of
-        the dataset (e.g. `lerobot/pusht_raw`, `cadene/aloha_sim_insertion_human_raw`).""",
-    )
-    args = parser.parse_args()
-    download_raw(**vars(args))
-
-
-if __name__ == "__main__":
-    main()

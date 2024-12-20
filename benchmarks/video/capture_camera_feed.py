@@ -15,7 +15,6 @@
 # limitations under the License.
 """Capture video feed from a camera as raw images."""
 
-import argparse
 import datetime as dt
 from pathlib import Path
 
@@ -59,32 +58,3 @@ def display_and_save_video_stream(output_dir: Path, fps: int, width: int, height
     cv2.destroyAllWindows()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=Path("outputs/cam_capture/"),
-        help="Directory where the capture images are written. A subfolder named with the current date & time will be created inside it for each capture.",
-    )
-    parser.add_argument(
-        "--fps",
-        type=int,
-        default=30,
-        help="Frames Per Second of the capture.",
-    )
-    parser.add_argument(
-        "--width",
-        type=int,
-        default=1280,
-        help="Width of the captured images.",
-    )
-    parser.add_argument(
-        "--height",
-        type=int,
-        default=720,
-        help="Height of the captured images.",
-    )
-    args = parser.parse_args()
-    display_and_save_video_stream(**vars(args))

@@ -1,7 +1,11 @@
 # lerobot/cli/commands/robot/base.py
-from abc import abstractmethod
 import argparse
+import importlib
+import gymnasium as gym
+
 from ...base import BaseCommand
+from ...uitls import *
+from lerobot.common.utils.utils import init_hydra_config
 
 class RobotCommand(BaseCommand):
     """Base class for robot-related commands"""
@@ -22,3 +26,27 @@ class RobotCommand(BaseCommand):
             nargs="*",
             help="Any key=value arguments to override config values (use dots for.nested=overrides)",
         )
+        parser.add_argument(
+            "-sim",
+            type=str,
+            default=None,
+            help="Path to yaml config for simulation environment. If provided, runs in simulation mode."
+        )
+
+    def _init_simulation(self, sim):
+        """Initialize simulation environment if sim mode is enabled"""
+        if sim:
+            env_cfg = init_hydra_config(sim)
+            importlib.import_module(f"gym_{env_cfg.env.name}")
+
+            def env_constructor():
+                return gym.make(env_cfg.env.handle, disable_env_checker=True, **env_cfg.env.gym)
+                
+            return env_constructor, env_cfg
+        return None, None
+
+    def _get_sim_calibration(self, robot, env_cfg):
+        """Get simulation calibration if in sim mode"""
+        if env_cfg:
+            return init_sim_calibration(robot, env_cfg.calibration)
+        return None

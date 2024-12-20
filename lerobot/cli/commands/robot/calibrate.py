@@ -17,6 +17,9 @@ class CalibrateCommand(RobotCommand):
         self.exec = calibrate
 
     def execute(self, args: argparse.Namespace) -> int:
+        if args.sim:
+            raise ValueError("Calibration is not supported in simulation mode")
+        
         init_logging()
         robot_cfg = init_hydra_config(args.robot_path, args.robot_overrides)
         robot = make_robot(robot_cfg)

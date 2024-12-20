@@ -42,7 +42,6 @@ python lerobot/scripts/push_dataset_to_hub.py \
 ```
 """
 
-import argparse
 import json
 import shutil
 import warnings
@@ -265,100 +264,3 @@ def push_dataset_to_hub(
 
     return lerobot_dataset
 
-
-def main():
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "--raw-dir",
-        type=Path,
-        required=True,
-        help="Directory containing input raw datasets (e.g. `data/aloha_mobile_chair_raw` or `data/pusht_raw).",
-    )
-    # TODO(rcadene): add automatic detection of the format
-    parser.add_argument(
-        "--raw-format",
-        type=str,
-        required=True,
-        help="Dataset type (e.g. `pusht_zarr`, `umi_zarr`, `aloha_hdf5`, `xarm_pkl`, `dora_parquet`, `rlds`, `openx`).",
-    )
-    parser.add_argument(
-        "--repo-id",
-        type=str,
-        required=True,
-        help="Repositery identifier on Hugging Face: a community or a user name `/` the name of the dataset (e.g. `lerobot/pusht`, `cadene/aloha_sim_insertion_human`).",
-    )
-    parser.add_argument(
-        "--local-dir",
-        type=Path,
-        help="When provided, writes the dataset converted to LeRobotDataset format in this directory  (e.g. `data/lerobot/aloha_mobile_chair`).",
-    )
-    parser.add_argument(
-        "--push-to-hub",
-        type=int,
-        default=1,
-        help="Upload to hub.",
-    )
-    parser.add_argument(
-        "--fps",
-        type=int,
-        help="Frame rate used to collect videos. If not provided, use the default one specified in the code.",
-    )
-    parser.add_argument(
-        "--video",
-        type=int,
-        default=1,
-        help="Convert each episode of the raw dataset to an mp4 video. This option allows 60 times lower disk space consumption and 25 faster loading time during training.",
-    )
-    parser.add_argument(
-        "--batch-size",
-        type=int,
-        default=32,
-        help="Batch size loaded by DataLoader for computing the dataset statistics.",
-    )
-    parser.add_argument(
-        "--num-workers",
-        type=int,
-        default=8,
-        help="Number of processes of Dataloader for computing the dataset statistics.",
-    )
-    parser.add_argument(
-        "--episodes",
-        type=int,
-        nargs="*",
-        help="When provided, only converts the provided episodes (e.g `--episodes 2 3 4`). Useful to test the code on 1 episode.",
-    )
-    parser.add_argument(
-        "--force-override",
-        type=int,
-        default=0,
-        help="When set to 1, removes provided output directory if it already exists. By default, raises a ValueError exception.",
-    )
-    parser.add_argument(
-        "--resume",
-        type=int,
-        default=0,
-        help="When set to 1, resumes a previous run.",
-    )
-    parser.add_argument(
-        "--cache-dir",
-        type=Path,
-        required=False,
-        default="/tmp",
-        help="Directory to store the temporary videos and images generated while creating the dataset.",
-    )
-    parser.add_argument(
-        "--tests-data-dir",
-        type=Path,
-        help=(
-            "When provided, save tests artifacts into the given directory "
-            "(e.g. `--tests-data-dir tests/data` will save to tests/data/{--repo-id})."
-        ),
-    )
-
-    args = parser.parse_args()
-    push_dataset_to_hub(**vars(args))
-
-
-if __name__ == "__main__":
-    main()

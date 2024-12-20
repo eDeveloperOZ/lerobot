@@ -19,7 +19,6 @@ This script will benchmark different video encoding and decoding parameters.
 See the provided README.md or run `python benchmark/video/run_video_benchmark.py --help` for usage info.
 """
 
-import argparse
 import datetime as dt
 import random
 import shutil
@@ -55,13 +54,13 @@ BASE_ENCODING = OrderedDict(
 
 
 # TODO(rcadene, aliberts): move to `utils.py` folder when we want to refactor
-def parse_int_or_none(value) -> int | None:
-    if value.lower() == "none":
-        return None
-    try:
-        return int(value)
-    except ValueError as e:
-        raise argparse.ArgumentTypeError(f"Invalid int or None: {value}") from e
+# def parse_int_or_none(value) -> int | None:
+#     if value.lower() == "none":
+#         return None
+#     try:
+#         return int(value)
+#     except ValueError as e:
+#         raise argparse.ArgumentTypeError(f"Invalid int or None: {value}") from e
 
 
 def check_datasets_formats(repo_ids: list) -> None:
@@ -390,101 +389,3 @@ def main(
     concatenated_df = pd.concat(df_list, ignore_index=True)
     concatenated_path = output_dir / f"{now:%Y-%m-%d}_{now:%H-%M-%S}_all_{num_samples}-samples.csv"
     concatenated_df.to_csv(concatenated_path, header=True, index=False)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=Path("outputs/video_benchmark"),
-        help="Directory where the video benchmark outputs are written.",
-    )
-    parser.add_argument(
-        "--repo-ids",
-        type=str,
-        nargs="*",
-        default=[
-            "lerobot/pusht_image",
-            "aliberts/aloha_mobile_shrimp_image",
-            "aliberts/paris_street",
-            "aliberts/kitchen",
-        ],
-        help="Datasets repo-ids to test against. First episodes only are used. Must be images.",
-    )
-    parser.add_argument(
-        "--vcodec",
-        type=str,
-        nargs="*",
-        default=["libx264", "libx265", "libsvtav1"],
-        help="Video codecs to be tested",
-    )
-    parser.add_argument(
-        "--pix-fmt",
-        type=str,
-        nargs="*",
-        default=["yuv444p", "yuv420p"],
-        help="Pixel formats (chroma subsampling) to be tested",
-    )
-    parser.add_argument(
-        "--g",
-        type=parse_int_or_none,
-        nargs="*",
-        default=[1, 2, 3, 4, 5, 6, 10, 15, 20, 40, 100, None],
-        help="Group of pictures sizes to be tested.",
-    )
-    parser.add_argument(
-        "--crf",
-        type=parse_int_or_none,
-        nargs="*",
-        default=[0, 5, 10, 15, 20, 25, 30, 40, 50, None],
-        help="Constant rate factors to be tested.",
-    )
-    # parser.add_argument(
-    #     "--fastdecode",
-    #     type=int,
-    #     nargs="*",
-    #     default=[0, 1],
-    #     help="Use the fastdecode tuning option. 0 disables it. "
-    #         "For libx264 and libx265, only 1 is possible. "
-    #         "For libsvtav1, 1, 2 or 3 are possible values with a higher number meaning a faster decoding optimization",
-    # )
-    parser.add_argument(
-        "--timestamps-modes",
-        type=str,
-        nargs="*",
-        default=[
-            "1_frame",
-            "2_frames",
-            "2_frames_4_space",
-            "6_frames",
-        ],
-        help="Timestamps scenarios to be tested.",
-    )
-    parser.add_argument(
-        "--backends",
-        type=str,
-        nargs="*",
-        default=["pyav", "video_reader"],
-        help="Torchvision decoding backend to be tested.",
-    )
-    parser.add_argument(
-        "--num-samples",
-        type=int,
-        default=50,
-        help="Number of samples for each encoding x decoding config.",
-    )
-    parser.add_argument(
-        "--num-workers",
-        type=int,
-        default=10,
-        help="Number of processes for parallelized sample processing.",
-    )
-    parser.add_argument(
-        "--save-frames",
-        type=int,
-        default=0,
-        help="Whether to save decoded frames or not. Enter a non-zero number for true.",
-    )
-    args = parser.parse_args()
-    main(**vars(args))

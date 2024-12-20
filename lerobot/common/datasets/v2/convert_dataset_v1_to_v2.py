@@ -99,7 +99,6 @@ python lerobot/common/datasets/v2/convert_dataset_v1_to_v2.py \
 ```
 """
 
-import argparse
 import contextlib
 import filecmp
 import json
@@ -594,72 +593,3 @@ def convert_dataset(
     if not test_branch:
         create_branch(repo_id=repo_id, branch=V20, repo_type="dataset")
 
-
-def main():
-    parser = argparse.ArgumentParser()
-    task_args = parser.add_mutually_exclusive_group(required=True)
-
-    parser.add_argument(
-        "--repo-id",
-        type=str,
-        required=True,
-        help="Repository identifier on Hugging Face: a community or a user name `/` the name of the dataset (e.g. `lerobot/pusht`, `cadene/aloha_sim_insertion_human`).",
-    )
-    task_args.add_argument(
-        "--single-task",
-        type=str,
-        help="A short but accurate description of the single task performed in the dataset.",
-    )
-    task_args.add_argument(
-        "--tasks-col",
-        type=str,
-        help="The name of the column containing language instructions",
-    )
-    task_args.add_argument(
-        "--tasks-path",
-        type=Path,
-        help="The path to a .json file containing one language instruction for each episode_index",
-    )
-    parser.add_argument(
-        "--robot-config",
-        type=Path,
-        default=None,
-        help="Path to the robot's config yaml the dataset during conversion.",
-    )
-    parser.add_argument(
-        "--robot-overrides",
-        type=str,
-        nargs="*",
-        help="Any key=value arguments to override the robot config values (use dots for.nested=overrides)",
-    )
-    parser.add_argument(
-        "--local-dir",
-        type=Path,
-        default=None,
-        help="Local directory to store the dataset during conversion. Defaults to /tmp/lerobot_dataset_v2",
-    )
-    parser.add_argument(
-        "--license",
-        type=str,
-        default="apache-2.0",
-        help="Repo license. Must be one of https://huggingface.co/docs/hub/repositories-licenses. Defaults to mit.",
-    )
-    parser.add_argument(
-        "--test-branch",
-        type=str,
-        default=None,
-        help="Repo branch to test your conversion first (e.g. 'v2.0.test')",
-    )
-
-    args = parser.parse_args()
-    if not args.local_dir:
-        args.local_dir = Path("/tmp/lerobot_dataset_v2")
-
-    robot_config = parse_robot_config(args.robot_config, args.robot_overrides) if args.robot_config else None
-    del args.robot_config, args.robot_overrides
-
-    convert_dataset(**vars(args), robot_config=robot_config)
-
-
-if __name__ == "__main__":
-    main()
