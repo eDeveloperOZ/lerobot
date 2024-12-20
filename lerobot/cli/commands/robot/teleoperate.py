@@ -40,12 +40,12 @@ class TeleoperateCommand(RobotCommand):
         return 0
 
     def register_parser(self, subparsers: argparse._SubParsersAction) -> None:
-        parser = subparsers.add_parser(
+        self.parser = subparsers.add_parser(
             self.name,
             help=self.help,
             description=self.description,
         )
-        self._register_parser(parser=parser)
+        self._register_parser(parser=self.parser)
         self.parser.add_argument(
             "--fps",
             type=none_or_int,

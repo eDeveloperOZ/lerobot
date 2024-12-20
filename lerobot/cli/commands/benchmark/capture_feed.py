@@ -3,7 +3,7 @@ from pathlib import Path
 
 from .base import BaseCommand
 from lerobot.common.utils.utils import init_logging
-from .....benchmarks.video.capture_camera_feed import display_and_save_video_stream
+from lerobot.benchmarks.video.capture_camera_feed import display_and_save_video_stream
 
 class CaptureFeedCommand(BaseCommand):
     COMMAND='capture-feed'

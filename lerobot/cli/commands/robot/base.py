@@ -14,19 +14,19 @@ class RobotCommand(BaseCommand):
 
     def _register_parser(self, parser: argparse.ArgumentParser) -> None:
         """Add common robot arguments"""
-        parser.add_argument(
+        self.parser.add_argument(
             "--robot-path",
             type=str,
             default="lerobot/configs/robot/koch.yaml",
             help="Path to robot yaml file used to instantiate the robot using `make_robot` factory function.",
         )
-        parser.add_argument(
+        self.parser.add_argument(
             "--robot-overrides",
             type=str,
             nargs="*",
             help="Any key=value arguments to override config values (use dots for.nested=overrides)",
         )
-        parser.add_argument(
+        self.parser.add_argument(
             "-sim",
             type=str,
             default=None,

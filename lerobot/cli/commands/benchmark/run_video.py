@@ -4,7 +4,7 @@ from pathlib import Path
 from .base import BaseCommand
 from lerobot.common.utils.utils import init_logging
 from ...uitls import none_or_int
-from .....benchmarks.video.run_video_benchmark import main
+from lerobot.benchmarks.video.run_video_benchmark import main
 
 class RunVideoCommand(BaseCommand):
     COMMAND='run-video'

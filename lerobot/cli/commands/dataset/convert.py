@@ -15,7 +15,7 @@ class ConvertCommand(DatasetCommand):
         super().__init__(
             name= self.COMMAND,
             help_text= 'Convert a dataset from V1 to V2',
-            descriptio=description)
+            description=description)
         self.exec = convert_dataset
 
     def execute(self, args: argparse.Namespace) -> int:

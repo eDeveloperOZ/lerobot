@@ -15,12 +15,12 @@ class RealsenseCaptureCommand(CameraCommand):
         self.exec = save_images_from_cameras
 
     def register_parser(self, subparsers: argparse._SubParsersAction) -> None:
-        parser = subparsers.add_parser(
+        self.parser = subparsers.add_parser(
             self.name,
             help=self.help,
             description=self.description
         )
-        self._register_parser(parser)
+        self._register_parser(self.parser)
         self.parser.add_argument(
             "--serial-numbers",
             type=int,

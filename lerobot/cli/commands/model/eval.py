@@ -17,13 +17,13 @@ class EvalCommand(ModelCommand):
 
 
     def register_parser(self, subparsers: argparse._SubParsersAction) -> None:
-        parser = subparsers.add_parser(
+        self.parser = subparsers.add_parser(
             self.name,
             help=self.help,
             description=__doc__,
         )
         # Keep original eval.py argparse arguments
-        group = parser.add_mutually_exclusive_group(required=True)
+        group = self.parser.add_mutually_exclusive_group(required=True)
         group.add_argument(
             "-p",
             "--pretrained-policy-name-or-path",
@@ -40,15 +40,15 @@ class EvalCommand(ModelCommand):
                 "debugging). This argument is mutually exclusive with `--pretrained-policy-name-or-path` (`-p`)."
             ),
         )
-        parser.add_argument("--revision", help="Optionally provide the Hugging Face Hub revision ID.")
-        parser.add_argument(
+        self.parser.add_argument("--revision", help="Optionally provide the Hugging Face Hub revision ID.")
+        self.parser.add_argument(
             "--out-dir",
             help=(
                 "Where to save the evaluation outputs. If not provided, outputs are saved in "
                 "outputs/eval/{timestamp}_{env_name}_{policy_name}"
             ),
         )
-        parser.add_argument(
+        self.parser.add_argument(
             "overrides",
             nargs="*",
             help="Any key=value arguments to override config values (use dots for.nested=overrides)",

@@ -28,13 +28,13 @@ class CalibrateCommand(RobotCommand):
         return 0
 
     def register_parser(self, subparsers: argparse._SubParsersAction) -> None:
-        parser = subparsers.add_parser(
+        self.parser = subparsers.add_parser(
             self.name,
             help=self.help,
             description=self.description,
         )
-        self._register_parser(parser)
-        parser.add_argument(
+        self._register_parser(self.parser)
+        self.parser.add_argument(
             "--arms",
             type=str,
             nargs="*",
