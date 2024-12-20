@@ -8,14 +8,14 @@ from lerobot.common.datasets.lerobot_dataset import LeRobotDataset
 from lerobot.common.utils.utils import init_logging
 from lerobot.scripts.visualize_dataset import visualize_dataset
 
-class ConvertCommand(DatasetCommand):
+class VisualizeRerunCommand(DatasetCommand):
     COMMAND='visualize-rerun'
 
     def __init__(self, description: str | None = None):
         super().__init__(
             name= self.COMMAND,
             help_text= 'Visualize data of **all** frames of any episode of a dataset of type LeRobotDataset.',
-            descriptio=description)
+            description=description)
         self.exec = visualize_dataset
 
     def execute(self, args: argparse.Namespace) -> int:

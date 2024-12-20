@@ -12,7 +12,7 @@ class DownloadRawCommand(DatasetCommand):
         super().__init__(
             name= self.COMMAND,
             help_text= 'This file contains download scripts for raw datasets.',
-            descriptio=description)
+            description=description)
         self.exec = download_raw
 
     def execute(self, args: argparse.Namespace) -> int:

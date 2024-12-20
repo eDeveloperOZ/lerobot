@@ -1,18 +1,18 @@
 import argparse
 from pathlib import Path
 
-from .base import BaseCommand
+from .base import BenchmarkCommand
 from lerobot.common.utils.utils import init_logging
 from lerobot.benchmarks.video.capture_camera_feed import display_and_save_video_stream
 
-class CaptureFeedCommand(BaseCommand):
+class CaptureFeedCommand(BenchmarkCommand):
     COMMAND='capture-feed'
 
     def __init__(self, description: str | None = None):
         super().__init__(
             name= self.COMMAND,
             help_text= 'Capture video feed from a camera as raw images.',
-            descriptio=description)
+            description=description)
         self.exec = display_and_save_video_stream
 
     def execute(self, args: argparse.Namespace) -> int:

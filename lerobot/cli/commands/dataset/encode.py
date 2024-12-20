@@ -3,17 +3,16 @@ from pathlib import Path
 
 from .base import DatasetCommand
 from lerobot.common.utils.utils import init_logging
-# TODO: remove this, either to utils for commands or when removing the hydra Necessity 
 from lerobot.common.datasets.push_dataset_to_hub._encode_datasets import encode_datasets
 
-class ConvertCommand(DatasetCommand):
+class EncodeCommand(DatasetCommand):
     COMMAND='encode'
 
     def __init__(self, description: str | None = None):
         super().__init__(
             name= self.COMMAND,
             help_text= 'batch encode lerobot dataset from their raw format to LeRobotDataset and push their updated version to the hub',
-            descriptio=description)
+            description=description)
         self.exec = encode_datasets
 
     def execute(self, args: argparse.Namespace) -> int:

@@ -5,14 +5,14 @@ from .base import DatasetCommand
 from lerobot.common.utils.utils import init_logging
 from lerobot.scripts.push_dataset_to_hub import push_dataset_to_hub
 
-class ConvertCommand(DatasetCommand):
+class PushCommand(DatasetCommand):
     COMMAND='push'
 
     def __init__(self, description: str | None = None):
         super().__init__(
             name= self.COMMAND,
             help_text= 'Convert your dataset into LeRobot dataset format and upload it to the Hugging Face hub,or store it locally.',
-            descriptio=description)
+            description=description)
         self.exec = push_dataset_to_hub
 
     def execute(self, args: argparse.Namespace) -> int:

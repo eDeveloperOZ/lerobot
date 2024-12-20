@@ -1,19 +1,19 @@
 import argparse
 from pathlib import Path
 
-from .base import BaseCommand
+from .base import BenchmarkCommand
 from lerobot.common.utils.utils import init_logging
 from ...uitls import none_or_int
 from lerobot.benchmarks.video.run_video_benchmark import main
 
-class RunVideoCommand(BaseCommand):
+class RunVideoCommand(BenchmarkCommand):
     COMMAND='run-video'
 
     def __init__(self, description: str | None = None):
         super().__init__(
             name= self.COMMAND,
             help_text= 'Assess the performance of video decoding in various configurations.',
-            descriptio=description)
+            description=description)
         self.exec = main
 
     def execute(self, args: argparse.Namespace) -> int:

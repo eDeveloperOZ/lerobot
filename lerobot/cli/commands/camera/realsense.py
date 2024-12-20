@@ -4,7 +4,7 @@ from pathlib import Path
 from .base import CameraCommand
 from lerobot.common.robot_devices.cameras.intelrealsense import save_images_from_cameras
 
-class RealsenseCaptureCommand(CameraCommand):
+class RealsenseCommand(CameraCommand):
     COMMAND = 'realsense'
 
     def __init__(self, description: str | None = None):
@@ -27,25 +27,6 @@ class RealsenseCaptureCommand(CameraCommand):
             nargs="*",
             default=None,
             help="RealSense camera serial numbers. Uses all available if not specified."
-        )
-        # Override some base defaults for RealSense
-        self.parser.add_argument(
-            "--width",
-            type=str,
-            default=640,
-            help="Camera width"
-        )
-        self.parser.add_argument(
-            "--height",
-            type=str,
-            default=480,
-            help="Camera height"
-        )
-        self.parser.add_argument(
-            "--fps",
-            type=int,
-            default=30,
-            help="Frames per second"
         )
 
     def execute(self, args: argparse.Namespace) -> int:

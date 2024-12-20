@@ -1,17 +1,17 @@
 # lerobot/cli/commands/camera/opencv.py
 import argparse
-from pathlib import Path
 
 from .base import CameraCommand
 from lerobot.common.robot_devices.cameras.opencv import save_images_from_cameras
 
-class OpenCVCaptureCommand(CameraCommand):
+class OpencvCommand(CameraCommand):
     COMMAND = 'opencv'
 
     def __init__(self, description: str | None = None):
         super().__init__(
             name=self.COMMAND,
-            help_text='Capture frames using OpenCV cameras'
+            help_text='Capture frames using OpenCV cameras',
+            description=description
         )
         self.exec = save_images_from_cameras
 

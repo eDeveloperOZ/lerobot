@@ -28,35 +28,48 @@ class LeRobotCLI:
             for command_path in base_path.rglob("*.py"):
                 if "base.py" in str(command_path):
                     continue
-                    
                 try:
                     relative_path = command_path.relative_to(base_path)
                     module_parts = list(relative_path.with_suffix('').parts)
                     module_name = f"lerobot.cli.commands.{'.'.join(module_parts)}"
-                                        
                     module = import_module(module_name)
-                    command_class_name = f"{command_path.stem.capitalize()}Command"  # Capitalize first letter
-                                        
-                    command_class = getattr(module, command_class_name, None)
-                        
-                    if (command_class and 
-                        isinstance(command_class, type) and 
-                        issubclass(command_class, BaseCommand) and 
-                        command_class != BaseCommand):
-                        
+                    
+                    # Generate class names directly
+                    file_stem = command_path.stem
+                    # Convert snake_case to CamelCase inline
+                    camel_case_name = ''.join(word.capitalize() for word in file_stem.split('_'))
+                    
+                    # Potential class names
+                    potential_class_names = [
+                        f"{camel_case_name}Command",  # CamelCase with Command
+                        f"{file_stem.capitalize()}Command"  # Fallback to first letter capitalized
+                    ]
+                    
+                    # Try to find the correct command class
+                    command_class = None
+                    for class_name in potential_class_names:
+                        command_class = getattr(module, class_name, None)
+                        if (command_class and 
+                            isinstance(command_class, type) and 
+                            issubclass(command_class, BaseCommand) and 
+                            command_class != BaseCommand):
+                            break
+                    
+                    # If a valid command class is found
+                    if command_class:
                         command_instance = command_class()
                         # Use the instance's name attribute after initialization
                         commands[command_instance.name] = command_instance
-                        
+                
                 except Exception as e:
                     print(f"Warning: Failed to load command from {command_path}: {e}")
                     continue
-
+            
             if not commands:
                 raise ValueError("No valid commands were found")
-
+            
             return commands
-                
+        
         except Exception as e:
             raise RuntimeError(f"Error loading commands: {e}")
 

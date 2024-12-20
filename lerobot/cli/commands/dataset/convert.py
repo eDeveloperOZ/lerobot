@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from .base import DatasetCommand
-from lerobot.common.utils.utils import init_hydra_config, init_logging
+from lerobot.common.utils.utils import init_logging
 # TODO: remove this, either to utils for commands or when removing the hydra Necessity 
 from lerobot.common.datasets.v2.convert_dataset_v1_to_v2 import parse_robot_config
 from lerobot.common.datasets.v2.convert_dataset_v1_to_v2 import convert_dataset
