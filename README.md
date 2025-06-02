@@ -375,3 +375,4 @@ Additionally, if you are using any of the particular policy architecture, pretra
   year={2024}
 }
 ```
+\n## Gateway service\n\nSee [examples/gateway_service.md](examples/gateway_service.md) for details on launching LeRobot as a remote server.

@@ -1,0 +1,154 @@
+"""Backend gateway service to expose training and inference to browser clients."""
+
+from __future__ import annotations
+
+import asyncio
+import logging
+import subprocess
+import sys
+import threading
+import uuid
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+from flask import Flask, jsonify, request
+
+
+_LOG = logging.getLogger(__name__)
+
+
+class GatewayService:
+    """Manage training and inference subprocesses."""
+
+    def __init__(self) -> None:
+        self._train_processes: Dict[str, subprocess.Popen] = {}
+        self._inference_processes: Dict[str, subprocess.Popen] = {}
+
+    # ------------------------------------------------------------------
+    def _spawn(self, cmd: list[str]) -> subprocess.Popen:
+        _LOG.info("Running command: %s", " ".join(cmd))
+        return subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            bufsize=1,
+            text=True,
+        )
+
+    def _stream_output(self, pid: str, proc: subprocess.Popen) -> None:
+        assert proc.stdout is not None
+        for line in proc.stdout:
+            _LOG.info("[%s] %s", pid, line.rstrip())
+        proc.wait()
+        _LOG.info("Process %s terminated with code %s", pid, proc.returncode)
+
+    # public API -------------------------------------------------------
+    def start_training(self, config: Dict[str, Any]) -> str:
+        """Launch ``train.py`` with provided options."""
+        dataset_repo_id = config.get("dataset_repo_id")
+        if not dataset_repo_id:
+            raise ValueError("dataset_repo_id is required")
+        policy = config.get("policy", "act")
+        env = config.get("env", "so100_real")
+        extra_args = config.get("extra_args", [])
+        cmd = [
+            sys.executable,
+            str(Path(__file__).resolve().parents[1] / "scripts" / "train.py"),
+            f"policy={policy}",
+            f"env={env}",
+            f"dataset_repo_id={dataset_repo_id}",
+        ] + extra_args
+        proc = self._spawn(cmd)
+        pid = str(uuid.uuid4())
+        self._train_processes[pid] = proc
+        threading.Thread(target=self._stream_output, args=(pid, proc), daemon=True).start()
+        return pid
+
+    def start_inference(self, model_path: str, extra_args: Optional[list[str]] = None) -> str:
+        """Launch ``eval.py`` on a pretrained model."""
+        if not model_path:
+            raise ValueError("model_path is required")
+        cmd = [
+            sys.executable,
+            str(Path(__file__).resolve().parents[1] / "scripts" / "eval.py"),
+            f"--policy.path={model_path}",
+        ]
+        if extra_args:
+            cmd.extend(extra_args)
+        proc = self._spawn(cmd)
+        pid = str(uuid.uuid4())
+        self._inference_processes[pid] = proc
+        threading.Thread(target=self._stream_output, args=(pid, proc), daemon=True).start()
+        return pid
+
+    def stop_session(self, pid: str) -> None:
+        proc = self._train_processes.pop(pid, None) or self._inference_processes.pop(pid, None)
+        if proc and proc.poll() is None:
+            proc.terminate()
+            proc.wait(timeout=5)
+            _LOG.info("Process %s stopped", pid)
+
+    def session_status(self, pid: str) -> str:
+        proc = self._train_processes.get(pid) or self._inference_processes.get(pid)
+        if not proc:
+            return "unknown"
+        if proc.poll() is None:
+            return "running"
+        return "finished"
+
+
+def create_app() -> Flask:
+    """Return a Flask application wrapping :class:`GatewayService`."""
+
+    service = GatewayService()
+    app = Flask(__name__)
+
+    @app.route("/train", methods=["POST"])
+    def train_endpoint() -> Any:
+        config = request.get_json(force=True)
+        try:
+            pid = service.start_training(config)
+        except Exception as exc:  # pragma: no cover - hardware dependency
+            return jsonify({"error": str(exc)}), 400
+        return jsonify({"session_id": pid})
+
+    @app.route("/inference", methods=["POST"])
+    def inference_endpoint() -> Any:
+        data = request.get_json(force=True)
+        model_path = data.get("model_path")
+        extra_args = data.get("extra_args", [])
+        try:
+            pid = service.start_inference(model_path, extra_args)
+        except Exception as exc:  # pragma: no cover - hardware dependency
+            return jsonify({"error": str(exc)}), 400
+        return jsonify({"session_id": pid})
+
+    @app.route("/session/<pid>")
+    def session_status_endpoint(pid: str) -> Any:
+        status = service.session_status(pid)
+        return jsonify({"status": status})
+
+    @app.route("/session/<pid>", methods=["DELETE"])
+    def stop_session_endpoint(pid: str) -> Any:
+        service.stop_session(pid)
+        return jsonify({"status": "stopped"})
+
+    return app
+
+
+def run_websocket_server(host: str = "0.0.0.0", port: int = 8765) -> None:
+    """Run a lightweight WebSocket relay for streaming data."""
+    try:
+        import websockets  # type: ignore
+    except Exception as exc:  # pragma: no cover - optional dependency
+        raise ImportError("The 'websockets' package is required for streaming") from exc
+
+    async def relay(websocket: websockets.WebSocketServerProtocol, _path: str) -> None:
+        try:
+            async for message in websocket:
+                await websocket.send(message)
+        except websockets.ConnectionClosed:  # pragma: no cover - network required
+            pass
+
+    asyncio.run(websockets.serve(relay, host, port))
+
