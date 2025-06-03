@@ -71,7 +71,12 @@ class GatewayMotorsBus:
         # ``self.port`` while ``master`` is bridged to the WebSocket
         master, slave = pty.openpty()
         self.port = os.ttyname(slave)
-        self._serial = serial.Serial(os.ttyname(master), baudrate=1_000_000, timeout=0)
+        # ``pyserial`` does not support non-standard baudrates like 1M on all
+        # platforms (e.g. macOS). Since this pseudo-terminal only bridges data
+        # between the local process and the browser, the actual baudrate is
+        # irrelevant.  We therefore use a common value to maximize
+        # compatibility.
+        self._serial = serial.Serial(os.ttyname(master), baudrate=115_200, timeout=0)
 
         async def bridge() -> None:
             async with websockets.connect(self.url) as ws:
