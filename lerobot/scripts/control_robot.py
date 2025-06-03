@@ -177,7 +177,20 @@ def calibrate(robot: Robot, cfg: CalibrateControlConfig):
             f"Unknown arms provided ('{unknown_arms_str}'). Available arms are `{available_arms_str}`."
         )
 
+    from lerobot.common.robot_devices.motors.gateway import GatewayMotorsBus
+
     for arm_id in arms:
+        name, arm_type = arm_id.split("_", 1)
+        arm = (
+            robot.leader_arms.get(name)
+            if arm_type == "leader"
+            else robot.follower_arms.get(name)
+        )
+
+        if isinstance(arm, GatewayMotorsBus):
+            print(f"Skipping calibration for '{arm_id}' (gateway arm).")
+            continue
+
         arm_calib_path = robot.calibration_dir / f"{arm_id}.json"
         if arm_calib_path.exists():
             print(f"Removing '{arm_calib_path}'")
