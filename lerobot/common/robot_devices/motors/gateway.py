@@ -142,6 +142,12 @@ class GatewayMotorsBus:
             )
             self._backend = FeetechMotorsBus(cfg)
 
+        # Patch connect to skip port opening for pty
+        if str(self.port).startswith("/dev/ttys"):
+            def noop_connect():
+                self._backend.is_connected = True
+            self._backend.connect = noop_connect
+
         self._backend.connect()
         self.is_connected = True
 
