@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LeRobot Gateway</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    input, textarea { width: 100%; margin-bottom: 1em; }
+    button { padding: 0.5em 1em; }
+    pre { background: #f0f0f0; padding: 1em; }
+  </style>
+</head>
+<body>
+  <h1>LeRobot Gateway</h1>
+  <h2>Start Training</h2>
+  <form id="trainForm">
+    <label>Dataset Repo ID: <input name="dataset_repo_id" required></label><br>
+    <label>Policy: <input name="policy" value="act"></label><br>
+    <label>Extra Args (JSON array): <textarea name="extra_args">[]</textarea></label><br>
+    <button type="submit">Start Training</button>
+  </form>
+  <pre id="trainResult"></pre>
+
+  <h2>Start Inference</h2>
+  <form id="inferenceForm">
+    <label>Model Path: <input name="model_path" required></label><br>
+    <label>Extra Args (JSON array): <textarea name="extra_args">[]</textarea></label><br>
+    <button type="submit">Start Inference</button>
+  </form>
+  <pre id="inferenceResult"></pre>
+
+  <h2>Check Session Status</h2>
+  <form id="statusForm">
+    <label>Session ID: <input name="session_id" required></label><br>
+    <button type="submit">Check Status</button>
+  </form>
+  <pre id="statusResult"></pre>
+
+  <h2>Session Logs</h2>
+  <form id="logsForm">
+    <label>Session ID: <input name="session_id" required></label>
+    <button type="submit">Fetch Logs</button>
+  </form>
+  <pre id="logsResult"></pre>
+
+  <script>
+    document.getElementById('trainForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const data = {
+        dataset_repo_id: this.dataset_repo_id.value,
+        policy: this.policy.value,
+        extra_args: JSON.parse(this.extra_args.value)
+      };
+      const res = await fetch('/train', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      document.getElementById('trainResult').textContent = await res.text();
+    };
+
+    document.getElementById('inferenceForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const data = {
+        model_path: this.model_path.value,
+        extra_args: JSON.parse(this.extra_args.value)
+      };
+      const res = await fetch('/inference', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      document.getElementById('inferenceResult').textContent = await res.text();
+    };
+
+    document.getElementById('statusForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const sessionId = this.session_id.value;
+      const res = await fetch('/session/' + sessionId);
+      document.getElementById('statusResult').textContent = await res.text();
+    };
+
+    document.getElementById('logsForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const sessionId = this.session_id.value;
+      const res = await fetch('/session/' + sessionId + '/logs');
+      const data = await res.json();
+      document.getElementById('logsResult').textContent = data.logs.join('\n');
+    };
+  </script>
+</body>
+</html> 

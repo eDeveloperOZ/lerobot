@@ -11,7 +11,7 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 
 _LOG = logging.getLogger(__name__)
@@ -128,6 +128,10 @@ def create_app() -> Flask:
 
     service = GatewayService()
     app = Flask(__name__)
+
+    @app.route("/")
+    def index():
+        return render_template("index.html")
 
     @app.route("/train", methods=["POST"])
     def train_endpoint() -> Any:
