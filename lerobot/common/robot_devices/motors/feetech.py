@@ -306,6 +306,15 @@ class FeetechMotorsBus:
         self.port_handler = scs.PortHandler(self.port)
         self.packet_handler = scs.PacketHandler(PROTOCOL_VERSION)
 
+        # Serial pseudo terminals like /dev/ttys* may not support setting a
+        # custom baudrate such as 1Mbit.  When operating through a gateway, the
+        # actual baudrate of the physical port is handled on the client side and
+        # the local pseudo-terminal is only used as a byte pipe.  To avoid
+        # ioctl errors when opening such ports, fall back to a standard baudrate
+        # that is widely supported.
+        if str(self.port).startswith("/dev/ttys"):
+            self.port_handler.baudrate = 115_200
+
         try:
             if not self.port_handler.openPort():
                 raise OSError(f"Failed to open port '{self.port}'.")
