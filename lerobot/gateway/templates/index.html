@@ -12,6 +12,14 @@
 </head>
 <body>
   <h1>LeRobot Gateway</h1>
+
+  <h2>Session Status</h2>
+  <form id="statusForm">
+    <label>Session ID: <input name="session_id" required></label>
+    <button type="submit">Monitor</button>
+  </form>
+  <pre id="statusResult"></pre>
+
   <h2>Robot Connection</h2>
   <div id="connectSection">
     <div style="margin-bottom:2em;">
@@ -53,19 +61,13 @@
   </form>
   <pre id="inferenceResult"></pre>
 
+
   <h2>Stop Session</h2>
   <form id="stopForm">
     <label>Session ID: <input name="session_id" required></label><br>
     <button type="submit">Stop Session</button>
   </form>
   <pre id="stopResult"></pre>
-
-  <h2>Check Session Status</h2>
-  <form id="statusForm">
-    <label>Session ID: <input name="session_id" required></label><br>
-    <button type="submit">Check Status</button>
-  </form>
-  <pre id="statusResult"></pre>
 
   <h2>Session Logs</h2>
   <form id="logsForm">
@@ -157,7 +159,7 @@
       }
     }
 
-    function disconnectRobot(which) {
+function disconnectRobot(which) {
       if (which.reader) { which.reader.cancel(); which.reader.releaseLock(); }
       if (which.serialPort) {
         try { which.serialPort.close(); } catch (e) {}
@@ -170,6 +172,29 @@
       document.getElementById(which.connectBtnId).disabled = false;
       document.getElementById(which.disconnectBtnId).disabled = true;
       logConnect('Disconnected', which);
+    }
+
+    let statusInterval = null;
+
+    function startStatusUpdates() {
+      if (statusInterval) clearInterval(statusInterval);
+      const sessionId = document.querySelector('#statusForm input[name="session_id"]').value;
+      if (!sessionId) return;
+      async function update() {
+        try {
+          const res = await fetch('/session/' + sessionId);
+          const data = await res.json();
+          document.getElementById('statusResult').textContent = data.status;
+          if (data.status !== 'running') {
+            clearInterval(statusInterval);
+            statusInterval = null;
+          }
+        } catch (err) {
+          document.getElementById('statusResult').textContent = 'error';
+        }
+      }
+      update();
+      statusInterval = setInterval(update, 2000);
     }
 
     document.getElementById('connectBtnLeader').onclick = () => connectRobot(leader);
@@ -189,7 +214,14 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       });
-      document.getElementById('trainResult').textContent = await res.text();
+      const result = await res.json();
+      document.getElementById('trainResult').textContent = JSON.stringify(result, null, 2);
+      if (result.session_id) {
+        document.querySelector('#stopForm input[name="session_id"]').value = result.session_id;
+        document.querySelector('#statusForm input[name="session_id"]').value = result.session_id;
+        document.querySelector('#logsForm input[name="session_id"]').value = result.session_id;
+        startStatusUpdates();
+      }
     };
 
     document.getElementById('inferenceForm').onsubmit = async function(e) {
@@ -214,6 +246,7 @@
         document.querySelector('#stopForm input[name="session_id"]').value = result.session_id;
         document.querySelector('#statusForm input[name="session_id"]').value = result.session_id;
         document.querySelector('#logsForm input[name="session_id"]').value = result.session_id;
+        startStatusUpdates();
       }
     };
 
@@ -222,13 +255,12 @@
       const sessionId = this.session_id.value;
       const res = await fetch('/session/' + sessionId, { method: 'DELETE' });
       document.getElementById('stopResult').textContent = await res.text();
+      startStatusUpdates();
     };
 
-    document.getElementById('statusForm').onsubmit = async function(e) {
+    document.getElementById('statusForm').onsubmit = function(e) {
       e.preventDefault();
-      const sessionId = this.session_id.value;
-      const res = await fetch('/session/' + sessionId);
-      document.getElementById('statusResult').textContent = await res.text();
+      startStatusUpdates();
     };
 
     document.getElementById('logsForm').onsubmit = async function(e) {
