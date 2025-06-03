@@ -9,10 +9,9 @@ import sys
 import threading
 import uuid
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
-from flask import Flask, jsonify, request, render_template
-
+from flask import Flask, jsonify, render_template, request
 
 _LOG = logging.getLogger(__name__)
 
@@ -23,6 +22,7 @@ class GatewayService:
     def __init__(self) -> None:
         self._train_processes: Dict[str, subprocess.Popen] = {}
         self._inference_processes: Dict[str, subprocess.Popen] = {}
+        self._logs: Dict[str, list[str]] = {}
 
     # ------------------------------------------------------------------
     def _spawn(self, cmd: list[str]) -> subprocess.Popen:
@@ -38,7 +38,9 @@ class GatewayService:
     def _stream_output(self, pid: str, proc: subprocess.Popen) -> None:
         assert proc.stdout is not None
         for line in proc.stdout:
-            _LOG.info("[%s] %s", pid, line.rstrip())
+            line = line.rstrip()
+            self._logs.setdefault(pid, []).append(line)
+            _LOG.info("[%s] %s", pid, line)
         proc.wait()
         _LOG.info("Process %s terminated with code %s", pid, proc.returncode)
 
@@ -61,6 +63,7 @@ class GatewayService:
         proc = self._spawn(cmd)
         pid = str(uuid.uuid4())
         self._train_processes[pid] = proc
+        self._logs[pid] = []
         threading.Thread(target=self._stream_output, args=(pid, proc), daemon=True).start()
         return pid
 
@@ -104,6 +107,7 @@ class GatewayService:
         proc = self._spawn(cmd)
         pid = str(uuid.uuid4())
         self._inference_processes[pid] = proc
+        self._logs[pid] = []
         threading.Thread(target=self._stream_output, args=(pid, proc), daemon=True).start()
         return pid
 
@@ -113,6 +117,7 @@ class GatewayService:
             proc.terminate()
             proc.wait(timeout=5)
             _LOG.info("Process %s stopped", pid)
+        self._logs.pop(pid, None)
 
     def session_status(self, pid: str) -> str:
         proc = self._train_processes.get(pid) or self._inference_processes.get(pid)
@@ -121,6 +126,9 @@ class GatewayService:
         if proc.poll() is None:
             return "running"
         return "finished"
+
+    def session_logs(self, pid: str) -> list[str]:
+        return self._logs.get(pid, [])
 
 
 def create_app() -> Flask:
@@ -156,6 +164,11 @@ def create_app() -> Flask:
         status = service.session_status(pid)
         return jsonify({"status": status})
 
+    @app.route("/session/<pid>/logs")
+    def session_logs_endpoint(pid: str) -> Any:
+        logs = service.session_logs(pid)
+        return jsonify({"logs": logs})
+
     @app.route("/session/<pid>", methods=["DELETE"])
     def stop_session_endpoint(pid: str) -> Any:
         service.stop_session(pid)
@@ -179,4 +192,3 @@ def run_websocket_server(host: str = "0.0.0.0", port: int = 8765) -> None:
             pass
 
     asyncio.run(websockets.serve(relay, host, port))
-
