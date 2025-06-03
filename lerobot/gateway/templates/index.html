@@ -12,6 +12,14 @@
 </head>
 <body>
   <h1>LeRobot Gateway</h1>
+  <h2>Robot Connection</h2>
+  <div id="connectSection">
+    <label>WebSocket URL: <input id="wsUrl" value="ws://localhost:8765"></label><br>
+    <label>Baud Rate: <input id="baudRate" value="115200"></label><br>
+    <button id="connectBtn">Connect Robot</button>
+    <button id="disconnectBtn" disabled>Disconnect Robot</button>
+  </div>
+  <pre id="connectLogs"></pre>
   <h2>Start Training</h2>
   <form id="trainForm">
     <label>Dataset Repo ID: <input name="dataset_repo_id" required></label><br>
@@ -56,6 +64,82 @@
   <pre id="logsResult"></pre>
 
   <script>
+    let serialPort = null;
+    let ws = null;
+    let reader = null;
+
+    function logConnect(msg) {
+      const pre = document.getElementById('connectLogs');
+      pre.textContent += msg + '\n';
+      pre.scrollTop = pre.scrollHeight;
+    }
+
+    async function readSerialLoop() {
+      while (serialPort && serialPort.readable) {
+        reader = serialPort.readable.getReader();
+        try {
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.send(value);
+            }
+          }
+        } catch (err) {
+          logConnect('Read error: ' + err);
+        } finally {
+          reader.releaseLock();
+        }
+      }
+    }
+
+    async function connectRobot() {
+      const wsUrl = document.getElementById('wsUrl').value || 'ws://localhost:8765';
+      const baudRate = parseInt(document.getElementById('baudRate').value) || 115200;
+      try {
+        serialPort = await navigator.serial.requestPort();
+        await serialPort.open({ baudRate });
+        ws = new WebSocket(wsUrl);
+        ws.binaryType = 'arraybuffer';
+        ws.onopen = () => logConnect('WebSocket connected');
+        ws.onclose = () => {
+          logConnect('WebSocket closed');
+          disconnectRobot();
+        };
+        ws.onmessage = (e) => {
+          if (serialPort && serialPort.writable) {
+            const writer = serialPort.writable.getWriter();
+            writer.write(new Uint8Array(e.data));
+            writer.releaseLock();
+          }
+        };
+        readSerialLoop();
+        document.getElementById('connectBtn').disabled = true;
+        document.getElementById('disconnectBtn').disabled = false;
+        logConnect('Serial port opened');
+      } catch (err) {
+        logConnect('Error: ' + err);
+      }
+    }
+
+    function disconnectRobot() {
+      if (reader) { reader.cancel(); reader.releaseLock(); }
+      if (serialPort) {
+        try { serialPort.close(); } catch (e) {}
+        serialPort = null;
+      }
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.close();
+      }
+      ws = null;
+      document.getElementById('connectBtn').disabled = false;
+      document.getElementById('disconnectBtn').disabled = true;
+      logConnect('Disconnected');
+    }
+
+    document.getElementById('connectBtn').onclick = connectRobot;
+    document.getElementById('disconnectBtn').onclick = disconnectRobot;
+
     document.getElementById('trainForm').onsubmit = async function(e) {
       e.preventDefault();
       const data = {
