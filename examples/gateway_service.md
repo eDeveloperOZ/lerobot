@@ -17,14 +17,27 @@ Start a training session. Example payload:
 The response contains a `session_id` that can be queried for status.
 
 ### `POST /inference`
-Launch an inference process using a pretrained model.
+Start a robot inference session using a pretrained policy.  The service
+internally invokes `control_robot.py` with the provided options.
 Payload example:
 ```json
 {
-  "model_path": "path/to/model",
-  "extra_args": ["--device=cuda"]
+  "policy_path": "path/to/model",
+  "repo_id": "<evaluation_dataset>",
+  "single_task": "Describe the task",
+  "robot_type": "so100",
+  "ws_url": "ws://localhost:8765",
+  "extra_args": ["--control.num_episodes=1"]
 }
 ```
+The optional `ws_url` tells the service how to reach the browser's Web Serial
+bridge. When provided, motor commands are forwarded over this WebSocket
+connection instead of relying on local USB ports configured in the robot YAML.
+
+The WebSocket relay transmits raw binary serial data. Bytes written by the
+robot SDK are sent as binary messages and the browser must forward the payload
+to its Web Serial port. Likewise, any bytes coming from the serial port are
+sent back to the server as binary WebSocket frames.
 
 ### `GET /session/<session_id>`
 Returns the status (`running`, `finished`, or `unknown`).
