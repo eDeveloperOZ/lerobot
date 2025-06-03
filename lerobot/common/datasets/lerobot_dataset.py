@@ -95,15 +95,21 @@ class LeRobotDatasetMetadata:
         allow_patterns: list[str] | str | None = None,
         ignore_patterns: list[str] | str | None = None,
     ) -> None:
-        snapshot_download(
-            self.repo_id,
-            repo_type="dataset",
-            revision=self._hub_version,
-            local_dir=self.root,
-            allow_patterns=allow_patterns,
-            ignore_patterns=ignore_patterns,
-            local_files_only=self.local_files_only,
-        )
+        try:
+            snapshot_download(
+                self.repo_id,
+                repo_type="dataset",
+                revision=self._hub_version,
+                local_dir=self.root,
+                allow_patterns=allow_patterns,
+                ignore_patterns=ignore_patterns,
+                local_files_only=self.local_files_only,
+            )
+        except (FileExistsError, OSError) as err:
+            logging.warning(
+                f"Dataset directory {self.root} already exists. "
+                f"Reusing local files. Exception: {err}"
+            )
 
     @cached_property
     def _hub_version(self) -> str | None:
