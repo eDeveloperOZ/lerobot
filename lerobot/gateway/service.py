@@ -184,7 +184,8 @@ def run_websocket_server(host: str = "0.0.0.0", port: int = 8765) -> None:
     except Exception as exc:  # pragma: no cover - optional dependency
         raise ImportError("The 'websockets' package is required for streaming") from exc
 
-    async def relay(websocket: websockets.WebSocketServerProtocol, _path: str) -> None:
+    async def relay(websocket: websockets.WebSocketServerProtocol) -> None:
+        """Echo messages back to the sender."""
         try:
             async for message in websocket:
                 await websocket.send(message)
