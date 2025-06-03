@@ -163,6 +163,41 @@ class GatewayMotorsBus:
                 self._serial.close()
         self.is_connected = False
 
+    # Calibration -----------------------------------------------------
+    def set_calibration(self, calibration: dict[str, list]) -> None:
+        if not self.is_connected:
+            raise RobotDeviceNotConnectedError(
+                "GatewayMotorsBus is not connected."
+            )
+        self._backend.set_calibration(calibration)
+
+    def apply_calibration_autocorrect(
+        self, values: Any, motor_names: List[str] | None = None
+    ) -> Any:
+        if not self.is_connected:
+            raise RobotDeviceNotConnectedError(
+                "GatewayMotorsBus is not connected."
+            )
+        return self._backend.apply_calibration_autocorrect(values, motor_names)
+
+    def apply_calibration(
+        self, values: Any, motor_names: List[str] | None = None
+    ) -> Any:
+        if not self.is_connected:
+            raise RobotDeviceNotConnectedError(
+                "GatewayMotorsBus is not connected."
+            )
+        return self._backend.apply_calibration(values, motor_names)
+
+    def revert_calibration(
+        self, values: Any, motor_names: List[str] | None = None
+    ) -> Any:
+        if not self.is_connected:
+            raise RobotDeviceNotConnectedError(
+                "GatewayMotorsBus is not connected."
+            )
+        return self._backend.revert_calibration(values, motor_names)
+
     # Basic API used in real buses -------------------------------------
     def read(self, data_name: str, motor_names: List[str] | None = None) -> Any:
         if not self.is_connected:
