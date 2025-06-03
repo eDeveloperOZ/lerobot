@@ -87,7 +87,13 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       });
-      document.getElementById('inferenceResult').textContent = await res.text();
+      const result = await res.json();
+      document.getElementById('inferenceResult').textContent = JSON.stringify(result, null, 2);
+      if (result.session_id) {
+        document.querySelector('#stopForm input[name="session_id"]').value = result.session_id;
+        document.querySelector('#statusForm input[name="session_id"]').value = result.session_id;
+        document.querySelector('#logsForm input[name="session_id"]').value = result.session_id;
+      }
     };
 
     document.getElementById('stopForm').onsubmit = async function(e) {
