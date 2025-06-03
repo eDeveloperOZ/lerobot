@@ -24,10 +24,22 @@
   <h2>Start Inference</h2>
   <form id="inferenceForm">
     <label>Model Path: <input name="model_path" required></label><br>
+    <label>Robot Type: <input name="robot_type" value="so100"></label><br>
+    <label>Dataset Repo ID: <input name="repo_id"></label><br>
+    <label>Single Task: <input name="single_task"></label><br>
+    <label>Control Type: <input name="control_type" value="record"></label><br>
+    <label>WebSocket URL: <input name="ws_url"></label><br>
     <label>Extra Args (JSON array): <textarea name="extra_args">[]</textarea></label><br>
     <button type="submit">Start Inference</button>
   </form>
   <pre id="inferenceResult"></pre>
+
+  <h2>Stop Session</h2>
+  <form id="stopForm">
+    <label>Session ID: <input name="session_id" required></label><br>
+    <button type="submit">Stop Session</button>
+  </form>
+  <pre id="stopResult"></pre>
 
   <h2>Check Session Status</h2>
   <form id="statusForm">
@@ -63,6 +75,11 @@
       e.preventDefault();
       const data = {
         model_path: this.model_path.value,
+        robot_type: this.robot_type.value,
+        repo_id: this.repo_id.value,
+        single_task: this.single_task.value,
+        control_type: this.control_type.value,
+        ws_url: this.ws_url.value,
         extra_args: JSON.parse(this.extra_args.value)
       };
       const res = await fetch('/inference', {
@@ -71,6 +88,13 @@
         body: JSON.stringify(data)
       });
       document.getElementById('inferenceResult').textContent = await res.text();
+    };
+
+    document.getElementById('stopForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const sessionId = this.session_id.value;
+      const res = await fetch('/session/' + sessionId, { method: 'DELETE' });
+      document.getElementById('stopResult').textContent = await res.text();
     };
 
     document.getElementById('statusForm').onsubmit = async function(e) {
@@ -89,4 +113,4 @@
     };
   </script>
 </body>
-</html> 
+</html>
