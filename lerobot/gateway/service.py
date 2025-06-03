@@ -64,17 +64,43 @@ class GatewayService:
         threading.Thread(target=self._stream_output, args=(pid, proc), daemon=True).start()
         return pid
 
-    def start_inference(self, model_path: str, extra_args: Optional[list[str]] = None) -> str:
-        """Launch ``eval.py`` on a pretrained model."""
-        if not model_path:
-            raise ValueError("model_path is required")
+    def start_inference(self, config: Dict[str, Any]) -> str:
+        """Run a pretrained policy on a real robot via ``control_robot.py``."""
+
+        policy_path = config.get("policy_path") or config.get("model_path")
+        if not policy_path:
+            raise ValueError("policy_path is required")
+
+        robot_type = config.get("robot_type", "so100")
+        repo_id = config.get("repo_id")
+        single_task = config.get("single_task")
+        control_type = config.get("control_type", "record")
+        ws_url = config.get("ws_url")
+        extra_args = config.get("extra_args", [])
+
         cmd = [
             sys.executable,
-            str(Path(__file__).resolve().parents[1] / "scripts" / "eval.py"),
-            f"--policy.path={model_path}",
+            str(Path(__file__).resolve().parents[1] / "scripts" / "control_robot.py"),
+            f"--robot.type={robot_type}",
+            f"--control.type={control_type}",
+            f"--control.policy.path={policy_path}",
         ]
+        if repo_id:
+            cmd.append(f"--control.repo_id={repo_id}")
+        if single_task:
+            cmd.append(f"--control.single_task={single_task}")
+        if ws_url:
+            cmd.extend(
+                [
+                    "--robot.leader_arms.main.type=gateway",
+                    f"--robot.leader_arms.main.url={ws_url}",
+                    "--robot.follower_arms.main.type=gateway",
+                    f"--robot.follower_arms.main.url={ws_url}",
+                ]
+            )
         if extra_args:
             cmd.extend(extra_args)
+
         proc = self._spawn(cmd)
         pid = str(uuid.uuid4())
         self._inference_processes[pid] = proc
@@ -115,10 +141,8 @@ def create_app() -> Flask:
     @app.route("/inference", methods=["POST"])
     def inference_endpoint() -> Any:
         data = request.get_json(force=True)
-        model_path = data.get("model_path")
-        extra_args = data.get("extra_args", [])
         try:
-            pid = service.start_inference(model_path, extra_args)
+            pid = service.start_inference(data)
         except Exception as exc:  # pragma: no cover - hardware dependency
             return jsonify({"error": str(exc)}), 400
         return jsonify({"session_id": pid})

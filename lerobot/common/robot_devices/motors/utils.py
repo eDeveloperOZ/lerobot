@@ -3,6 +3,7 @@ from typing import Protocol
 from lerobot.common.robot_devices.motors.configs import (
     DynamixelMotorsBusConfig,
     FeetechMotorsBusConfig,
+    GatewayMotorsBusConfig,
     MotorsBusConfig,
 )
 
@@ -30,6 +31,11 @@ def make_motors_buses_from_configs(motors_bus_configs: dict[str, MotorsBusConfig
 
             motors_buses[key] = FeetechMotorsBus(cfg)
 
+        elif cfg.type == "gateway":
+            from lerobot.common.robot_devices.motors.gateway import GatewayMotorsBus
+
+            motors_buses[key] = GatewayMotorsBus(cfg)
+
         else:
             raise ValueError(f"The motor type '{cfg.type}' is not valid.")
 
@@ -48,6 +54,12 @@ def make_motors_bus(motor_type: str, **kwargs) -> MotorsBus:
 
         config = FeetechMotorsBusConfig(**kwargs)
         return FeetechMotorsBus(config)
+
+    elif motor_type == "gateway":
+        from lerobot.common.robot_devices.motors.gateway import GatewayMotorsBus
+
+        config = GatewayMotorsBusConfig(**kwargs)
+        return GatewayMotorsBus(config)
 
     else:
         raise ValueError(f"The motor type '{motor_type}' is not valid.")
