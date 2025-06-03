@@ -14,10 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import importlib
+import sys
 import traceback
 
 import pytest
 from serial import SerialException
+
+# Use the lightweight stub for `draccus` when running the test suite so that
+# the real dependency is not required. Normal execution will rely on the actual
+# package installed from PyPI.
+sys.modules["draccus"] = importlib.import_module("tests._draccus_test_stub")
 
 from lerobot import available_cameras, available_motors, available_robots
 from lerobot.common.robot_devices.robots.utils import make_robot
