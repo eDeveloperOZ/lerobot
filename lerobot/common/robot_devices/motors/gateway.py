@@ -78,9 +78,16 @@ class GatewayMotorsBus:
         # compatibility.  ``pyserial`` on macOS in particular sometimes fails
         # when opening the pseudo-terminal using its file name (``OSError: [Errno 34]``).
         # Using the file descriptor directly avoids this issue.
-        self._serial = serial.serial_for_url(
-            f"fd://{master}", baudrate=115_200, timeout=0
-        )
+        try:
+            self._serial = serial.serial_for_url(
+                f"fd://{master}", baudrate=115_200, timeout=0
+            )
+        except ValueError:
+            # some pyserial versions do not support the ``fd://`` scheme;
+            # fall back to using the pseudo-terminal's path
+            self._serial = serial.serial_for_url(
+                self.port, baudrate=115_200, timeout=0
+            )
 
         async def bridge() -> None:
             async with websockets.connect(self.url) as ws:
