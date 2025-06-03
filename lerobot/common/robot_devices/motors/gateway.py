@@ -75,8 +75,12 @@ class GatewayMotorsBus:
         # platforms (e.g. macOS). Since this pseudo-terminal only bridges data
         # between the local process and the browser, the actual baudrate is
         # irrelevant.  We therefore use a common value to maximize
-        # compatibility.
-        self._serial = serial.Serial(os.ttyname(master), baudrate=115_200, timeout=0)
+        # compatibility.  ``pyserial`` on macOS in particular sometimes fails
+        # when opening the pseudo-terminal using its file name (``OSError: [Errno 34]``).
+        # Using the file descriptor directly avoids this issue.
+        self._serial = serial.serial_for_url(
+            f"fd://{master}", baudrate=115_200, timeout=0
+        )
 
         async def bridge() -> None:
             async with websockets.connect(self.url) as ws:
