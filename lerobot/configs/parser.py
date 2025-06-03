@@ -4,6 +4,7 @@ from argparse import ArgumentError
 from functools import wraps
 from pathlib import Path
 from typing import Sequence
+import sys
 
 import draccus
 
@@ -13,7 +14,9 @@ PATH_KEY = "path"
 draccus.set_config_type("json")
 
 
-def get_cli_overrides(field_name: str, args: Sequence[str] | None = None) -> list[str] | None:
+def get_cli_overrides(
+    field_name: str, args: Sequence[str] | None = None
+) -> list[str] | None:
     """Parses arguments from cli at a given nested attribute level.
 
     For example, supposing the main script was called with:
@@ -26,7 +29,10 @@ def get_cli_overrides(field_name: str, args: Sequence[str] | None = None) -> lis
         args = sys.argv[1:]
     attr_level_args = []
     detect_string = f"--{field_name}."
-    exclude_strings = (f"--{field_name}.{draccus.CHOICE_TYPE_KEY}=", f"--{field_name}.{PATH_KEY}=")
+    exclude_strings = (
+        f"--{field_name}.{draccus.CHOICE_TYPE_KEY}=",
+        f"--{field_name}.{PATH_KEY}=",
+    )
     for arg in args:
         if arg.startswith(detect_string) and not arg.startswith(exclude_strings):
             denested_arg = f"--{arg.removeprefix(detect_string)}"
@@ -57,7 +63,9 @@ def filter_arg(field_to_filter: str, args: Sequence[str] | None = None) -> list[
     return [arg for arg in args if not arg.startswith(f"--{field_to_filter}=")]
 
 
-def filter_path_args(fields_to_filter: str | list[str], args: Sequence[str] | None = None) -> list[str]:
+def filter_path_args(
+    fields_to_filter: str | list[str], args: Sequence[str] | None = None
+) -> list[str]:
     """
     Filters command-line arguments related to fields with specific path arguments.
 
@@ -85,9 +93,73 @@ def filter_path_args(fields_to_filter: str | list[str], args: Sequence[str] | No
                     argument=None,
                     message=f"Cannot specify both --{field}.{PATH_KEY} and --{field}.{draccus.CHOICE_TYPE_KEY}",
                 )
-            filtered_args = [arg for arg in filtered_args if not arg.startswith(f"--{field}.")]
+            filtered_args = [
+                arg for arg in filtered_args if not arg.startswith(f"--{field}.")
+            ]
 
     return filtered_args
+
+
+def filter_dict_args(
+    fields_to_filter: str | list[str], args: Sequence[str] | None = None
+) -> list[str]:
+    """Remove CLI options targeting nested dictionary keys."""
+    if isinstance(fields_to_filter, str):
+        fields_to_filter = [fields_to_filter]
+
+    if args is None:
+        args = sys.argv[1:]
+
+    filtered_args = []
+    for arg in args:
+        if any(arg.startswith(f"--{field}.") for field in fields_to_filter):
+            continue
+        filtered_args.append(arg)
+    return filtered_args
+
+
+def parse_nested_dict_args(
+    field_name: str, args: Sequence[str] | None = None
+) -> dict[str, dict[str, str]]:
+    """Return dict of overrides for ``field_name`` CLI arguments."""
+    if args is None:
+        args = sys.argv[1:]
+    overrides: dict[str, dict[str, str]] = {}
+    prefix = f"--{field_name}."
+    for arg in args:
+        if not arg.startswith(prefix):
+            continue
+        item = arg[len(prefix) :]
+        if "=" not in item or "." not in item:
+            continue
+        key, value = item.split("=", 1)
+        entry, subkey = key.split(".", 1)
+        overrides.setdefault(entry, {})[subkey] = value
+    return overrides
+
+
+def apply_gateway_overrides(robot_cfg, args: Sequence[str] | None = None) -> None:
+    """Apply Gateway bus CLI overrides to ``robot_cfg``."""
+    from lerobot.common.robot_devices.motors.configs import GatewayMotorsBusConfig
+
+    leader = parse_nested_dict_args("robot.leader_arms", args)
+    follower = parse_nested_dict_args("robot.follower_arms", args)
+
+    for name, fields in leader.items():
+        if fields.get("type") != "gateway" or "url" not in fields:
+            continue
+        motors = getattr(robot_cfg.leader_arms.get(name), "motors", None)
+        robot_cfg.leader_arms[name] = GatewayMotorsBusConfig(
+            url=fields["url"], motors=motors, mock=robot_cfg.mock
+        )
+
+    for name, fields in follower.items():
+        if fields.get("type") != "gateway" or "url" not in fields:
+            continue
+        motors = getattr(robot_cfg.follower_arms.get(name), "motors", None)
+        robot_cfg.follower_arms[name] = GatewayMotorsBusConfig(
+            url=fields["url"], motors=motors, mock=robot_cfg.mock
+        )
 
 
 def wrap(config_path: Path | None = None):
@@ -112,11 +184,16 @@ def wrap(config_path: Path | None = None):
                 if has_method(argtype, "__get_path_fields__"):
                     path_fields = argtype.__get_path_fields__()
                     cli_args = filter_path_args(path_fields, cli_args)
+                if has_method(argtype, "__get_dict_fields__"):
+                    dict_fields = argtype.__get_dict_fields__()
+                    cli_args = filter_dict_args(dict_fields, cli_args)
                 if has_method(argtype, "from_pretrained") and config_path_cli:
                     cli_args = filter_arg("config_path", cli_args)
                     cfg = argtype.from_pretrained(config_path_cli, cli_args=cli_args)
                 else:
-                    cfg = draccus.parse(config_class=argtype, config_path=config_path, args=cli_args)
+                    cfg = draccus.parse(
+                        config_class=argtype, config_path=config_path, args=cli_args
+                    )
             response = fn(cfg, *args, **kwargs)
             return response
 
