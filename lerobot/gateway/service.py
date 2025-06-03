@@ -191,4 +191,8 @@ def run_websocket_server(host: str = "0.0.0.0", port: int = 8765) -> None:
         except websockets.ConnectionClosed:  # pragma: no cover - network required
             pass
 
-    asyncio.run(websockets.serve(relay, host, port))
+    async def serve() -> None:
+        async with websockets.serve(relay, host, port):
+            await asyncio.Future()  # run forever
+
+    asyncio.run(serve())
