@@ -86,3 +86,18 @@ def test_gateway_bus_mock_mode():
     assert len(obs) == len(FEETECH_MOTORS)
     bus.disconnect()
     assert not bus.is_connected
+
+
+def test_gateway_camera_mock_mode():
+    from lerobot.common.robot_devices.cameras.gateway import GatewayCamera
+    from lerobot.common.robot_devices.cameras.configs import GatewayCameraConfig
+
+    cfg = GatewayCameraConfig(url="ws://localhost", mock=True)
+    cam = GatewayCamera(cfg)
+    assert not cam.is_connected
+    cam.connect()
+    assert cam.is_connected
+    img = cam.async_read()
+    assert img.shape[0] == cam.height
+    cam.disconnect()
+    assert not cam.is_connected
