@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>LeRobot PoC</title>
+  <style>
+    #log { white-space: pre-line; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <button id="camBtn">Connect Camera</button>
+  <button id="armBtn">Connect Arm</button>
+  <video autoplay playsinline width="320" height="240"></video>
+  <canvas id="latency" width="320" height="20"></canvas>
+  <pre id="log"></pre>
+  <script type="module" src="/static/script.js"></script>
+</body>
+</html>
