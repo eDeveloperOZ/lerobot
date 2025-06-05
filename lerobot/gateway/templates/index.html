@@ -184,9 +184,11 @@ function disconnectRobot(which) {
     }
 
     let statusInterval = null;
+    let logsInterval = null;
 
     function startStatusUpdates() {
       if (statusInterval) clearInterval(statusInterval);
+      if (logsInterval) clearInterval(logsInterval);
       const sessionId = document.querySelector('#statusForm input[name="session_id"]').value;
       if (!sessionId) return;
       async function update() {
@@ -197,6 +199,10 @@ function disconnectRobot(which) {
           if (data.status !== 'running') {
             clearInterval(statusInterval);
             statusInterval = null;
+            if (logsInterval) {
+              clearInterval(logsInterval);
+              logsInterval = null;
+            }
           }
         } catch (err) {
           document.getElementById('statusResult').textContent = 'error';
@@ -204,6 +210,24 @@ function disconnectRobot(which) {
       }
       update();
       statusInterval = setInterval(update, 2000);
+      startLogsUpdates();
+    }
+
+    function startLogsUpdates() {
+      if (logsInterval) clearInterval(logsInterval);
+      const sessionId = document.querySelector('#logsForm input[name="session_id"]').value;
+      if (!sessionId) return;
+      async function updateLogs() {
+        try {
+          const res = await fetch('/session/' + sessionId + '/logs');
+          const data = await res.json();
+          document.getElementById('logsResult').textContent = data.logs.join('\n');
+        } catch (err) {
+          document.getElementById('logsResult').textContent = 'error';
+        }
+      }
+      updateLogs();
+      logsInterval = setInterval(updateLogs, 2000);
     }
 
     document.getElementById('connectBtnLeader').onclick = () => connectRobot(leader);
@@ -278,6 +302,7 @@ function disconnectRobot(which) {
       const res = await fetch('/session/' + sessionId + '/logs');
       const data = await res.json();
       document.getElementById('logsResult').textContent = data.logs.join('\n');
+      startLogsUpdates();
     };
 
     // ------------------------------------------------------------------
