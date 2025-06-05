@@ -311,6 +311,10 @@ def make_camera(camera_type: str, **kwargs) -> Camera:
     elif camera_type == "intelrealsense":
         serial_number = kwargs.pop("serial_number", INTELREALSENSE_SERIAL_NUMBER)
         return make_camera_device(camera_type, serial_number=serial_number, **kwargs)
+
+    elif camera_type == "gateway":
+        url = kwargs.pop("url", "ws://localhost:8765")
+        return make_camera_device(camera_type, url=url, **kwargs)
     else:
         raise ValueError(f"The camera type '{camera_type}' is not valid.")
 

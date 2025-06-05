@@ -98,3 +98,14 @@ class IntelRealSenseCameraConfig(CameraConfig):
 
         if self.rotation not in [-90, None, 90, 180]:
             raise ValueError(f"`rotation` must be in [-90, None, 90, 180] (got {self.rotation})")
+@CameraConfig.register_subclass("gateway")
+@dataclass
+class GatewayCameraConfig(CameraConfig):
+    """Configuration for cameras streaming via a WebSocket gateway."""
+
+    url: str
+    width: int | None = None
+    height: int | None = None
+    fps: int | None = None
+    mock: bool = False
+
