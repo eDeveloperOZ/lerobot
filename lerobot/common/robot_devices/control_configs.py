@@ -5,7 +5,11 @@ from pathlib import Path
 import draccus
 
 from lerobot.common.robot_devices.robots.configs import RobotConfig
-from lerobot.common.utils.utils import auto_select_torch_device, is_amp_available, is_torch_device_available
+from lerobot.common.utils.utils import (
+    auto_select_torch_device,
+    is_amp_available,
+    is_torch_device_available,
+)
 from lerobot.configs import parser
 from lerobot.configs.policies import PreTrainedConfig
 from lerobot.configs.train import TrainPipelineConfig
@@ -92,7 +96,9 @@ class RecordControlConfig(ControlConfig):
         policy_path = parser.get_path_arg("control.policy")
         if policy_path:
             cli_overrides = parser.get_cli_overrides("control.policy")
-            self.policy = PreTrainedConfig.from_pretrained(policy_path, cli_overrides=cli_overrides)
+            self.policy = PreTrainedConfig.from_pretrained(
+                policy_path, cli_overrides=cli_overrides
+            )
             self.policy.pretrained_path = policy_path
 
             # When no device or use_amp are given, use the one from training config.
@@ -106,7 +112,9 @@ class RecordControlConfig(ControlConfig):
             # Automatically switch to available device if necessary
             if not is_torch_device_available(self.device):
                 auto_device = auto_select_torch_device()
-                logging.warning(f"Device '{self.device}' is not available. Switching to '{auto_device}'.")
+                logging.warning(
+                    f"Device '{self.device}' is not available. Switching to '{auto_device}'."
+                )
                 self.device = auto_device
 
             # Automatically deactivate AMP if necessary
@@ -144,3 +152,10 @@ class ControlPipelineConfig:
     def __get_path_fields__(cls) -> list[str]:
         """This enables the parser to load config from the policy using `--policy.path=local/dir`"""
         return ["control.policy"]
+
+    @classmethod
+    def __get_dict_fields__(cls) -> list[str]:
+        return ["robot.leader_arms", "robot.follower_arms"]
+
+    def __post_init__(self) -> None:
+        parser.apply_gateway_overrides(self.robot)

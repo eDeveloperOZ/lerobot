@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LeRobot Gateway</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    input, textarea { width: 100%; margin-bottom: 1em; }
+    button { padding: 0.5em 1em; }
+    pre { background: #f0f0f0; padding: 1em; }
+    details { margin-bottom: 1em; }
+    summary { font-size: 1.2em; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>LeRobot Gateway</h1>
+
+  <details open>
+    <summary>Session Status</summary>
+    <form id="statusForm">
+      <label>Session ID: <input name="session_id" required></label>
+      <button type="submit">Monitor</button>
+    </form>
+    <pre id="statusResult"></pre>
+  </details>
+
+  <details>
+    <summary>Robot Connection</summary>
+    <div id="connectSection">
+    <div style="margin-bottom:2em;">
+      <h3>Leader Arm Connection</h3>
+      <label>WebSocket URL: <input id="wsUrlLeader" value="ws://localhost:8765"></label><br>
+      <label>Baud Rate: <input id="baudRateLeader" value="115200"></label><br>
+      <button id="connectBtnLeader">Connect Leader</button>
+      <button id="disconnectBtnLeader" disabled>Disconnect Leader</button>
+      <pre id="connectLogsLeader"></pre>
+    </div>
+    <div>
+      <h3>Follower Arm Connection</h3>
+      <label>WebSocket URL: <input id="wsUrlFollower" value="ws://localhost:8765"></label><br>
+      <label>Baud Rate: <input id="baudRateFollower" value="115200"></label><br>
+      <button id="connectBtnFollower">Connect Follower</button>
+      <button id="disconnectBtnFollower" disabled>Disconnect Follower</button>
+      <pre id="connectLogsFollower"></pre>
+    </div>
+  </div>
+  </details>
+  <details>
+    <summary>Camera Streaming</summary>
+  <div id="cameraSection">
+    <label>WebSocket URL: <input id="cameraWsUrl" value="ws://localhost:8765"></label><br>
+    <label>Camera Device: <select id="cameraSelect"></select></label><br>
+    <button id="startCameraBtn">Start Camera</button>
+    <button id="stopCameraBtn" disabled>Stop Camera</button>
+    <br>
+    <video id="cameraPreview" width="320" height="240" autoplay muted></video>
+  </div>
+  </details>
+  <details>
+    <summary>Start Training</summary>
+  <form id="trainForm">
+    <label>Dataset Repo ID: <input name="dataset_repo_id" required></label><br>
+    <label>Policy: <input name="policy" value="act"></label><br>
+    <label>Extra Args (JSON array): <textarea name="extra_args">[]</textarea></label><br>
+    <button type="submit">Start Training</button>
+  </form>
+  <pre id="trainResult"></pre>
+
+  </details>
+  <details>
+    <summary>Start Inference</summary>
+  <form id="inferenceForm">
+    <label>Model Path: <input name="model_path" required></label><br>
+    <label>Robot Type: <input name="robot_type" value="so100"></label><br>
+    <label>Dataset Repo ID: <input name="repo_id"></label><br>
+    <label>Single Task: <input name="single_task"></label><br>
+    <label>Control Type: <input name="control_type" value="record"></label><br>
+    <label>WebSocket URL: <input name="ws_url"></label><br>
+    <label>Extra Args (JSON array): <textarea name="extra_args">[]</textarea></label><br>
+    <button type="submit">Start Inference</button>
+  </form>
+  <pre id="inferenceResult"></pre>
+  </details>
+
+  <details>
+    <summary>Stop Session</summary>
+  <form id="stopForm">
+    <label>Session ID: <input name="session_id" required></label><br>
+    <button type="submit">Stop Session</button>
+  </form>
+  <pre id="stopResult"></pre>
+  </details>
+
+  <details>
+    <summary>Session Logs</summary>
+  <form id="logsForm">
+    <label>Session ID: <input name="session_id" required></label>
+    <button type="submit">Fetch Logs</button>
+  </form>
+  <pre id="logsResult"></pre>
+  </details>
+
+  <script>
+    // --- Leader and Follower connection state ---
+    function makeSerialState() {
+      return {
+        serialPort: null,
+        ws: null,
+        reader: null,
+        logId: '',
+        wsUrlId: '',
+        baudId: '',
+        connectBtnId: '',
+        disconnectBtnId: '',
+      };
+    }
+    const leader = Object.assign(makeSerialState(), {
+      logId: 'connectLogsLeader',
+      wsUrlId: 'wsUrlLeader',
+      baudId: 'baudRateLeader',
+      connectBtnId: 'connectBtnLeader',
+      disconnectBtnId: 'disconnectBtnLeader',
+    });
+    const follower = Object.assign(makeSerialState(), {
+      logId: 'connectLogsFollower',
+      wsUrlId: 'wsUrlFollower',
+      baudId: 'baudRateFollower',
+      connectBtnId: 'connectBtnFollower',
+      disconnectBtnId: 'disconnectBtnFollower',
+    });
+
+    function logConnect(msg, which) {
+      const pre = document.getElementById(which.logId);
+      pre.textContent += msg + '\n';
+      pre.scrollTop = pre.scrollHeight;
+    }
+
+    async function readSerialLoop(which) {
+      while (which.serialPort && which.serialPort.readable) {
+        which.reader = which.serialPort.readable.getReader();
+        try {
+          while (true) {
+            const { value, done } = await which.reader.read();
+            if (done) break;
+            if (which.ws && which.ws.readyState === WebSocket.OPEN) {
+              which.ws.send(value);
+            }
+          }
+        } catch (err) {
+          logConnect('Read error: ' + err, which);
+        } finally {
+          which.reader.releaseLock();
+        }
+      }
+    }
+
+    async function connectRobot(which) {
+      const wsUrl = document.getElementById(which.wsUrlId).value || 'ws://localhost:8765';
+      const baudRate = parseInt(document.getElementById(which.baudId).value) || 115200;
+      try {
+        which.serialPort = await navigator.serial.requestPort();
+        await which.serialPort.open({ baudRate });
+        which.ws = new WebSocket(wsUrl);
+        which.ws.binaryType = 'arraybuffer';
+        which.ws.onopen = () => logConnect('WebSocket connected', which);
+        which.ws.onclose = () => {
+          logConnect('WebSocket closed', which);
+          disconnectRobot(which);
+        };
+        which.ws.onmessage = (e) => {
+          if (which.serialPort && which.serialPort.writable) {
+            const writer = which.serialPort.writable.getWriter();
+            writer.write(new Uint8Array(e.data));
+            writer.releaseLock();
+          }
+        };
+        readSerialLoop(which);
+        document.getElementById(which.connectBtnId).disabled = true;
+        document.getElementById(which.disconnectBtnId).disabled = false;
+        logConnect('Serial port opened', which);
+      } catch (err) {
+        logConnect('Error: ' + err, which);
+      }
+    }
+
+function disconnectRobot(which) {
+      if (which.reader) { which.reader.cancel(); which.reader.releaseLock(); }
+      if (which.serialPort) {
+        try { which.serialPort.close(); } catch (e) {}
+        which.serialPort = null;
+      }
+      if (which.ws && which.ws.readyState === WebSocket.OPEN) {
+        which.ws.close();
+      }
+      which.ws = null;
+      document.getElementById(which.connectBtnId).disabled = false;
+      document.getElementById(which.disconnectBtnId).disabled = true;
+      logConnect('Disconnected', which);
+    }
+
+    let statusInterval = null;
+    let logsInterval = null;
+
+    function startStatusUpdates() {
+      if (statusInterval) clearInterval(statusInterval);
+      if (logsInterval) clearInterval(logsInterval);
+      const sessionId = document.querySelector('#statusForm input[name="session_id"]').value;
+      if (!sessionId) return;
+      async function update() {
+        try {
+          const res = await fetch('/session/' + sessionId);
+          const data = await res.json();
+          document.getElementById('statusResult').textContent = data.status;
+          if (data.status !== 'running') {
+            clearInterval(statusInterval);
+            statusInterval = null;
+            if (logsInterval) {
+              clearInterval(logsInterval);
+              logsInterval = null;
+            }
+          }
+        } catch (err) {
+          document.getElementById('statusResult').textContent = 'error';
+        }
+      }
+      update();
+      statusInterval = setInterval(update, 2000);
+      startLogsUpdates();
+    }
+
+    function startLogsUpdates() {
+      if (logsInterval) clearInterval(logsInterval);
+      const sessionId = document.querySelector('#logsForm input[name="session_id"]').value;
+      if (!sessionId) return;
+      async function updateLogs() {
+        try {
+          const res = await fetch('/session/' + sessionId + '/logs');
+          const data = await res.json();
+          document.getElementById('logsResult').textContent = data.logs.join('\n');
+        } catch (err) {
+          document.getElementById('logsResult').textContent = 'error';
+        }
+      }
+      updateLogs();
+      logsInterval = setInterval(updateLogs, 2000);
+    }
+
+    document.getElementById('connectBtnLeader').onclick = () => connectRobot(leader);
+    document.getElementById('disconnectBtnLeader').onclick = () => disconnectRobot(leader);
+    document.getElementById('connectBtnFollower').onclick = () => connectRobot(follower);
+    document.getElementById('disconnectBtnFollower').onclick = () => disconnectRobot(follower);
+
+    document.getElementById('trainForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const data = {
+        dataset_repo_id: this.dataset_repo_id.value,
+        policy: this.policy.value,
+        extra_args: JSON.parse(this.extra_args.value)
+      };
+      const res = await fetch('/train', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      document.getElementById('trainResult').textContent = JSON.stringify(result, null, 2);
+      if (result.session_id) {
+        document.querySelector('#stopForm input[name="session_id"]').value = result.session_id;
+        document.querySelector('#statusForm input[name="session_id"]').value = result.session_id;
+        document.querySelector('#logsForm input[name="session_id"]').value = result.session_id;
+        startStatusUpdates();
+      }
+    };
+
+    document.getElementById('inferenceForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const data = {
+        model_path: this.model_path.value,
+        robot_type: this.robot_type.value,
+        repo_id: this.repo_id.value,
+        single_task: this.single_task.value,
+        control_type: this.control_type.value,
+        ws_url: this.ws_url.value,
+        extra_args: JSON.parse(this.extra_args.value)
+      };
+      const res = await fetch('/inference', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      document.getElementById('inferenceResult').textContent = JSON.stringify(result, null, 2);
+      if (result.session_id) {
+        document.querySelector('#stopForm input[name="session_id"]').value = result.session_id;
+        document.querySelector('#statusForm input[name="session_id"]').value = result.session_id;
+        document.querySelector('#logsForm input[name="session_id"]').value = result.session_id;
+        startStatusUpdates();
+      }
+    };
+
+    document.getElementById('stopForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const sessionId = this.session_id.value;
+      const res = await fetch('/session/' + sessionId, { method: 'DELETE' });
+      document.getElementById('stopResult').textContent = await res.text();
+      startStatusUpdates();
+    };
+
+    document.getElementById('statusForm').onsubmit = function(e) {
+      e.preventDefault();
+      startStatusUpdates();
+    };
+
+    document.getElementById('logsForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const sessionId = this.session_id.value;
+      const res = await fetch('/session/' + sessionId + '/logs');
+      const data = await res.json();
+      document.getElementById('logsResult').textContent = data.logs.join('\n');
+      startLogsUpdates();
+    };
+
+    // ------------------------------------------------------------------
+    // Camera streaming logic
+    const cameraState = {
+      ws: null,
+      stream: null,
+      interval: null,
+    };
+
+    async function populateCameras() {
+      if (!navigator.mediaDevices?.enumerateDevices) return;
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const select = document.getElementById('cameraSelect');
+      select.innerHTML = '';
+      devices.filter(d => d.kind === 'videoinput').forEach((d, i) => {
+        const opt = document.createElement('option');
+        opt.value = d.deviceId;
+        opt.textContent = d.label || `Camera ${i}`;
+        select.appendChild(opt);
+      });
+    }
+
+    async function startCamera() {
+      const wsUrl = document.getElementById('cameraWsUrl').value || 'ws://localhost:8765';
+      const deviceId = document.getElementById('cameraSelect').value;
+      try {
+        const constraints = deviceId ? { video: { deviceId } } : { video: true };
+        cameraState.stream = await navigator.mediaDevices.getUserMedia(constraints);
+        document.getElementById('cameraPreview').srcObject = cameraState.stream;
+        cameraState.ws = new WebSocket(wsUrl);
+        cameraState.ws.binaryType = 'arraybuffer';
+        const video = document.getElementById('cameraPreview');
+        const track = cameraState.stream.getVideoTracks()[0];
+        const { width = 640, height = 480 } = track.getSettings();
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        cameraState.interval = setInterval(() => {
+          if (cameraState.ws.readyState === WebSocket.OPEN) {
+            ctx.drawImage(video, 0, 0, width, height);
+            canvas.toBlob(b => { if (b) cameraState.ws.send(b); }, 'image/jpeg');
+          }
+        }, 100);
+        document.getElementById('startCameraBtn').disabled = true;
+        document.getElementById('stopCameraBtn').disabled = false;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function stopCamera() {
+      if (cameraState.interval) { clearInterval(cameraState.interval); cameraState.interval = null; }
+      if (cameraState.stream) {
+        cameraState.stream.getTracks().forEach(t => t.stop());
+        cameraState.stream = null;
+      }
+      if (cameraState.ws && cameraState.ws.readyState === WebSocket.OPEN) {
+        cameraState.ws.close();
+      }
+      cameraState.ws = null;
+      document.getElementById('cameraPreview').srcObject = null;
+      document.getElementById('startCameraBtn').disabled = false;
+      document.getElementById('stopCameraBtn').disabled = true;
+    }
+
+    document.getElementById('startCameraBtn').onclick = startCamera;
+    document.getElementById('stopCameraBtn').onclick = stopCamera;
+    document.addEventListener('DOMContentLoaded', populateCameras);
+  </script>
+</body>
+</html>

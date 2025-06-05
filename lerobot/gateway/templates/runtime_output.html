@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Session Runtime Output</title>
+    <style>
+        body { font-family: monospace; background: #181818; color: #e0e0e0; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 40px auto; background: #222; border-radius: 8px; box-shadow: 0 2px 8px #0008; padding: 24px; }
+        h2 { margin-top: 0; }
+        #logs { background: #111; border-radius: 4px; padding: 16px; min-height: 300px; white-space: pre-wrap; overflow-y: auto; max-height: 600px; }
+        .session-id { color: #aaa; font-size: 0.95em; margin-bottom: 12px; }
+        .refresh-btn { background: #444; color: #fff; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 16px; }
+        .refresh-btn:hover { background: #666; }
+    </style>
+    <script>
+        function refreshLogs() {
+            fetch(`/session/${sessionId}/logs`)
+                .then(response => response.json())
+                .then(data => {
+                    const logsElem = document.getElementById('logs');
+                    logsElem.textContent = (data.logs || []).join('\n');
+                });
+        }
+        let sessionId = "{{ session_id }}";
+        window.onload = function() {
+            refreshLogs();
+            setInterval(refreshLogs, 2000); // auto-refresh every 2s
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Session Runtime Output</h2>
+        <div class="session-id">Session ID: <b>{{ session_id }}</b></div>
+        <button class="refresh-btn" onclick="refreshLogs()">Refresh</button>
+        <div id="logs">Loading logs...</div>
+    </div>
+</body>
+</html> 
