@@ -58,9 +58,7 @@ class GatewayMotorsBus:
     # ------------------------------------------------------------------
     def connect(self) -> None:
         if self.is_connected:
-            raise RobotDeviceAlreadyConnectedError(
-                "GatewayMotorsBus is already connected."
-            )
+            raise RobotDeviceAlreadyConnectedError("GatewayMotorsBus is already connected.")
         if self.mock:
             self.is_connected = True
             return
@@ -79,38 +77,47 @@ class GatewayMotorsBus:
         # when opening the pseudo-terminal using its file name (``OSError: [Errno 34]``).
         # Using the file descriptor directly avoids this issue.
         try:
-            self._serial = serial.serial_for_url(
-                f"fd://{master}", baudrate=115_200, timeout=0
-            )
+            self._serial = serial.serial_for_url(f"fd://{master}", baudrate=115_200, timeout=0)
         except ValueError:
             # some pyserial versions do not support the ``fd://`` scheme;
             # fall back to using the pseudo-terminal's path
-            self._serial = serial.serial_for_url(
-                self.port, baudrate=115_200, timeout=0
-            )
+            self._serial = serial.serial_for_url(self.port, baudrate=115_200, timeout=0)
+
+        connect_event = threading.Event()
+        exc_holder: list[BaseException | None] = [None]
 
         async def bridge() -> None:
-            async with websockets.connect(self.url) as ws:
-                self._ws = ws
+            try:
+                async with websockets.connect(self.url) as ws:
+                    self._ws = ws
+                    connect_event.set()
 
-                async def serial_to_ws() -> None:
-                    while True:
-                        data = self._serial.read(self._serial.in_waiting or 1)
-                        if data:
-                            await ws.send(data)
-                        await asyncio.sleep(0.001)
+                    async def serial_to_ws() -> None:
+                        while True:
+                            data = self._serial.read(self._serial.in_waiting or 1)
+                            if data:
+                                await ws.send(data)
+                            await asyncio.sleep(0.001)
 
-                async def ws_to_serial() -> None:
-                    async for message in ws:
-                        if isinstance(message, str):
-                            message = message.encode()
-                        self._serial.write(message)
+                    async def ws_to_serial() -> None:
+                        async for message in ws:
+                            if isinstance(message, str):
+                                message = message.encode()
+                            self._serial.write(message)
 
-                await asyncio.gather(serial_to_ws(), ws_to_serial())
+                    await asyncio.gather(serial_to_ws(), ws_to_serial())
+            except BaseException as exc:  # pragma: no cover - network required
+                exc_holder[0] = exc
+                connect_event.set()
 
         self._loop = asyncio.new_event_loop()
         self._thread = threading.Thread(target=lambda: self._loop.run_until_complete(bridge()), daemon=True)
         self._thread.start()
+
+        if not connect_event.wait(timeout=5):
+            raise ConnectionError(f"Timeout connecting to gateway at {self.url}")
+        if exc_holder[0] is not None:
+            raise ConnectionError(f"Failed to connect to gateway at {self.url}") from exc_holder[0]
 
         backend_type = self._guess_backend()
         if backend_type == "dynamixel":
@@ -147,9 +154,7 @@ class GatewayMotorsBus:
 
     def disconnect(self) -> None:
         if not self.is_connected:
-            raise RobotDeviceNotConnectedError(
-                "GatewayMotorsBus is not connected."
-            )
+            raise RobotDeviceNotConnectedError("GatewayMotorsBus is not connected.")
         if not self.mock:
             if self._backend is not None:
                 self._backend.disconnect()
@@ -166,36 +171,22 @@ class GatewayMotorsBus:
     # Calibration -----------------------------------------------------
     def set_calibration(self, calibration: dict[str, list]) -> None:
         if not self.is_connected:
-            raise RobotDeviceNotConnectedError(
-                "GatewayMotorsBus is not connected."
-            )
+            raise RobotDeviceNotConnectedError("GatewayMotorsBus is not connected.")
         self._backend.set_calibration(calibration)
 
-    def apply_calibration_autocorrect(
-        self, values: Any, motor_names: List[str] | None = None
-    ) -> Any:
+    def apply_calibration_autocorrect(self, values: Any, motor_names: List[str] | None = None) -> Any:
         if not self.is_connected:
-            raise RobotDeviceNotConnectedError(
-                "GatewayMotorsBus is not connected."
-            )
+            raise RobotDeviceNotConnectedError("GatewayMotorsBus is not connected.")
         return self._backend.apply_calibration_autocorrect(values, motor_names)
 
-    def apply_calibration(
-        self, values: Any, motor_names: List[str] | None = None
-    ) -> Any:
+    def apply_calibration(self, values: Any, motor_names: List[str] | None = None) -> Any:
         if not self.is_connected:
-            raise RobotDeviceNotConnectedError(
-                "GatewayMotorsBus is not connected."
-            )
+            raise RobotDeviceNotConnectedError("GatewayMotorsBus is not connected.")
         return self._backend.apply_calibration(values, motor_names)
 
-    def revert_calibration(
-        self, values: Any, motor_names: List[str] | None = None
-    ) -> Any:
+    def revert_calibration(self, values: Any, motor_names: List[str] | None = None) -> Any:
         if not self.is_connected:
-            raise RobotDeviceNotConnectedError(
-                "GatewayMotorsBus is not connected."
-            )
+            raise RobotDeviceNotConnectedError("GatewayMotorsBus is not connected.")
         return self._backend.revert_calibration(values, motor_names)
 
     # Basic API used in real buses -------------------------------------
