@@ -184,13 +184,21 @@ def run_websocket_server(host: str = "0.0.0.0", port: int = 8765) -> None:
     except Exception as exc:  # pragma: no cover - optional dependency
         raise ImportError("The 'websockets' package is required for streaming") from exc
 
+    connected: set[websockets.WebSocketServerProtocol] = set()
+
     async def relay(websocket: websockets.WebSocketServerProtocol) -> None:
-        """Echo messages back to the sender."""
+        """Relay messages between all connected clients."""
+        connected.add(websocket)
         try:
             async for message in websocket:
-                await websocket.send(message)
+                # broadcast to all peers except the sender
+                for peer in connected:
+                    if peer is not websocket and peer.open:
+                        await peer.send(message)
         except websockets.ConnectionClosed:  # pragma: no cover - network required
             pass
+        finally:
+            connected.discard(websocket)
 
     async def serve() -> None:
         async with websockets.serve(relay, host, port):
