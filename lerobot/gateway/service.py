@@ -193,7 +193,14 @@ def run_websocket_server(host: str = "0.0.0.0", port: int = 8765) -> None:
             async for message in websocket:
                 # broadcast to all peers except the sender
                 for peer in connected:
-                    if peer is not websocket and peer.open:
+                    if peer is websocket:
+                        continue
+                    # websockets < 15 exposes ``open`` on the protocol while
+                    # newer versions provide a ``state`` enum. Support both.
+                    is_open = getattr(peer, "open", None)
+                    if is_open is None:
+                        is_open = getattr(peer, "state", None) == websockets.State.OPEN
+                    if is_open:
                         await peer.send(message)
         except websockets.ConnectionClosed:  # pragma: no cover - network required
             pass
