@@ -8,20 +8,25 @@
     input, textarea { width: 100%; margin-bottom: 1em; }
     button { padding: 0.5em 1em; }
     pre { background: #f0f0f0; padding: 1em; }
+    details { margin-bottom: 1em; }
+    summary { font-size: 1.2em; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
   <h1>LeRobot Gateway</h1>
 
-  <h2>Session Status</h2>
-  <form id="statusForm">
-    <label>Session ID: <input name="session_id" required></label>
-    <button type="submit">Monitor</button>
-  </form>
-  <pre id="statusResult"></pre>
+  <details open>
+    <summary>Session Status</summary>
+    <form id="statusForm">
+      <label>Session ID: <input name="session_id" required></label>
+      <button type="submit">Monitor</button>
+    </form>
+    <pre id="statusResult"></pre>
+  </details>
 
-  <h2>Robot Connection</h2>
-  <div id="connectSection">
+  <details>
+    <summary>Robot Connection</summary>
+    <div id="connectSection">
     <div style="margin-bottom:2em;">
       <h3>Leader Arm Connection</h3>
       <label>WebSocket URL: <input id="wsUrlLeader" value="ws://localhost:8765"></label><br>
@@ -39,7 +44,9 @@
       <pre id="connectLogsFollower"></pre>
     </div>
   </div>
-  <h2>Camera Streaming</h2>
+  </details>
+  <details>
+    <summary>Camera Streaming</summary>
   <div id="cameraSection">
     <label>WebSocket URL: <input id="cameraWsUrl" value="ws://localhost:8765"></label><br>
     <label>Camera Device: <select id="cameraSelect"></select></label><br>
@@ -48,7 +55,9 @@
     <br>
     <video id="cameraPreview" width="320" height="240" autoplay muted></video>
   </div>
-  <h2>Start Training</h2>
+  </details>
+  <details>
+    <summary>Start Training</summary>
   <form id="trainForm">
     <label>Dataset Repo ID: <input name="dataset_repo_id" required></label><br>
     <label>Policy: <input name="policy" value="act"></label><br>
@@ -57,7 +66,9 @@
   </form>
   <pre id="trainResult"></pre>
 
-  <h2>Start Inference</h2>
+  </details>
+  <details>
+    <summary>Start Inference</summary>
   <form id="inferenceForm">
     <label>Model Path: <input name="model_path" required></label><br>
     <label>Robot Type: <input name="robot_type" value="so100"></label><br>
@@ -69,21 +80,25 @@
     <button type="submit">Start Inference</button>
   </form>
   <pre id="inferenceResult"></pre>
+  </details>
 
-
-  <h2>Stop Session</h2>
+  <details>
+    <summary>Stop Session</summary>
   <form id="stopForm">
     <label>Session ID: <input name="session_id" required></label><br>
     <button type="submit">Stop Session</button>
   </form>
   <pre id="stopResult"></pre>
+  </details>
 
-  <h2>Session Logs</h2>
+  <details>
+    <summary>Session Logs</summary>
   <form id="logsForm">
     <label>Session ID: <input name="session_id" required></label>
     <button type="submit">Fetch Logs</button>
   </form>
   <pre id="logsResult"></pre>
+  </details>
 
   <script>
     // --- Leader and Follower connection state ---
