@@ -60,3 +60,8 @@ python lerobot/scripts/run_gateway.py
 This launches the REST API on port `8000` and the WebSocket relay on port `8765`.
 
 Browser clients can interact with these endpoints to orchestrate training or inference runs and exchange real‑time data with the robot hardware.
+
+When opening the gateway's index page in a browser, the user can also stream
+local camera feeds. A drop‑down menu lists available cameras so that a device
+can be selected before starting the capture. Frames are encoded as JPEG images
+and sent over the same WebSocket relay used for motor commands.
