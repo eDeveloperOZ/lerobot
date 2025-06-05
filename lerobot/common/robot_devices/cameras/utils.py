@@ -4,6 +4,7 @@ import numpy as np
 
 from lerobot.common.robot_devices.cameras.configs import (
     CameraConfig,
+    GatewayCameraConfig,
     IntelRealSenseCameraConfig,
     OpenCVCameraConfig,
 )
@@ -30,6 +31,10 @@ def make_cameras_from_configs(camera_configs: dict[str, CameraConfig]) -> list[C
             from lerobot.common.robot_devices.cameras.intelrealsense import IntelRealSenseCamera
 
             cameras[key] = IntelRealSenseCamera(cfg)
+        elif cfg.type == "gateway":
+            from lerobot.common.robot_devices.cameras.gateway import GatewayCamera
+
+            cameras[key] = GatewayCamera(cfg)
         else:
             raise ValueError(f"The motor type '{cfg.type}' is not valid.")
 
@@ -48,6 +53,12 @@ def make_camera(camera_type, **kwargs) -> Camera:
 
         config = IntelRealSenseCameraConfig(**kwargs)
         return IntelRealSenseCamera(config)
+
+    elif camera_type == "gateway":
+        from lerobot.common.robot_devices.cameras.gateway import GatewayCamera
+
+        config = GatewayCameraConfig(**kwargs)
+        return GatewayCamera(config)
 
     else:
         raise ValueError(f"The camera type '{camera_type}' is not valid.")

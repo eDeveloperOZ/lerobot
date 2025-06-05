@@ -39,6 +39,15 @@
       <pre id="connectLogsFollower"></pre>
     </div>
   </div>
+  <h2>Camera Streaming</h2>
+  <div id="cameraSection">
+    <label>WebSocket URL: <input id="cameraWsUrl" value="ws://localhost:8765"></label><br>
+    <label>Camera Device: <select id="cameraSelect"></select></label><br>
+    <button id="startCameraBtn">Start Camera</button>
+    <button id="stopCameraBtn" disabled>Stop Camera</button>
+    <br>
+    <video id="cameraPreview" width="320" height="240" autoplay muted></video>
+  </div>
   <h2>Start Training</h2>
   <form id="trainForm">
     <label>Dataset Repo ID: <input name="dataset_repo_id" required></label><br>
@@ -270,6 +279,75 @@ function disconnectRobot(which) {
       const data = await res.json();
       document.getElementById('logsResult').textContent = data.logs.join('\n');
     };
+
+    // ------------------------------------------------------------------
+    // Camera streaming logic
+    const cameraState = {
+      ws: null,
+      stream: null,
+      interval: null,
+    };
+
+    async function populateCameras() {
+      if (!navigator.mediaDevices?.enumerateDevices) return;
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const select = document.getElementById('cameraSelect');
+      select.innerHTML = '';
+      devices.filter(d => d.kind === 'videoinput').forEach((d, i) => {
+        const opt = document.createElement('option');
+        opt.value = d.deviceId;
+        opt.textContent = d.label || `Camera ${i}`;
+        select.appendChild(opt);
+      });
+    }
+
+    async function startCamera() {
+      const wsUrl = document.getElementById('cameraWsUrl').value || 'ws://localhost:8765';
+      const deviceId = document.getElementById('cameraSelect').value;
+      try {
+        const constraints = deviceId ? { video: { deviceId } } : { video: true };
+        cameraState.stream = await navigator.mediaDevices.getUserMedia(constraints);
+        document.getElementById('cameraPreview').srcObject = cameraState.stream;
+        cameraState.ws = new WebSocket(wsUrl);
+        cameraState.ws.binaryType = 'arraybuffer';
+        const video = document.getElementById('cameraPreview');
+        const track = cameraState.stream.getVideoTracks()[0];
+        const { width = 640, height = 480 } = track.getSettings();
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        cameraState.interval = setInterval(() => {
+          if (cameraState.ws.readyState === WebSocket.OPEN) {
+            ctx.drawImage(video, 0, 0, width, height);
+            canvas.toBlob(b => { if (b) cameraState.ws.send(b); }, 'image/jpeg');
+          }
+        }, 100);
+        document.getElementById('startCameraBtn').disabled = true;
+        document.getElementById('stopCameraBtn').disabled = false;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function stopCamera() {
+      if (cameraState.interval) { clearInterval(cameraState.interval); cameraState.interval = null; }
+      if (cameraState.stream) {
+        cameraState.stream.getTracks().forEach(t => t.stop());
+        cameraState.stream = null;
+      }
+      if (cameraState.ws && cameraState.ws.readyState === WebSocket.OPEN) {
+        cameraState.ws.close();
+      }
+      cameraState.ws = null;
+      document.getElementById('cameraPreview').srcObject = null;
+      document.getElementById('startCameraBtn').disabled = false;
+      document.getElementById('stopCameraBtn').disabled = true;
+    }
+
+    document.getElementById('startCameraBtn').onclick = startCamera;
+    document.getElementById('stopCameraBtn').onclick = stopCamera;
+    document.addEventListener('DOMContentLoaded', populateCameras);
   </script>
 </body>
 </html>

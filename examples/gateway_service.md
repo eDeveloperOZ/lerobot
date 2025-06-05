@@ -33,11 +33,13 @@ Payload example:
 The optional `ws_url` tells the service how to reach the browser's Web Serial
 bridge. When provided, motor commands are forwarded over this WebSocket
 connection instead of relying on local USB ports configured in the robot YAML.
+Camera frames can also be relayed for visualization or recording.
 
-The WebSocket relay transmits raw binary serial data. Bytes written by the
-robot SDK are sent as binary messages and the browser must forward the payload
-to its Web Serial port. Likewise, any bytes coming from the serial port are
-sent back to the server as binary WebSocket frames.
+The WebSocket relay transmits raw binary serial data for motors and JPEG
+images for cameras. Bytes written by the robot SDK are sent as binary
+messages and the browser must forward the payload to its Web Serial port.
+Likewise, any bytes coming from the serial port are sent back to the server
+as binary WebSocket frames.
 
 ### `GET /session/<session_id>`
 Returns the status (`running`, `finished`, or `unknown`).
@@ -58,3 +60,8 @@ python lerobot/scripts/run_gateway.py
 This launches the REST API on port `8000` and the WebSocket relay on port `8765`.
 
 Browser clients can interact with these endpoints to orchestrate training or inference runs and exchange real‑time data with the robot hardware.
+
+When opening the gateway's index page in a browser, the user can also stream
+local camera feeds. A drop‑down menu lists available cameras so that a device
+can be selected before starting the capture. Frames are encoded as JPEG images
+and sent over the same WebSocket relay used for motor commands.
