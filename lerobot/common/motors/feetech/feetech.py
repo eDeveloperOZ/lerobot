@@ -294,14 +294,28 @@ class FeetechMotorsBus(MotorsBus):
 
     def disable_torque(self, motors: str | list[str] | None = None, num_retry: int = 0) -> None:
         for motor in self._get_motors_list(motors):
-            self.write("Torque_Enable", motor, TorqueMode.DISABLED.value, num_retry=num_retry)
-            self.write("Lock", motor, 0, num_retry=num_retry)
+            try:
+                self.write("Torque_Enable", motor, TorqueMode.DISABLED.value, num_retry=num_retry)
+                self.write("Lock", motor, 0, num_retry=num_retry)
+            except Exception as e:
+                # During disconnection, overload errors are common and can be ignored
+                if "overload" in str(e).lower():
+                    logger.warning(f"Overload error while disabling torque on {motor} - ignoring during disconnect")
+                else:
+                    logger.warning(f"Error disabling torque on {motor}: {e}")
 
     def _disable_torque(self, motor_id: int, model: str, num_retry: int = 0) -> None:
-        addr, length = get_address(self.model_ctrl_table, model, "Torque_Enable")
-        self._write(addr, length, motor_id, TorqueMode.DISABLED.value, num_retry=num_retry)
-        addr, length = get_address(self.model_ctrl_table, model, "Lock")
-        self._write(addr, length, motor_id, 0, num_retry=num_retry)
+        try:
+            addr, length = get_address(self.model_ctrl_table, model, "Torque_Enable")
+            self._write(addr, length, motor_id, TorqueMode.DISABLED.value, num_retry=num_retry)
+            addr, length = get_address(self.model_ctrl_table, model, "Lock")
+            self._write(addr, length, motor_id, 0, num_retry=num_retry)
+        except Exception as e:
+            # During disconnection, overload errors are common and can be ignored
+            if "overload" in str(e).lower():
+                logger.warning(f"Overload error while disabling torque on motor ID {motor_id} - ignoring during disconnect")
+            else:
+                logger.warning(f"Error disabling torque on motor ID {motor_id}: {e}")
 
     def enable_torque(self, motors: str | list[str] | None = None, num_retry: int = 0) -> None:
         for motor in self._get_motors_list(motors):
