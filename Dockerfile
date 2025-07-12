@@ -23,6 +23,7 @@ COPY . .
 RUN pip install --no-deps .
 RUN pip install \
     "cmake>=3.29" \
+    "numpy>=2.2.6" \
     "datasets>=2.19" \
     "deepdiff>=7.0" \
     "diffusers>=0.27" \
