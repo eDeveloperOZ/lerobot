@@ -14,11 +14,11 @@ RUN apt-get update && apt-get install -y \
 COPY . .
 
 # Install Python dependencies
-# 'lerobot' is installed from source, which should pull in most dependencies
-# from setup.py or pyproject.toml. We install others that are specific
-# to the websocket bridge just in case.
-RUN pip install .
-RUN pip install websockets pyzmq opencv-python-headless
+# 'lerobot' is installed from source. We use --no-deps to avoid installing
+# the 'teleop' extra, which includes 'evdev' and requires system headers.
+# We then install the required packages manually.
+RUN pip install --no-deps .
+RUN pip install websockets pyzmq opencv-python-headless numpy Pillow torch torchvision torchaudio huggingface-hub safetensors tqdm einops omegaconf
 
 # Expose the WebSocket port that the server listens on
 EXPOSE 8765
