@@ -460,7 +460,7 @@ class WebSocketBridge:
         if not observation:
             return {}
 
-        # This function should return the raw data, not the built frame.
+        # This function should return the raw data, not the built frame..
         # The building happens in _run_inference
         return observation
     
