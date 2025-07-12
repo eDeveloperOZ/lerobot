@@ -1,0 +1,500 @@
+2025-07-12T07:41:26.128Z [INFO] #11 1.209   Getting requirements to build wheel: started
+2025-07-12T07:41:26.128Z [INFO] #11 1.250   Getting requirements to build wheel: finished with status 'done'
+2025-07-12T07:41:26.129Z [INFO] #11 1.251   Preparing metadata (pyproject.toml): started
+2025-07-12T07:41:26.130Z [INFO] #11 1.375   Preparing metadata (pyproject.toml): finished with status 'done'
+2025-07-12T07:41:26.281Z [INFO] #11 1.378 Building wheels for collected packages: lerobot
+2025-07-12T07:41:26.282Z [INFO] #11 1.378   Building wheel for lerobot (pyproject.toml): started
+2025-07-12T07:41:26.326Z [INFO] #11 1.574   Building wheel for lerobot (pyproject.toml): finished with status 'done'
+2025-07-12T07:41:26.469Z [INFO] #11 1.575   Created wheel for lerobot: filename=lerobot-0.1.0-py3-none-any.whl size=568160 sha256=ef1d24b72808a625f2bd24acbef0cae580a342578438761d7d16bef912c6cf18
+2025-07-12T07:41:26.470Z [INFO] #11 1.575   Stored in directory: /tmp/pip-ephem-wheel-cache-_fe6se0x/wheels/9b/2c/d1/15e20a2b97f37ccf65a87ba1049c73a9076d0bf0fbaf814e83
+2025-07-12T07:41:26.470Z [INFO] #11 1.577 Successfully built lerobot
+2025-07-12T07:41:26.471Z [INFO] #11 1.578 Installing collected packages: lerobot
+2025-07-12T07:41:26.471Z [INFO] #11 1.716 Successfully installed lerobot-0.1.0
+2025-07-12T07:41:26.681Z [INFO] #11 1.717 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+2025-07-12T07:41:26.683Z [INFO] #11 DONE 1.8s
+2025-07-12T07:41:26.683Z [INFO] 
+2025-07-12T07:41:26.684Z [INFO] #12 [6/6] RUN pip install     "cmake>=3.29"     "datasets>=2.19"     "deepdiff>=7.0"     "diffusers>=0.27"     "draccus==0.10.0"     "einops>=0.8"     "flask>=3.0"     "gdown>=5.1"     "gymnasium==0.29.1"     "h5py>=3.10"     "huggingface-hub[hf-transfer,cli]>=0.27"     "imageio[ffmpeg]>=2.34"     "jsonlines>=4.0"     "numba>=0.59"     "omegaconf>=2.3"     "opencv-python-headless>=4.9"     "packaging>=24.2"     "av>=14.2"     "pymunk>=6.6"     "pynput>=1.7"     "pyserial>=3.5"     "pyzmq>=26.2"     "rerun-sdk>=0.21"     "termcolor>=2.4"     "wandb>=0.16"     "zarr>=2.17"     "websockets"
+2025-07-12T07:41:27.034Z [INFO] #12 0.503 Collecting cmake>=3.29
+2025-07-12T07:41:27.173Z [INFO] #12 0.596   Downloading cmake-4.0.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.3 kB)
+2025-07-12T07:41:27.174Z [INFO] #12 0.642 Collecting datasets>=2.19
+2025-07-12T07:41:27.318Z [INFO] #12 0.667   Downloading datasets-4.0.0-py3-none-any.whl.metadata (19 kB)
+2025-07-12T07:41:27.319Z [INFO] #12 0.716 Collecting deepdiff>=7.0
+2025-07-12T07:41:27.320Z [INFO] #12 0.740   Downloading deepdiff-8.5.0-py3-none-any.whl.metadata (8.2 kB)
+2025-07-12T07:41:27.321Z [INFO] #12 0.787 Collecting diffusers>=0.27
+2025-07-12T07:41:27.452Z [INFO] #12 0.812   Downloading diffusers-0.34.0-py3-none-any.whl.metadata (20 kB)
+2025-07-12T07:41:27.453Z [INFO] #12 0.856 Collecting draccus==0.10.0
+2025-07-12T07:41:27.454Z [INFO] #12 0.882   Downloading draccus-0.10.0-py3-none-any.whl.metadata (24 kB)
+2025-07-12T07:41:27.454Z [INFO] #12 0.922 Collecting einops>=0.8
+2025-07-12T07:41:27.580Z [INFO] #12 0.946   Downloading einops-0.8.1-py3-none-any.whl.metadata (13 kB)
+2025-07-12T07:41:27.582Z [INFO] #12 0.988 Collecting flask>=3.0
+2025-07-12T07:41:27.583Z [INFO] #12 1.013   Downloading flask-3.1.1-py3-none-any.whl.metadata (3.0 kB)
+2025-07-12T07:41:27.583Z [INFO] #12 1.050 Collecting gdown>=5.1
+2025-07-12T07:41:27.722Z [INFO] #12 1.075   Downloading gdown-5.2.0-py3-none-any.whl.metadata (5.8 kB)
+2025-07-12T07:41:27.723Z [INFO] #12 1.110 Collecting gymnasium==0.29.1
+2025-07-12T07:41:27.724Z [INFO] #12 1.135   Downloading gymnasium-0.29.1-py3-none-any.whl.metadata (10 kB)
+2025-07-12T07:41:27.725Z [INFO] #12 1.191 Collecting h5py>=3.10
+2025-07-12T07:41:27.827Z [INFO] #12 1.217   Downloading h5py-3.14.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.7 kB)
+2025-07-12T07:41:27.828Z [INFO] #12 1.273 Collecting huggingface-hub>=0.27 (from huggingface-hub[cli,hf-transfer]>=0.27)
+2025-07-12T07:41:27.829Z [INFO] #12 1.297   Downloading huggingface_hub-0.33.4-py3-none-any.whl.metadata (14 kB)
+2025-07-12T07:41:27.935Z [INFO] #12 1.345 Collecting imageio>=2.34 (from imageio[ffmpeg]>=2.34)
+2025-07-12T07:41:27.937Z [INFO] #12 1.370   Downloading imageio-2.37.0-py3-none-any.whl.metadata (5.2 kB)
+2025-07-12T07:41:27.937Z [INFO] #12 1.404 Collecting jsonlines>=4.0
+2025-07-12T07:41:28.052Z [INFO] #12 1.428   Downloading jsonlines-4.0.0-py3-none-any.whl.metadata (1.6 kB)
+2025-07-12T07:41:28.054Z [INFO] #12 1.522 Collecting numba>=0.59
+2025-07-12T07:41:28.153Z [INFO] #12 1.547   Downloading numba-0.61.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.8 kB)
+2025-07-12T07:41:28.154Z [INFO] #12 1.595 Collecting omegaconf>=2.3
+2025-07-12T07:41:28.154Z [INFO] #12 1.622   Downloading omegaconf-2.3.0-py3-none-any.whl.metadata (3.9 kB)
+2025-07-12T07:41:28.284Z [INFO] #12 1.684 Collecting opencv-python-headless>=4.9
+2025-07-12T07:41:28.286Z [INFO] #12 1.709   Downloading opencv_python_headless-4.12.0.88-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (19 kB)
+2025-07-12T07:41:28.286Z [INFO] #12 1.753 Collecting packaging>=24.2
+2025-07-12T07:41:28.388Z [INFO] #12 1.778   Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+2025-07-12T07:41:28.389Z [INFO] #12 1.833 Collecting av>=14.2
+2025-07-12T07:41:28.389Z [INFO] #12 1.858   Downloading av-15.0.0-cp310-cp310-manylinux_2_28_x86_64.whl.metadata (4.6 kB)
+2025-07-12T07:41:28.522Z [INFO] #12 1.925 Collecting pymunk>=6.6
+2025-07-12T07:41:28.523Z [INFO] #12 1.951   Downloading pymunk-7.1.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (7.2 kB)
+2025-07-12T07:41:28.524Z [INFO] #12 1.992 Collecting pynput>=1.7
+2025-07-12T07:41:28.763Z [INFO] #12 2.016   Downloading pynput-1.8.1-py2.py3-none-any.whl.metadata (32 kB)
+2025-07-12T07:41:28.765Z [INFO] #12 2.057 Collecting pyserial>=3.5
+2025-07-12T07:41:28.765Z [INFO] #12 2.082   Downloading pyserial-3.5-py2.py3-none-any.whl.metadata (1.6 kB)
+2025-07-12T07:41:28.808Z [INFO] #12 2.277 Collecting pyzmq>=26.2
+2025-07-12T07:41:28.940Z [INFO] #12 2.303   Downloading pyzmq-27.0.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.0 kB)
+2025-07-12T07:41:28.942Z [INFO] #12 2.348 Collecting rerun-sdk>=0.21
+2025-07-12T07:41:28.942Z [INFO] #12 2.373   Downloading rerun_sdk-0.23.4-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (4.4 kB)
+2025-07-12T07:41:28.943Z [INFO] #12 2.410 Collecting termcolor>=2.4
+2025-07-12T07:41:29.050Z [INFO] #12 2.435   Downloading termcolor-3.1.0-py3-none-any.whl.metadata (6.4 kB)
+2025-07-12T07:41:29.051Z [INFO] #12 2.519 Collecting wandb>=0.16
+2025-07-12T07:41:29.221Z [INFO] #12 2.545   Downloading wandb-0.21.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (10 kB)
+2025-07-12T07:41:29.223Z [INFO] #12 2.591 Collecting zarr>=2.17
+2025-07-12T07:41:29.223Z [INFO] #12 2.616   Downloading zarr-2.18.3-py3-none-any.whl.metadata (5.7 kB)
+2025-07-12T07:41:29.224Z [INFO] #12 2.691 Collecting websockets
+2025-07-12T07:41:29.349Z [INFO] #12 2.716   Downloading websockets-15.0.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+2025-07-12T07:41:29.351Z [INFO] #12 2.755 Collecting mergedeep~=1.3 (from draccus==0.10.0)
+2025-07-12T07:41:29.351Z [INFO] #12 2.779   Downloading mergedeep-1.3.4-py3-none-any.whl.metadata (4.3 kB)
+2025-07-12T07:41:29.352Z [INFO] #12 2.780 Requirement already satisfied: pyyaml~=6.0 in /opt/conda/lib/python3.10/site-packages (from draccus==0.10.0) (6.0.1)
+2025-07-12T07:41:29.352Z [INFO] #12 2.819 Collecting pyyaml-include~=1.4 (from draccus==0.10.0)
+2025-07-12T07:41:29.468Z [INFO] #12 2.844   Downloading pyyaml_include-1.4.1-py3-none-any.whl.metadata (1.3 kB)
+2025-07-12T07:41:29.469Z [INFO] #12 2.877 Collecting toml~=0.10 (from draccus==0.10.0)
+2025-07-12T07:41:29.470Z [INFO] #12 2.901   Downloading toml-0.10.2-py2.py3-none-any.whl.metadata (7.1 kB)
+2025-07-12T07:41:29.470Z [INFO] #12 2.937 Collecting typing-inspect~=0.9.0 (from draccus==0.10.0)
+2025-07-12T07:41:29.569Z [INFO] #12 2.961   Downloading typing_inspect-0.9.0-py3-none-any.whl.metadata (1.5 kB)
+2025-07-12T07:41:29.570Z [INFO] #12 2.978 Requirement already satisfied: numpy>=1.21.0 in /opt/conda/lib/python3.10/site-packages (from gymnasium==0.29.1) (1.26.3)
+2025-07-12T07:41:29.571Z [INFO] #12 3.015 Collecting cloudpickle>=1.2.0 (from gymnasium==0.29.1)
+2025-07-12T07:41:29.571Z [INFO] #12 3.039   Downloading cloudpickle-3.1.1-py3-none-any.whl.metadata (7.1 kB)
+2025-07-12T07:41:29.698Z [INFO] #12 3.040 Requirement already satisfied: typing-extensions>=4.3.0 in /opt/conda/lib/python3.10/site-packages (from gymnasium==0.29.1) (4.9.0)
+2025-07-12T07:41:29.699Z [INFO] #12 3.073 Collecting farama-notifications>=0.0.1 (from gymnasium==0.29.1)
+2025-07-12T07:41:29.700Z [INFO] #12 3.097   Downloading Farama_Notifications-0.0.4-py3-none-any.whl.metadata (558 bytes)
+2025-07-12T07:41:29.700Z [INFO] #12 3.168 Requirement already satisfied: filelock in /opt/conda/lib/python3.10/site-packages (from datasets>=2.19) (3.13.1)
+2025-07-12T07:41:29.830Z [INFO] #12 3.237 Collecting pyarrow>=15.0.0 (from datasets>=2.19)
+2025-07-12T07:41:29.831Z [INFO] #12 3.262   Downloading pyarrow-20.0.0-cp310-cp310-manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+2025-07-12T07:41:29.832Z [INFO] #12 3.300 Collecting dill<0.3.9,>=0.3.0 (from datasets>=2.19)
+2025-07-12T07:41:29.944Z [INFO] #12 3.324   Downloading dill-0.3.8-py3-none-any.whl.metadata (10 kB)
+2025-07-12T07:41:29.945Z [INFO] #12 3.414 Collecting pandas (from datasets>=2.19)
+2025-07-12T07:41:30.062Z [INFO] #12 3.438   Downloading pandas-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (91 kB)
+2025-07-12T07:41:30.063Z [INFO] #12 3.464      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.2/91.2 kB 3.3 MB/s eta 0:00:00
+2025-07-12T07:41:30.064Z [INFO] #12 3.508 Collecting requests>=2.32.2 (from datasets>=2.19)
+2025-07-12T07:41:30.064Z [INFO] #12 3.532   Downloading requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
+2025-07-12T07:41:30.213Z [INFO] #12 3.586 Collecting tqdm>=4.66.3 (from datasets>=2.19)
+2025-07-12T07:41:30.214Z [INFO] #12 3.609   Downloading tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+2025-07-12T07:41:30.215Z [INFO] #12 3.615      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.7/57.7 kB 13.2 MB/s eta 0:00:00
+2025-07-12T07:41:30.215Z [INFO] #12 3.682 Collecting xxhash (from datasets>=2.19)
+2025-07-12T07:41:30.389Z [INFO] #12 3.706   Downloading xxhash-3.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (12 kB)
+2025-07-12T07:41:30.390Z [INFO] #12 3.746 Collecting multiprocess<0.70.17 (from datasets>=2.19)
+2025-07-12T07:41:30.391Z [INFO] #12 3.772   Downloading multiprocess-0.70.16-py310-none-any.whl.metadata (7.2 kB)
+2025-07-12T07:41:30.391Z [INFO] #12 3.774 Requirement already satisfied: fsspec<=2025.3.0,>=2023.1.0 in /opt/conda/lib/python3.10/site-packages (from fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19) (2024.2.0)
+2025-07-12T07:41:30.392Z [INFO] #12 3.858 Collecting orderly-set<6,>=5.4.1 (from deepdiff>=7.0)
+2025-07-12T07:41:30.493Z [INFO] #12 3.884   Downloading orderly_set-5.5.0-py3-none-any.whl.metadata (6.6 kB)
+2025-07-12T07:41:30.494Z [INFO] #12 3.963 Collecting importlib_metadata (from diffusers>=0.27)
+2025-07-12T07:41:30.668Z [INFO] #12 3.987   Downloading importlib_metadata-8.7.0-py3-none-any.whl.metadata (4.8 kB)
+2025-07-12T07:41:30.722Z [INFO] #12 4.192 Collecting regex!=2019.12.17 (from diffusers>=0.27)
+2025-07-12T07:41:30.884Z [INFO] #12 4.216   Downloading regex-2024.11.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (40 kB)
+2025-07-12T07:41:30.886Z [INFO] #12 4.220      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 40.5/40.5 kB 15.4 MB/s eta 0:00:00
+2025-07-12T07:41:30.886Z [INFO] #12 4.353 Collecting safetensors>=0.3.1 (from diffusers>=0.27)
+2025-07-12T07:41:31.006Z [INFO] #12 4.378   Downloading safetensors-0.5.3-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.8 kB)
+2025-07-12T07:41:31.007Z [INFO] #12 4.380 Requirement already satisfied: Pillow in /opt/conda/lib/python3.10/site-packages (from diffusers>=0.27) (10.2.0)
+2025-07-12T07:41:31.008Z [INFO] #12 4.417 Collecting blinker>=1.9.0 (from flask>=3.0)
+2025-07-12T07:41:31.008Z [INFO] #12 4.441   Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+2025-07-12T07:41:31.009Z [INFO] #12 4.476 Collecting itsdangerous>=2.2.0 (from flask>=3.0)
+2025-07-12T07:41:31.009Z [INFO] #12 4.443 Requirement already satisfied: click>=8.1.3 in /opt/conda/lib/python3.10/site-packages (from flask>=3.0) (8.1.7)
+2025-07-12T07:41:31.106Z [INFO] #12 4.499   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+2025-07-12T07:41:31.108Z [INFO] #12 4.501 Requirement already satisfied: jinja2>=3.1.2 in /opt/conda/lib/python3.10/site-packages (from flask>=3.0) (3.1.3)
+2025-07-12T07:41:31.108Z [INFO] #12 4.501 Requirement already satisfied: markupsafe>=2.1.1 in /opt/conda/lib/python3.10/site-packages (from flask>=3.0) (2.1.3)
+2025-07-12T07:41:31.109Z [INFO] #12 4.546 Collecting werkzeug>=3.1.0 (from flask>=3.0)
+2025-07-12T07:41:31.109Z [INFO] #12 4.570   Downloading werkzeug-3.1.3-py3-none-any.whl.metadata (3.7 kB)
+2025-07-12T07:41:31.110Z [INFO] #12 4.575 Requirement already satisfied: beautifulsoup4 in /opt/conda/lib/python3.10/site-packages (from gdown>=5.1) (4.12.2)
+2025-07-12T07:41:31.222Z [INFO] #12 4.668 Collecting hf-xet<2.0.0,>=1.1.2 (from huggingface-hub>=0.27->huggingface-hub[cli,hf-transfer]>=0.27)
+2025-07-12T07:41:31.223Z [INFO] #12 4.692   Downloading hf_xet-1.1.5-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (879 bytes)
+2025-07-12T07:41:31.332Z [INFO] #12 4.716 Requirement already satisfied: attrs>=19.2.0 in /opt/conda/lib/python3.10/site-packages (from jsonlines>=4.0) (23.1.0)
+2025-07-12T07:41:31.334Z [INFO] #12 4.777 Collecting llvmlite<0.45,>=0.44.0dev0 (from numba>=0.59)
+2025-07-12T07:41:31.335Z [INFO] #12 4.802   Downloading llvmlite-0.44.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.8 kB)
+2025-07-12T07:41:31.496Z [INFO] #12 4.840 Collecting antlr4-python3-runtime==4.9.* (from omegaconf>=2.3)
+2025-07-12T07:41:31.497Z [INFO] #12 4.864   Downloading antlr4-python3-runtime-4.9.3.tar.gz (117 kB)
+2025-07-12T07:41:31.498Z [INFO] #12 4.873      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 117.0/117.0 kB 15.5 MB/s eta 0:00:00
+2025-07-12T07:41:31.498Z [INFO] #12 4.884   Preparing metadata (setup.py): started
+2025-07-12T07:41:31.499Z [INFO] #12 4.966   Preparing metadata (setup.py): finished with status 'done'
+2025-07-12T07:41:31.626Z [INFO] #12 5.096 Collecting numpy>=1.21.0 (from gymnasium==0.29.1)
+2025-07-12T07:41:31.739Z [INFO] #12 5.120   Downloading numpy-2.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (62 kB)
+2025-07-12T07:41:31.740Z [INFO] #12 5.124      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.0/62.0 kB 22.7 MB/s eta 0:00:00
+2025-07-12T07:41:31.740Z [INFO] #12 5.208 Collecting cffi>=1.17.1 (from pymunk>=6.6)
+2025-07-12T07:41:31.986Z [INFO] #12 5.233   Downloading cffi-1.17.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+2025-07-12T07:41:31.987Z [INFO] #12 5.239 Requirement already satisfied: six in /opt/conda/lib/python3.10/site-packages (from pynput>=1.7) (1.16.0)
+2025-07-12T07:41:31.988Z [INFO] #12 5.273 Collecting evdev>=1.3 (from pynput>=1.7)
+2025-07-12T07:41:31.989Z [INFO] #12 5.298   Downloading evdev-1.9.2.tar.gz (33 kB)
+2025-07-12T07:41:31.989Z [INFO] #12 5.305   Installing build dependencies: started
+2025-07-12T07:41:33.069Z [INFO] #12 6.538   Installing build dependencies: finished with status 'done'
+2025-07-12T07:41:33.251Z [INFO] #12 6.539   Getting requirements to build wheel: started
+2025-07-12T07:41:33.252Z [INFO] #12 6.629   Getting requirements to build wheel: finished with status 'done'
+2025-07-12T07:41:33.252Z [INFO] #12 6.630   Preparing metadata (pyproject.toml): started
+2025-07-12T07:41:33.253Z [INFO] #12 6.720   Preparing metadata (pyproject.toml): finished with status 'done'
+2025-07-12T07:41:33.451Z [INFO] #12 6.756 Collecting python-xlib>=0.17 (from pynput>=1.7)
+2025-07-12T07:41:33.453Z [INFO] #12 6.781   Downloading python_xlib-0.33-py2.py3-none-any.whl.metadata (6.2 kB)
+2025-07-12T07:41:33.453Z [INFO] #12 6.921 Collecting gitpython!=3.1.29,>=1.0.0 (from wandb>=0.16)
+2025-07-12T07:41:33.600Z [INFO] #12 6.945   Downloading GitPython-3.1.44-py3-none-any.whl.metadata (13 kB)
+2025-07-12T07:41:33.601Z [INFO] #12 6.947 Requirement already satisfied: platformdirs in /opt/conda/lib/python3.10/site-packages (from wandb>=0.16) (3.10.0)
+2025-07-12T07:41:33.601Z [INFO] #12 7.069 Collecting protobuf!=4.21.0,!=5.28.0,<7,>=3.19.0 (from wandb>=0.16)
+2025-07-12T07:41:33.715Z [INFO] #12 7.094   Downloading protobuf-6.31.1-cp39-abi3-manylinux2014_x86_64.whl.metadata (593 bytes)
+2025-07-12T07:41:33.716Z [INFO] #12 7.185 Collecting pydantic<3 (from wandb>=0.16)
+2025-07-12T07:41:33.830Z [INFO] #12 7.209   Downloading pydantic-2.11.7-py3-none-any.whl.metadata (67 kB)
+2025-07-12T07:41:33.831Z [INFO] #12 7.213      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.0/68.0 kB 26.3 MB/s eta 0:00:00
+2025-07-12T07:41:33.832Z [INFO] #12 7.275 Collecting sentry-sdk>=2.0.0 (from wandb>=0.16)
+2025-07-12T07:41:33.832Z [INFO] #12 7.300   Downloading sentry_sdk-2.32.0-py2.py3-none-any.whl.metadata (10 kB)
+2025-07-12T07:41:33.975Z [INFO] #12 7.341 Collecting asciitree (from zarr>=2.17)
+2025-07-12T07:41:33.977Z [INFO] #12 7.365   Downloading asciitree-0.3.3.tar.gz (4.0 kB)
+2025-07-12T07:41:33.977Z [INFO] #12 7.368   Preparing metadata (setup.py): started
+2025-07-12T07:41:33.978Z [INFO] #12 7.445   Preparing metadata (setup.py): finished with status 'done'
+2025-07-12T07:41:34.084Z [INFO] #12 7.494 Collecting numcodecs>=0.10.0 (from zarr>=2.17)
+2025-07-12T07:41:34.085Z [INFO] #12 7.519   Downloading numcodecs-0.13.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.9 kB)
+2025-07-12T07:41:34.085Z [INFO] #12 7.554 Collecting fasteners (from zarr>=2.17)
+2025-07-12T07:41:34.213Z [INFO] #12 7.579   Downloading fasteners-0.19-py3-none-any.whl.metadata (4.9 kB)
+2025-07-12T07:41:34.214Z [INFO] #12 7.584 WARNING: huggingface-hub 0.33.4 does not provide the extra 'hf-transfer'
+2025-07-12T07:41:34.215Z [INFO] #12 7.619 Collecting InquirerPy==0.3.4 (from huggingface-hub[cli,hf-transfer]>=0.27)
+2025-07-12T07:41:34.215Z [INFO] #12 7.643   Downloading InquirerPy-0.3.4-py3-none-any.whl.metadata (8.1 kB)
+2025-07-12T07:41:34.216Z [INFO] #12 7.683 Collecting pfzy<0.4.0,>=0.3.1 (from InquirerPy==0.3.4->huggingface-hub[cli,hf-transfer]>=0.27)
+2025-07-12T07:41:34.319Z [INFO] #12 7.709 Requirement already satisfied: prompt-toolkit<4.0.0,>=3.0.1 in /opt/conda/lib/python3.10/site-packages (from InquirerPy==0.3.4->huggingface-hub[cli,hf-transfer]>=0.27) (3.0.43)
+2025-07-12T07:41:34.319Z [INFO] #12 7.707   Downloading pfzy-0.3.4-py3-none-any.whl.metadata (4.9 kB)
+2025-07-12T07:41:34.320Z [INFO] #12 7.749 Collecting imageio-ffmpeg (from imageio[ffmpeg]>=2.34)
+2025-07-12T07:41:34.321Z [INFO] #12 7.774   Downloading imageio_ffmpeg-0.6.0-py3-none-manylinux2014_x86_64.whl.metadata (1.5 kB)
+2025-07-12T07:41:34.321Z [INFO] #12 7.775 Requirement already satisfied: psutil in /opt/conda/lib/python3.10/site-packages (from imageio[ffmpeg]>=2.34) (5.9.0)
+2025-07-12T07:41:34.322Z [INFO] #12 7.788 Requirement already satisfied: pycparser in /opt/conda/lib/python3.10/site-packages (from cffi>=1.17.1->pymunk>=6.6) (2.21)
+2025-07-12T07:41:34.721Z [INFO] #12 8.190 Collecting aiohttp!=4.0.0a0,!=4.0.0a1 (from fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19)
+2025-07-12T07:41:34.910Z [INFO] #12 8.215   Downloading aiohttp-3.12.14-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.6 kB)
+2025-07-12T07:41:34.912Z [INFO] #12 8.259 Collecting gitdb<5,>=4.0.1 (from gitpython!=3.1.29,>=1.0.0->wandb>=0.16)
+2025-07-12T07:41:34.912Z [INFO] #12 8.283   Downloading gitdb-4.0.12-py3-none-any.whl.metadata (1.2 kB)
+2025-07-12T07:41:34.913Z [INFO] #12 8.380 Collecting annotated-types>=0.6.0 (from pydantic<3->wandb>=0.16)
+2025-07-12T07:41:35.085Z [INFO] #12 8.404   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+2025-07-12T07:41:35.396Z [INFO] #12 8.865 Collecting pydantic-core==2.33.2 (from pydantic<3->wandb>=0.16)
+2025-07-12T07:41:35.517Z [INFO] #12 8.890   Downloading pydantic_core-2.33.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+2025-07-12T07:41:35.518Z [INFO] #12 8.929 Collecting typing-extensions>=4.3.0 (from gymnasium==0.29.1)
+2025-07-12T07:41:35.519Z [INFO] #12 8.954   Downloading typing_extensions-4.14.1-py3-none-any.whl.metadata (3.0 kB)
+2025-07-12T07:41:35.519Z [INFO] #12 8.987 Collecting typing-inspection>=0.4.0 (from pydantic<3->wandb>=0.16)
+2025-07-12T07:41:35.667Z [INFO] #12 9.011   Downloading typing_inspection-0.4.1-py3-none-any.whl.metadata (2.6 kB)
+2025-07-12T07:41:35.668Z [INFO] #12 9.040 Requirement already satisfied: charset_normalizer<4,>=2 in /opt/conda/lib/python3.10/site-packages (from requests>=2.32.2->datasets>=2.19) (2.0.4)
+2025-07-12T07:41:35.669Z [INFO] #12 9.040 Requirement already satisfied: idna<4,>=2.5 in /opt/conda/lib/python3.10/site-packages (from requests>=2.32.2->datasets>=2.19) (3.4)
+2025-07-12T07:41:35.669Z [INFO] #12 9.040 Requirement already satisfied: urllib3<3,>=1.21.1 in /opt/conda/lib/python3.10/site-packages (from requests>=2.32.2->datasets>=2.19) (2.1.0)
+2025-07-12T07:41:35.670Z [INFO] #12 9.041 Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/lib/python3.10/site-packages (from requests>=2.32.2->datasets>=2.19) (2024.2.2)
+2025-07-12T07:41:35.671Z [INFO] #12 9.136 Collecting mypy-extensions>=0.3.0 (from typing-inspect~=0.9.0->draccus==0.10.0)
+2025-07-12T07:41:35.775Z [INFO] #12 9.160   Downloading mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+2025-07-12T07:41:35.777Z [INFO] #12 9.179 Requirement already satisfied: soupsieve>1.2 in /opt/conda/lib/python3.10/site-packages (from beautifulsoup4->gdown>=5.1) (2.5)
+2025-07-12T07:41:35.777Z [INFO] #12 9.245 Collecting zipp>=3.20 (from importlib_metadata->diffusers>=0.27)
+2025-07-12T07:41:35.881Z [INFO] #12 9.269   Downloading zipp-3.23.0-py3-none-any.whl.metadata (3.6 kB)
+2025-07-12T07:41:35.882Z [INFO] #12 9.350 Collecting python-dateutil>=2.8.2 (from pandas->datasets>=2.19)
+2025-07-12T07:41:35.988Z [INFO] #12 9.375   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+2025-07-12T07:41:35.989Z [INFO] #12 9.378 Requirement already satisfied: pytz>=2020.1 in /opt/conda/lib/python3.10/site-packages (from pandas->datasets>=2.19) (2023.3.post1)
+2025-07-12T07:41:35.990Z [INFO] #12 9.412 Collecting tzdata>=2022.7 (from pandas->datasets>=2.19)
+2025-07-12T07:41:35.991Z [INFO] #12 9.436   Downloading tzdata-2025.2-py2.py3-none-any.whl.metadata (1.4 kB)
+2025-07-12T07:41:35.991Z [INFO] #12 9.457 Requirement already satisfied: PySocks!=1.5.7,>=1.5.6 in /opt/conda/lib/python3.10/site-packages (from requests[socks]->gdown>=5.1) (1.7.1)
+2025-07-12T07:41:36.095Z [INFO] #12 9.507 Collecting aiohappyeyeballs>=2.5.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19)
+2025-07-12T07:41:36.096Z [INFO] #12 9.531   Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+2025-07-12T07:41:36.096Z [INFO] #12 9.565 Collecting aiosignal>=1.4.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19)
+2025-07-12T07:41:36.244Z [INFO] #12 9.589   Downloading aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+2025-07-12T07:41:36.245Z [INFO] #12 9.624 Collecting async-timeout<6.0,>=4.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19)
+2025-07-12T07:41:36.245Z [INFO] #12 9.649   Downloading async_timeout-5.0.1-py3-none-any.whl.metadata (5.1 kB)
+2025-07-12T07:41:36.246Z [INFO] #12 9.713 Collecting frozenlist>=1.1.1 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19)
+2025-07-12T07:41:36.415Z [INFO] #12 9.738   Downloading frozenlist-1.7.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
+2025-07-12T07:41:36.416Z [INFO] #12 9.884 Collecting multidict<7.0,>=4.5 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19)
+2025-07-12T07:41:36.665Z [INFO] #12 9.908   Downloading multidict-6.6.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+2025-07-12T07:41:36.667Z [INFO] #12 9.959 Collecting propcache>=0.2.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19)
+2025-07-12T07:41:36.667Z [INFO] #12 9.984   Downloading propcache-0.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (12 kB)
+2025-07-12T07:41:36.676Z [INFO] #12 10.14 Collecting yarl<2.0,>=1.17.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.3.0,>=2023.1.0->datasets>=2.19)
+2025-07-12T07:41:36.787Z [INFO] #12 10.17   Downloading yarl-1.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (73 kB)
+2025-07-12T07:41:36.789Z [INFO] #12 10.18      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.9/73.9 kB 23.5 MB/s eta 0:00:00
+2025-07-12T07:41:36.789Z [INFO] #12 10.23 Collecting smmap<6,>=3.0.1 (from gitdb<5,>=4.0.1->gitpython!=3.1.29,>=1.0.0->wandb>=0.16)
+2025-07-12T07:41:36.790Z [INFO] #12 10.26   Downloading smmap-5.0.2-py3-none-any.whl.metadata (4.3 kB)
+2025-07-12T07:41:36.962Z [INFO] #12 10.28 Requirement already satisfied: wcwidth in /opt/conda/lib/python3.10/site-packages (from prompt-toolkit<4.0.0,>=3.0.1->InquirerPy==0.3.4->huggingface-hub[cli,hf-transfer]>=0.27) (0.2.5)
+2025-07-12T07:41:36.967Z [INFO] #12 10.44 Downloading draccus-0.10.0-py3-none-any.whl (71 kB)
+2025-07-12T07:41:37.071Z [INFO] #12 10.44    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.8/71.8 kB 32.0 MB/s eta 0:00:00
+2025-07-12T07:41:37.072Z [INFO] #12 10.47 Downloading gymnasium-0.29.1-py3-none-any.whl (953 kB)
+2025-07-12T07:41:37.073Z [INFO] #12 10.52    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 953.9/953.9 kB 19.4 MB/s eta 0:00:00
+2025-07-12T07:41:37.073Z [INFO] #12 10.54 Downloading cmake-4.0.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (27.9 MB)
+2025-07-12T07:41:37.290Z [INFO] #12 10.76    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 27.9/27.9 MB 126.4 MB/s eta 0:00:00
+2025-07-12T07:41:37.398Z [INFO] #12 10.78 Downloading datasets-4.0.0-py3-none-any.whl (494 kB)
+2025-07-12T07:41:37.399Z [INFO] #12 10.79    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 494.8/494.8 kB 178.6 MB/s eta 0:00:00
+2025-07-12T07:41:37.399Z [INFO] #12 10.81 Downloading deepdiff-8.5.0-py3-none-any.whl (85 kB)
+2025-07-12T07:41:37.400Z [INFO] #12 10.82    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 85.1/85.1 kB 65.6 MB/s eta 0:00:00
+2025-07-12T07:41:37.400Z [INFO] #12 10.84 Downloading diffusers-0.34.0-py3-none-any.whl (3.8 MB)
+2025-07-12T07:41:37.401Z [INFO] #12 10.87    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 140.7 MB/s eta 0:00:00
+2025-07-12T07:41:37.502Z [INFO] #12 10.89 Downloading einops-0.8.1-py3-none-any.whl (64 kB)
+2025-07-12T07:41:37.503Z [INFO] #12 10.89    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.4/64.4 kB 53.1 MB/s eta 0:00:00
+2025-07-12T07:41:37.503Z [INFO] #12 10.92 Downloading flask-3.1.1-py3-none-any.whl (103 kB)
+2025-07-12T07:41:37.504Z [INFO] #12 10.92    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 103.3/103.3 kB 86.7 MB/s eta 0:00:00
+2025-07-12T07:41:37.504Z [INFO] #12 10.95 Downloading gdown-5.2.0-py3-none-any.whl (18 kB)
+2025-07-12T07:41:37.505Z [INFO] #12 10.97 Downloading h5py-3.14.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.6 MB)
+2025-07-12T07:41:37.610Z [INFO] #12 11.00    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.6/4.6 MB 162.3 MB/s eta 0:00:00
+2025-07-12T07:41:37.611Z [INFO] #12 11.02 Downloading huggingface_hub-0.33.4-py3-none-any.whl (515 kB)
+2025-07-12T07:41:37.613Z [INFO] #12 11.03    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 515.3/515.3 kB 229.8 MB/s eta 0:00:00
+2025-07-12T07:41:37.613Z [INFO] #12 11.05 Downloading imageio-2.37.0-py3-none-any.whl (315 kB)
+2025-07-12T07:41:37.614Z [INFO] #12 11.06    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 315.8/315.8 kB 118.0 MB/s eta 0:00:00
+2025-07-12T07:41:37.614Z [INFO] #12 11.08 Downloading jsonlines-4.0.0-py3-none-any.whl (8.7 kB)
+2025-07-12T07:41:37.717Z [INFO] #12 11.10 Downloading numba-0.61.2-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.8 MB)
+2025-07-12T07:41:37.719Z [INFO] #12 11.14    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 129.7 MB/s eta 0:00:00
+2025-07-12T07:41:37.719Z [INFO] #12 11.16 Downloading omegaconf-2.3.0-py3-none-any.whl (79 kB)
+2025-07-12T07:41:37.720Z [INFO] #12 11.16    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 kB 64.4 MB/s eta 0:00:00
+2025-07-12T07:41:37.720Z [INFO] #12 11.19 Downloading opencv_python_headless-4.12.0.88-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (54.0 MB)
+2025-07-12T07:41:38.149Z [INFO] #12 11.62    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 54.0/54.0 MB 92.0 MB/s eta 0:00:00
+2025-07-12T07:41:38.351Z [INFO] #12 11.64 Downloading packaging-25.0-py3-none-any.whl (66 kB)
+2025-07-12T07:41:38.353Z [INFO] #12 11.64    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.5/66.5 kB 51.3 MB/s eta 0:00:00
+2025-07-12T07:41:38.354Z [INFO] #12 11.67 Downloading av-15.0.0-cp310-cp310-manylinux_2_28_x86_64.whl (39.2 MB)
+2025-07-12T07:41:38.487Z [INFO] #12 11.96    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.2/39.2 MB 103.5 MB/s eta 0:00:00
+2025-07-12T07:41:38.598Z [INFO] #12 11.98 Downloading pymunk-7.1.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.0 MB)
+2025-07-12T07:41:38.600Z [INFO] #12 11.99    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.0/1.0 MB 273.6 MB/s eta 0:00:00
+2025-07-12T07:41:38.600Z [INFO] #12 12.01 Downloading pynput-1.8.1-py2.py3-none-any.whl (91 kB)
+2025-07-12T07:41:38.601Z [INFO] #12 12.01    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.7/91.7 kB 72.6 MB/s eta 0:00:00
+2025-07-12T07:41:38.601Z [INFO] #12 12.04 Downloading pyserial-3.5-py2.py3-none-any.whl (90 kB)
+2025-07-12T07:41:38.602Z [INFO] #12 12.04    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.6/90.6 kB 65.3 MB/s eta 0:00:00
+2025-07-12T07:41:38.602Z [INFO] #12 12.07 Downloading pyzmq-27.0.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (853 kB)
+2025-07-12T07:41:38.779Z [INFO] #12 12.07    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 853.8/853.8 kB 250.3 MB/s eta 0:00:00
+2025-07-12T07:41:38.780Z [INFO] #12 12.10 Downloading rerun_sdk-0.23.4-cp39-abi3-manylinux_2_28_x86_64.whl (64.9 MB)
+2025-07-12T07:41:39.092Z [INFO] #12 12.56    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.9/64.9 MB 104.9 MB/s eta 0:00:00
+2025-07-12T07:41:39.293Z [INFO] #12 12.59 Downloading termcolor-3.1.0-py3-none-any.whl (7.7 kB)
+2025-07-12T07:41:39.294Z [INFO] #12 12.61 Downloading wandb-0.21.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (22.2 MB)
+2025-07-12T07:41:39.297Z [INFO] #12 12.77    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.2/22.2 MB 129.3 MB/s eta 0:00:00
+2025-07-12T07:41:39.405Z [INFO] #12 12.79 Downloading zarr-2.18.3-py3-none-any.whl (210 kB)
+2025-07-12T07:41:39.406Z [INFO] #12 12.79    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 210.7/210.7 kB 135.0 MB/s eta 0:00:00
+2025-07-12T07:41:39.406Z [INFO] #12 12.82 Downloading websockets-15.0.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (181 kB)
+2025-07-12T07:41:39.407Z [INFO] #12 12.82    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 181.6/181.6 kB 138.2 MB/s eta 0:00:00
+2025-07-12T07:41:39.407Z [INFO] #12 12.85 Downloading InquirerPy-0.3.4-py3-none-any.whl (67 kB)
+2025-07-12T07:41:39.408Z [INFO] #12 12.85    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67.7/67.7 kB 52.8 MB/s eta 0:00:00
+2025-07-12T07:41:39.408Z [INFO] #12 12.87 Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+2025-07-12T07:41:39.509Z [INFO] #12 12.90 Downloading cffi-1.17.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (446 kB)
+2025-07-12T07:41:39.510Z [INFO] #12 12.90    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 446.2/446.2 kB 227.4 MB/s eta 0:00:00
+2025-07-12T07:41:39.511Z [INFO] #12 12.93 Downloading cloudpickle-3.1.1-py3-none-any.whl (20 kB)
+2025-07-12T07:41:39.511Z [INFO] #12 12.95 Downloading dill-0.3.8-py3-none-any.whl (116 kB)
+2025-07-12T07:41:39.512Z [INFO] #12 12.95    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 116.3/116.3 kB 96.0 MB/s eta 0:00:00
+2025-07-12T07:41:39.512Z [INFO] #12 12.98 Downloading Farama_Notifications-0.0.4-py3-none-any.whl (2.5 kB)
+2025-07-12T07:41:39.624Z [INFO] #12 13.00 Downloading GitPython-3.1.44-py3-none-any.whl (207 kB)
+2025-07-12T07:41:39.625Z [INFO] #12 13.01    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 207.6/207.6 kB 144.1 MB/s eta 0:00:00
+2025-07-12T07:41:39.626Z [INFO] #12 13.03 Downloading hf_xet-1.1.5-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.1 MB)
+2025-07-12T07:41:39.627Z [INFO] #12 13.04    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.1/3.1 MB 286.3 MB/s eta 0:00:00
+2025-07-12T07:41:39.627Z [INFO] #12 13.07 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+2025-07-12T07:41:39.628Z [INFO] #12 13.09 Downloading llvmlite-0.44.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (42.4 MB)
+2025-07-12T07:41:40.072Z [INFO] #12 13.40    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.4/42.4 MB 115.0 MB/s eta 0:00:00
+2025-07-12T07:41:40.073Z [INFO] #12 13.42 Downloading mergedeep-1.3.4-py3-none-any.whl (6.4 kB)
+2025-07-12T07:41:40.074Z [INFO] #12 13.45 Downloading multiprocess-0.70.16-py310-none-any.whl (134 kB)
+2025-07-12T07:41:40.074Z [INFO] #12 13.45    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.8/134.8 kB 91.4 MB/s eta 0:00:00
+2025-07-12T07:41:40.075Z [INFO] #12 13.48 Downloading numcodecs-0.13.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (8.6 MB)
+2025-07-12T07:41:40.219Z [INFO] #12 13.54    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 139.1 MB/s eta 0:00:00
+2025-07-12T07:41:40.220Z [INFO] #12 13.57 Downloading numpy-2.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.8 MB)
+2025-07-12T07:41:40.221Z [INFO] #12 13.69    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.8/16.8 MB 115.5 MB/s eta 0:00:00
+2025-07-12T07:41:40.447Z [INFO] #12 13.71 Downloading orderly_set-5.5.0-py3-none-any.whl (13 kB)
+2025-07-12T07:41:40.449Z [INFO] #12 13.74 Downloading protobuf-6.31.1-cp39-abi3-manylinux2014_x86_64.whl (321 kB)
+2025-07-12T07:41:40.450Z [INFO] #12 13.74    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 321.1/321.1 kB 181.7 MB/s eta 0:00:00
+2025-07-12T07:41:40.451Z [INFO] #12 13.77 Downloading pyarrow-20.0.0-cp310-cp310-manylinux_2_28_x86_64.whl (42.3 MB)
+2025-07-12T07:41:40.594Z [INFO] #12 14.06    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.3/42.3 MB 117.3 MB/s eta 0:00:00
+2025-07-12T07:41:40.709Z [INFO] #12 14.09 Downloading pydantic-2.11.7-py3-none-any.whl (444 kB)
+2025-07-12T07:41:40.710Z [INFO] #12 14.09    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 444.8/444.8 kB 197.0 MB/s eta 0:00:00
+2025-07-12T07:41:40.711Z [INFO] #12 14.12 Downloading pydantic_core-2.33.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+2025-07-12T07:41:40.712Z [INFO] #12 14.12    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 275.8 MB/s eta 0:00:00
+2025-07-12T07:41:40.712Z [INFO] #12 14.15 Downloading python_xlib-0.33-py2.py3-none-any.whl (182 kB)
+2025-07-12T07:41:40.713Z [INFO] #12 14.15    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 182.2/182.2 kB 137.8 MB/s eta 0:00:00
+2025-07-12T07:41:40.713Z [INFO] #12 14.18 Downloading pyyaml_include-1.4.1-py3-none-any.whl (19 kB)
+2025-07-12T07:41:40.817Z [INFO] #12 14.20 Downloading regex-2024.11.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (781 kB)
+2025-07-12T07:41:40.818Z [INFO] #12 14.21    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 781.7/781.7 kB 268.8 MB/s eta 0:00:00
+2025-07-12T07:41:40.819Z [INFO] #12 14.23 Downloading requests-2.32.4-py3-none-any.whl (64 kB)
+2025-07-12T07:41:40.819Z [INFO] #12 14.23    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.8/64.8 kB 55.3 MB/s eta 0:00:00
+2025-07-12T07:41:40.820Z [INFO] #12 14.26 Downloading safetensors-0.5.3-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (471 kB)
+2025-07-12T07:41:40.821Z [INFO] #12 14.26    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 471.6/471.6 kB 217.9 MB/s eta 0:00:00
+2025-07-12T07:41:40.821Z [INFO] #12 14.29 Downloading sentry_sdk-2.32.0-py2.py3-none-any.whl (356 kB)
+2025-07-12T07:41:40.922Z [INFO] #12 14.29    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 356.1/356.1 kB 203.3 MB/s eta 0:00:00
+2025-07-12T07:41:40.923Z [INFO] #12 14.31 Downloading toml-0.10.2-py2.py3-none-any.whl (16 kB)
+2025-07-12T07:41:40.924Z [INFO] #12 14.34 Downloading tqdm-4.67.1-py3-none-any.whl (78 kB)
+2025-07-12T07:41:40.924Z [INFO] #12 14.34    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.5/78.5 kB 67.7 MB/s eta 0:00:00
+2025-07-12T07:41:40.925Z [INFO] #12 14.37 Downloading typing_extensions-4.14.1-py3-none-any.whl (43 kB)
+2025-07-12T07:41:40.925Z [INFO] #12 14.37    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.9/43.9 kB 36.9 MB/s eta 0:00:00
+2025-07-12T07:41:40.926Z [INFO] #12 14.39 Downloading typing_inspect-0.9.0-py3-none-any.whl (8.8 kB)
+2025-07-12T07:41:41.151Z [INFO] #12 14.42 Downloading werkzeug-3.1.3-py3-none-any.whl (224 kB)
+2025-07-12T07:41:41.152Z [INFO] #12 14.42    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 224.5/224.5 kB 146.2 MB/s eta 0:00:00
+2025-07-12T07:41:41.153Z [INFO] #12 14.44 Downloading fasteners-0.19-py3-none-any.whl (18 kB)
+2025-07-12T07:41:41.153Z [INFO] #12 14.47 Downloading imageio_ffmpeg-0.6.0-py3-none-manylinux2014_x86_64.whl (29.5 MB)
+2025-07-12T07:41:41.348Z [INFO] #12 14.69    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29.5/29.5 MB 118.0 MB/s eta 0:00:00
+2025-07-12T07:41:41.350Z [INFO] #12 14.71 Downloading importlib_metadata-8.7.0-py3-none-any.whl (27 kB)
+2025-07-12T07:41:41.351Z [INFO] #12 14.74 Downloading pandas-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.3 MB)
+2025-07-12T07:41:41.351Z [INFO] #12 14.82    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 136.1 MB/s eta 0:00:00
+2025-07-12T07:41:41.457Z [INFO] #12 14.84 Downloading xxhash-3.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (194 kB)
+2025-07-12T07:41:41.458Z [INFO] #12 14.84    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 194.1/194.1 kB 129.9 MB/s eta 0:00:00
+2025-07-12T07:41:41.459Z [INFO] #12 14.87 Downloading aiohttp-3.12.14-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.6 MB)
+2025-07-12T07:41:41.459Z [INFO] #12 14.88    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.6/1.6 MB 317.3 MB/s eta 0:00:00
+2025-07-12T07:41:41.460Z [INFO] #12 14.90 Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+2025-07-12T07:41:41.460Z [INFO] #12 14.93 Downloading gitdb-4.0.12-py3-none-any.whl (62 kB)
+2025-07-12T07:41:41.562Z [INFO] #12 14.93    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.8/62.8 kB 48.9 MB/s eta 0:00:00
+2025-07-12T07:41:41.563Z [INFO] #12 14.95 Downloading mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+2025-07-12T07:41:41.563Z [INFO] #12 14.98 Downloading pfzy-0.3.4-py3-none-any.whl (8.5 kB)
+2025-07-12T07:41:41.564Z [INFO] #12 15.00 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2025-07-12T07:41:41.564Z [INFO] #12 15.01    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 229.9/229.9 kB 140.8 MB/s eta 0:00:00
+2025-07-12T07:41:41.565Z [INFO] #12 15.03 Downloading typing_inspection-0.4.1-py3-none-any.whl (14 kB)
+2025-07-12T07:41:41.665Z [INFO] #12 15.06 Downloading tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+2025-07-12T07:41:41.666Z [INFO] #12 15.06    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 347.8/347.8 kB 201.5 MB/s eta 0:00:00
+2025-07-12T07:41:41.667Z [INFO] #12 15.08 Downloading zipp-3.23.0-py3-none-any.whl (10 kB)
+2025-07-12T07:41:41.667Z [INFO] #12 15.11 Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+2025-07-12T07:41:41.668Z [INFO] #12 15.13 Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+2025-07-12T07:41:41.770Z [INFO] #12 15.16 Downloading async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+2025-07-12T07:41:41.772Z [INFO] #12 15.19 Downloading frozenlist-1.7.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (222 kB)
+2025-07-12T07:41:41.773Z [INFO] #12 15.19    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 222.9/222.9 kB 129.7 MB/s eta 0:00:00
+2025-07-12T07:41:41.774Z [INFO] #12 15.21 Downloading multidict-6.6.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (241 kB)
+2025-07-12T07:41:41.774Z [INFO] #12 15.22    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 241.6/241.6 kB 160.9 MB/s eta 0:00:00
+2025-07-12T07:41:41.775Z [INFO] #12 15.24 Downloading propcache-0.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (198 kB)
+2025-07-12T07:41:41.975Z [INFO] #12 15.24    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 198.3/198.3 kB 144.4 MB/s eta 0:00:00
+2025-07-12T07:41:41.976Z [INFO] #12 15.27 Downloading smmap-5.0.2-py3-none-any.whl (24 kB)
+2025-07-12T07:41:41.977Z [INFO] #12 15.29 Downloading yarl-1.20.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (326 kB)
+2025-07-12T07:41:41.977Z [INFO] #12 15.29    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 326.1/326.1 kB 181.2 MB/s eta 0:00:00
+2025-07-12T07:41:42.256Z [INFO] #12 15.72 Building wheels for collected packages: antlr4-python3-runtime, evdev, asciitree
+2025-07-12T07:41:42.389Z [INFO] #12 15.73   Building wheel for antlr4-python3-runtime (setup.py): started
+2025-07-12T07:41:42.390Z [INFO] #12 15.86   Building wheel for antlr4-python3-runtime (setup.py): finished with status 'done'
+2025-07-12T07:41:42.498Z [INFO] #12 15.86   Created wheel for antlr4-python3-runtime: filename=antlr4_python3_runtime-4.9.3-py3-none-any.whl size=144554 sha256=91335b6ff63f7a6b352952d86566cd42c8dc6a32f128a0a0a1d426417e7a3098
+2025-07-12T07:41:42.498Z [INFO] #12 15.86   Stored in directory: /root/.cache/pip/wheels/12/93/dd/1f6a127edc45659556564c5730f6d4e300888f4bca2d4c5a88
+2025-07-12T07:41:42.499Z [INFO] #12 15.86   Building wheel for evdev (pyproject.toml): started
+2025-07-12T07:41:42.499Z [INFO] #12 15.97   Building wheel for evdev (pyproject.toml): finished with status 'error'
+2025-07-12T07:41:42.611Z [INFO] #12 15.97   error: subprocess-exited-with-error
+2025-07-12T07:41:42.612Z [INFO] #12 15.97
+2025-07-12T07:41:42.613Z [INFO] #12 15.97   × Building wheel for evdev (pyproject.toml) did not run successfully.
+2025-07-12T07:41:42.613Z [INFO] #12 15.97   │ exit code: 1
+2025-07-12T07:41:42.614Z [INFO] #12 15.97   ╰─> [76 lines of output]
+2025-07-12T07:41:42.614Z [INFO] #12 15.97       /tmp/pip-build-env-dg4y91uh/overlay/lib/python3.10/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+2025-07-12T07:41:42.615Z [INFO] #12 15.97       !!
+2025-07-12T07:41:42.615Z [INFO] #12 15.97
+2025-07-12T07:41:42.616Z [INFO] #12 15.97               ********************************************************************************
+2025-07-12T07:41:42.616Z [INFO] #12 15.97               Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+2025-07-12T07:41:42.617Z [INFO] #12 15.97
+2025-07-12T07:41:42.617Z [INFO] #12 15.97               By 2026-Feb-18, you need to update your project and remove deprecated calls
+2025-07-12T07:41:42.618Z [INFO] #12 15.97               or your builds will no longer be supported.
+2025-07-12T07:41:42.618Z [INFO] #12 15.97
+2025-07-12T07:41:42.619Z [INFO] #12 15.97               See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+2025-07-12T07:41:42.619Z [INFO] #12 15.97               ********************************************************************************
+2025-07-12T07:41:42.620Z [INFO] #12 15.97
+2025-07-12T07:41:42.620Z [INFO] #12 15.97       !!
+2025-07-12T07:41:42.621Z [INFO] #12 15.97         corresp(dist, value, root_dir)
+2025-07-12T07:41:42.621Z [INFO] #12 15.97       /tmp/pip-build-env-dg4y91uh/overlay/lib/python3.10/site-packages/setuptools/config/_apply_pyprojecttoml.py:61: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+2025-07-12T07:41:42.622Z [INFO] #12 15.97       !!
+2025-07-12T07:41:42.622Z [INFO] #12 15.97
+2025-07-12T07:41:42.623Z [INFO] #12 15.97               ********************************************************************************
+2025-07-12T07:41:42.623Z [INFO] #12 15.97               Please consider removing the following classifiers in favor of a SPDX license expression:
+2025-07-12T07:41:42.624Z [INFO] #12 15.97
+2025-07-12T07:41:42.624Z [INFO] #12 15.97               License :: OSI Approved :: BSD License
+2025-07-12T07:41:42.625Z [INFO] #12 15.97
+2025-07-12T07:41:42.625Z [INFO] #12 15.97               See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+2025-07-12T07:41:42.626Z [INFO] #12 15.97               ********************************************************************************
+2025-07-12T07:41:42.626Z [INFO] #12 15.97
+2025-07-12T07:41:42.627Z [INFO] #12 15.97       !!
+2025-07-12T07:41:42.627Z [INFO] #12 15.97         dist._finalize_license_expression()
+2025-07-12T07:41:42.628Z [INFO] #12 15.97       /tmp/pip-build-env-dg4y91uh/overlay/lib/python3.10/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+2025-07-12T07:41:42.628Z [INFO] #12 15.97       !!
+2025-07-12T07:41:42.629Z [INFO] #12 15.97
+2025-07-12T07:41:42.629Z [INFO] #12 15.97               ********************************************************************************
+2025-07-12T07:41:42.630Z [INFO] #12 15.97               Please consider removing the following classifiers in favor of a SPDX license expression:
+2025-07-12T07:41:42.630Z [INFO] #12 15.97
+2025-07-12T07:41:42.631Z [INFO] #12 15.97               License :: OSI Approved :: BSD License
+2025-07-12T07:41:42.631Z [INFO] #12 15.97
+2025-07-12T07:41:42.632Z [INFO] #12 15.97               See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+2025-07-12T07:41:42.632Z [INFO] #12 15.97               ********************************************************************************
+2025-07-12T07:41:42.633Z [INFO] #12 15.97
+2025-07-12T07:41:42.633Z [INFO] #12 15.97       !!
+2025-07-12T07:41:42.634Z [INFO] #12 15.97         self._finalize_license_expression()
+2025-07-12T07:41:42.634Z [INFO] #12 15.97       running bdist_wheel
+2025-07-12T07:41:42.635Z [INFO] #12 15.97       running build
+2025-07-12T07:41:42.635Z [INFO] #12 15.97       running build_py
+2025-07-12T07:41:42.636Z [INFO] #12 15.97       creating build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.636Z [INFO] #12 15.97       copying src/evdev/__init__.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.637Z [INFO] #12 15.97       copying src/evdev/device.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.637Z [INFO] #12 15.97       copying src/evdev/ecodes.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.638Z [INFO] #12 15.97       copying src/evdev/ecodes_runtime.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.638Z [INFO] #12 15.97       copying src/evdev/eventio.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.639Z [INFO] #12 15.97       copying src/evdev/eventio_async.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.639Z [INFO] #12 15.97       copying src/evdev/events.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.640Z [INFO] #12 15.97       copying src/evdev/evtest.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.640Z [INFO] #12 15.97       copying src/evdev/ff.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.641Z [INFO] #12 15.97       copying src/evdev/genecodes_c.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.641Z [INFO] #12 15.97       copying src/evdev/genecodes_py.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.642Z [INFO] #12 15.97       copying src/evdev/uinput.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.642Z [INFO] #12 15.97       copying src/evdev/util.py -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.643Z [INFO] #12 15.97       running egg_info
+2025-07-12T07:41:42.643Z [INFO] #12 15.97       writing src/evdev.egg-info/PKG-INFO
+2025-07-12T07:41:42.644Z [INFO] #12 15.97       writing dependency_links to src/evdev.egg-info/dependency_links.txt
+2025-07-12T07:41:42.644Z [INFO] #12 15.97       writing top-level names to src/evdev.egg-info/top_level.txt
+2025-07-12T07:41:42.644Z [INFO] #12 15.97       reading manifest file 'src/evdev.egg-info/SOURCES.txt'
+2025-07-12T07:41:42.645Z [INFO] #12 15.97       reading manifest template 'MANIFEST.in'
+2025-07-12T07:41:42.645Z [INFO] #12 15.97       warning: no previously-included files found matching 'src/evdev/ecodes.c'
+2025-07-12T07:41:42.646Z [INFO] #12 15.97       adding license file 'LICENSE'
+2025-07-12T07:41:42.646Z [INFO] #12 15.97       writing manifest file 'src/evdev.egg-info/SOURCES.txt'
+2025-07-12T07:41:42.647Z [INFO] #12 15.97       copying src/evdev/py.typed -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.647Z [INFO] #12 15.97       copying src/evdev/input.c -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.648Z [INFO] #12 15.97       copying src/evdev/uinput.c -> build/lib.linux-x86_64-cpython-310/evdev
+2025-07-12T07:41:42.648Z [INFO] #12 15.97       running build_ext
+2025-07-12T07:41:42.649Z [INFO] #12 15.97       running build_ecodes
+2025-07-12T07:41:42.649Z [INFO] #12 15.97       writing /tmp/pip-install-zojo09s2/evdev_222e2c4825a74a0b9f52496f739f41d7/src/evdev/ecodes.c (using /usr/include/linux/input.h /usr/include/linux/input-event-codes.h /usr/include/linux/uinput.h)
+2025-07-12T07:41:42.650Z [INFO] #12 15.97       building 'evdev._input' extension
+2025-07-12T07:41:42.650Z [INFO] #12 15.97       creating build/temp.linux-x86_64-cpython-310/src/evdev
+2025-07-12T07:41:42.651Z [INFO] #12 15.97       gcc -pthread -B /opt/conda/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /opt/conda/include -fPIC -O2 -isystem /opt/conda/include -fPIC -I/opt/conda/include/python3.10 -c src/evdev/input.c -o build/temp.linux-x86_64-cpython-310/src/evdev/input.o -std=c99 -Wno-error=declaration-after-statement
+2025-07-12T07:41:42.651Z [INFO] #12 15.97       error: command 'gcc' failed: No such file or directory
+2025-07-12T07:41:42.652Z [INFO] #12 15.97       [end of output]
+2025-07-12T07:41:42.652Z [INFO] #12 15.97
+2025-07-12T07:41:42.652Z [INFO] #12 15.97   note: This error originates from a subprocess, and is likely not a problem with pip.
+2025-07-12T07:41:42.653Z [INFO] #12 15.97   ERROR: Failed building wheel for evdev
+2025-07-12T07:41:42.653Z [INFO] #12 15.97   Building wheel for asciitree (setup.py): started
+2025-07-12T07:41:42.654Z [INFO] #12 16.08   Building wheel for asciitree (setup.py): finished with status 'done'
+2025-07-12T07:41:42.763Z [INFO] #12 16.08   Created wheel for asciitree: filename=asciitree-0.3.3-py3-none-any.whl size=5034 sha256=7208a8da50439c658aa1dddba671dbb8c80dd27c206e16d91342a7858c37b54d
+2025-07-12T07:41:42.765Z [INFO] #12 16.08   Stored in directory: /root/.cache/pip/wheels/7f/4e/be/1171b40f43b918087657ec57cf3b81fa1a2e027d8755baa184
+2025-07-12T07:41:42.765Z [INFO] #12 16.08 Successfully built antlr4-python3-runtime asciitree
+2025-07-12T07:41:42.766Z [INFO] #12 16.08 Failed to build evdev
+2025-07-12T07:41:42.766Z [INFO] #12 16.08 ERROR: Could not build wheels for evdev, which is required to install pyproject.toml-based projects
+2025-07-12T07:41:43.673Z [INFO] #12 ERROR: process "/bin/sh -c pip install     \"cmake>=3.29\"     \"datasets>=2.19\"     \"deepdiff>=7.0\"     \"diffusers>=0.27\"     \"draccus==0.10.0\"     \"einops>=0.8\"     \"flask>=3.0\"     \"gdown>=5.1\"     \"gymnasium==0.29.1\"     \"h5py>=3.10\"     \"huggingface-hub[hf-transfer,cli]>=0.27\"     \"imageio[ffmpeg]>=2.34\"     \"jsonlines>=4.0\"     \"numba>=0.59\"     \"omegaconf>=2.3\"     \"opencv-python-headless>=4.9\"     \"packaging>=24.2\"     \"av>=14.2\"     \"pymunk>=6.6\"     \"pynput>=1.7\"     \"pyserial>=3.5\"     \"pyzmq>=26.2\"     \"rerun-sdk>=0.21\"     \"termcolor>=2.4\"     \"wandb>=0.16\"     \"zarr>=2.17\"     \"websockets\"" did not complete successfully: exit code: 1
+2025-07-12T07:41:43.678Z [INFO] ------
+2025-07-12T07:41:43.679Z [INFO] > [6/6] RUN pip install     "cmake>=3.29"     "datasets>=2.19"     "deepdiff>=7.0"     "diffusers>=0.27"     "draccus==0.10.0"     "einops>=0.8"     "flask>=3.0"     "gdown>=5.1"     "gymnasium==0.29.1"     "h5py>=3.10"     "huggingface-hub[hf-transfer,cli]>=0.27"     "imageio[ffmpeg]>=2.34"     "jsonlines>=4.0"     "numba>=0.59"     "omegaconf>=2.3"     "opencv-python-headless>=4.9"     "packaging>=24.2"     "av>=14.2"     "pymunk>=6.6"     "pynput>=1.7"     "pyserial>=3.5"     "pyzmq>=26.2"     "rerun-sdk>=0.21"     "termcolor>=2.4"     "wandb>=0.16"     "zarr>=2.17"     "websockets":
+2025-07-12T07:41:43.680Z [INFO] 15.97
+2025-07-12T07:41:43.681Z [INFO] 15.97   note: This error originates from a subprocess, and is likely not a problem with pip.
+2025-07-12T07:41:43.682Z [INFO] 15.97   ERROR: Failed building wheel for evdev
+2025-07-12T07:41:43.682Z [INFO] 15.97   Building wheel for asciitree (setup.py): started
+2025-07-12T07:41:43.683Z [INFO] 16.08   Building wheel for asciitree (setup.py): finished with status 'done'
+2025-07-12T07:41:43.684Z [INFO] 16.08   Created wheel for asciitree: filename=asciitree-0.3.3-py3-none-any.whl size=5034 sha256=7208a8da50439c658aa1dddba671dbb8c80dd27c206e16d91342a7858c37b54d
+2025-07-12T07:41:43.685Z [INFO] 16.08   Stored in directory: /root/.cache/pip/wheels/7f/4e/be/1171b40f43b918087657ec57cf3b81fa1a2e027d8755baa184
+2025-07-12T07:41:43.685Z [INFO] 16.08 Successfully built antlr4-python3-runtime asciitree
+2025-07-12T07:41:43.686Z [INFO] 16.08 Failed to build evdev
+2025-07-12T07:41:43.687Z [INFO] 16.08 ERROR: Could not build wheels for evdev, which is required to install pyproject.toml-based projects
+2025-07-12T07:41:43.687Z [INFO] ------
+2025-07-12T07:41:43.688Z [INFO] Dockerfile:23
+2025-07-12T07:41:43.689Z [INFO] --------------------
+2025-07-12T07:41:43.689Z [INFO] 22 |     RUN pip install --no-deps .
+2025-07-12T07:41:43.690Z [INFO] 23 | >>> RUN pip install \
+2025-07-12T07:41:43.690Z [INFO] 24 | >>>     "cmake>=3.29" \
+2025-07-12T07:41:43.691Z [INFO] 25 | >>>     "datasets>=2.19" \
+2025-07-12T07:41:43.692Z [INFO] 26 | >>>     "deepdiff>=7.0" \
+2025-07-12T07:41:43.692Z [INFO] 27 | >>>     "diffusers>=0.27" \
+2025-07-12T07:41:43.693Z [INFO] 28 | >>>     "draccus==0.10.0" \
+2025-07-12T07:41:43.694Z [INFO] 29 | >>>     "einops>=0.8" \
+2025-07-12T07:41:43.694Z [INFO] 30 | >>>     "flask>=3.0" \
+2025-07-12T07:41:43.695Z [INFO] 31 | >>>     "gdown>=5.1" \
+2025-07-12T07:41:43.696Z [INFO] 32 | >>>     "gymnasium==0.29.1" \
+2025-07-12T07:41:43.696Z [INFO] 33 | >>>     "h5py>=3.10" \
+2025-07-12T07:41:43.697Z [INFO] 34 | >>>     "huggingface-hub[hf-transfer,cli]>=0.27" \
+2025-07-12T07:41:43.697Z [INFO] 35 | >>>     "imageio[ffmpeg]>=2.34" \
+2025-07-12T07:41:43.698Z [INFO] 36 | >>>     "jsonlines>=4.0" \
+2025-07-12T07:41:43.699Z [INFO] 37 | >>>     "numba>=0.59" \
+2025-07-12T07:41:43.699Z [INFO] 38 | >>>     "omegaconf>=2.3" \
+2025-07-12T07:41:43.700Z [INFO] 39 | >>>     "opencv-python-headless>=4.9" \
+2025-07-12T07:41:43.701Z [INFO] 40 | >>>     "packaging>=24.2" \
+2025-07-12T07:41:43.701Z [INFO] 41 | >>>     "av>=14.2" \
+2025-07-12T07:41:43.702Z [INFO] 42 | >>>     "pymunk>=6.6" \
+2025-07-12T07:41:43.702Z [INFO] 43 | >>>     "pynput>=1.7" \
+2025-07-12T07:41:43.703Z [INFO] 44 | >>>     "pyserial>=3.5" \
+2025-07-12T07:41:43.704Z [INFO] 45 | >>>     "pyzmq>=26.2" \
+2025-07-12T07:41:43.704Z [INFO] 46 | >>>     "rerun-sdk>=0.21" \
+2025-07-12T07:41:43.705Z [INFO] 47 | >>>     "termcolor>=2.4" \
+2025-07-12T07:41:43.705Z [INFO] 48 | >>>     "wandb>=0.16" \
+2025-07-12T07:41:43.706Z [INFO] 49 | >>>     "zarr>=2.17" \

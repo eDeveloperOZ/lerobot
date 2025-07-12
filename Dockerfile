@@ -19,6 +19,7 @@ COPY . .
 # We then install the required packages based on pyproject.toml, letting pip
 # resolve the correct versions for the container's environment.
 # torch and torchvision are excluded as they are in the base image.
+# pynput is excluded as it requires evdev which needs gcc to compile.
 RUN pip install --no-deps .
 RUN pip install \
     "cmake>=3.29" \
@@ -40,7 +41,6 @@ RUN pip install \
     "packaging>=24.2" \
     "av>=14.2" \
     "pymunk>=6.6" \
-    "pynput>=1.7" \
     "pyserial>=3.5" \
     "pyzmq>=26.2" \
     "rerun-sdk>=0.21" \
