@@ -52,7 +52,7 @@ class WebSocketBridge:
         self,
         ws_port: int = 8765,
         inference_fps: int = 10,
-        device: str = "mps",
+        device: str = "cuda",
         no_amp: bool = False,
         chunk_size: int = 1,
     ):
@@ -238,18 +238,20 @@ class WebSocketBridge:
                 'message': f'Policy loaded and ready: {policy_path}'
             }))
         except Exception as e:
+            import traceback
             logger.error(f"Failed to load policy: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             await websocket.send(json.dumps({
                 'type': 'error',
                 'message': f'Failed to load policy: {str(e)}'
             }))
     
-    async def _load_policy(self, policy_path: str, device_str="mps"):
+    async def _load_policy(self, policy_path: str):
         """Load policy model with proper configuration"""
         logger.info(f"Loading policy from: {policy_path}")
         
         self.policy_path = policy_path
-        device = get_safe_torch_device(device_str)
+        device = get_safe_torch_device(self.device)
 
         try:
             policy_config = PreTrainedConfig.from_pretrained(self.policy_path)
@@ -603,7 +605,7 @@ async def main():
     parser.add_argument(
         "--device",
         type=str,
-        default="mps",
+        default="cuda",
         choices=["cuda", "cpu", "mps"],
         help="Device to run inference on"
     )
