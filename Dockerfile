@@ -20,10 +20,11 @@ COPY . .
 # resolve the correct versions for the container's environment.
 # torch and torchvision are excluded as they are in the base image.
 # pynput is excluded as it requires evdev which needs gcc to compile.
+# NumPy version is pinned to 1.x for compatibility with PyTorch base image.
 RUN pip install --no-deps .
 RUN pip install \
     "cmake>=3.29" \
-    "numpy>=2.2.6" \
+    "numpy<2.0" \
     "datasets>=2.19" \
     "deepdiff>=7.0" \
     "diffusers>=0.27" \
@@ -38,13 +39,13 @@ RUN pip install \
     "jsonlines>=4.0" \
     "numba>=0.59" \
     "omegaconf>=2.3" \
-    "opencv-python-headless>=4.9" \
+    "opencv-python-headless<4.10" \
     "packaging>=24.2" \
     "av>=14.2" \
-    "pymunk>=6.6" \
+    "pymunk<7.0" \
     "pyserial>=3.5" \
     "pyzmq>=26.2" \
-    "rerun-sdk>=0.21" \
+    "rerun-sdk<0.20" \
     "termcolor>=2.4" \
     "wandb>=0.16" \
     "zarr>=2.17" \
