@@ -1,3 +1,5 @@
 from .config_so100_follower import SO100FollowerConfig, SO100FollowerEndEffectorConfig
+from .config_so100_web_client import SO100WebClientConfig
 from .so100_follower import SO100Follower
 from .so100_follower_end_effector import SO100FollowerEndEffector
+from .so100_web_client import SO100WebClient
