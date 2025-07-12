@@ -18,7 +18,7 @@ COPY . .
 # the 'teleop' extra, which includes 'evdev' and requires system headers.
 # We then install the required packages manually.
 RUN pip install --no-deps .
-RUN pip install websockets pyzmq opencv-python-headless numpy Pillow torch torchvision torchaudio huggingface-hub safetensors tqdm einops omegaconf draccus
+RUN pip install websockets pyzmq opencv-python-headless numpy Pillow torch torchvision torchaudio huggingface-hub safetensors tqdm einops omegaconf draccus serial
 
 # Expose the WebSocket port that the server listens on
 EXPOSE 8765
