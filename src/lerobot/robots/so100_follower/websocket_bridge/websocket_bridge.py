@@ -105,10 +105,10 @@ class WebSocketBridge:
         self.running = True
         async with websockets.serve(
             self._handle_client,
-            "localhost",
+            "0.0.0.0",
             self.ws_port
         ):
-            logger.info(f"WebSocket server started on port {self.ws_port}")
+            logger.info(f"WebSocket server started on 0.0.0.0:{self.ws_port}")
             
             try:
                 await asyncio.Future()  # Run forever
