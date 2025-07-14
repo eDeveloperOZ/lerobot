@@ -1,23 +1,21 @@
 import os
 import runpod
-import threading
+import multiprocessing
 import asyncio
 from lerobot.robots.so100_follower.websocket_bridge import websocket_bridge
 
-def start_bridge():
+def start_bridge_process():
+    """This function is the entry point for the new process."""
     import sys
     sys.argv = ["run_websocket_bridge.py", "--ws-port", "8765", "--device", "cuda", "--no-signals"]
-    
-    # Create and manage a new event loop for this thread
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    # Run the main async function until it completes (which is forever)
-    loop.run_until_complete(websocket_bridge.main())
-
-bridge_thread = threading.Thread(target=start_bridge, daemon=True)
-bridge_thread.start()
+    # asyncio.run() is safe here as it runs in the main thread of the new process.
+    asyncio.run(websocket_bridge.main())
 
 def handler(job):
+    """
+    The handler for the Runpod serverless worker.
+    It returns the public IP and the assigned TCP port.
+    """
     public_ip = os.environ.get('RUNPOD_PUBLIC_IP')
     tcp_port = os.environ.get('RUNPOD_TCP_PORT_8765')
     return {
@@ -25,4 +23,13 @@ def handler(job):
         "port": tcp_port
     }
 
-runpod.serverless.start({"handler": handler})
+if __name__ == '__main__':
+    # The __name__ == '__main__' guard is crucial for multiprocessing.
+    # It prevents child processes from re-executing the main script's code.
+    
+    # Run the bridge in a separate process for complete isolation.
+    bridge_process = multiprocessing.Process(target=start_bridge_process, daemon=True)
+    bridge_process.start()
+
+    # Start the Runpod serverless worker in the main process.
+    runpod.serverless.start({"handler": handler})
