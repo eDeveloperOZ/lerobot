@@ -622,6 +622,12 @@ async def main():
         default=1,
         help="Number of actions to predict in each inference (1 for single, >1 for chunking)"
     )
+
+    parser.add_argument(
+        "--no-signals",
+        action="store_true",
+        help="Disable signal handlers (for running in a thread)"
+    )
     
     args = parser.parse_args()
     
@@ -638,15 +644,16 @@ async def main():
     )
     
     # Setup signal handlers
-    loop = asyncio.get_event_loop()
+    if not args.no_signals:
+        loop = asyncio.get_event_loop()
     
-    def signal_handler():
-        logger.info("Received interrupt signal")
-        bridge.stop()
-        loop.stop()
+        def signal_handler():
+            logger.info("Received interrupt signal")
+            bridge.stop()
+            loop.stop()
     
-    for sig in (signal.SIGTERM, signal.SIGINT):
-        loop.add_signal_handler(sig, signal_handler)
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            loop.add_signal_handler(sig, signal_handler)
     
     # Run bridge
     try:
