@@ -7,7 +7,12 @@ from lerobot.robots.so100_follower.websocket_bridge import websocket_bridge
 def start_bridge():
     import sys
     sys.argv = ["run_websocket_bridge.py", "--ws-port", "8765", "--device", "cuda", "--no-signals"]
-    asyncio.run(websocket_bridge.main())
+    
+    # Create and manage a new event loop for this thread
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    # Run the main async function until it completes (which is forever)
+    loop.run_until_complete(websocket_bridge.main())
 
 bridge_thread = threading.Thread(target=start_bridge, daemon=True)
 bridge_thread.start()
