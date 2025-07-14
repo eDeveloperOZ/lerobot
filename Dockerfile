@@ -49,7 +49,8 @@ RUN pip install \
     "termcolor>=2.4" \
     "wandb>=0.16" \
     "zarr>=2.17" \
-    "websockets"
+    "websockets" \
+    "runpod"
 
 # Expose the WebSocket port that the server listens on
 EXPOSE 8765
@@ -57,4 +58,4 @@ EXPOSE 8765
 # Command to run the WebSocket bridge.
 # Assumes `run_websocket_bridge.py` is in the root directory.
 # The device is set to "cuda" for use with Runpod GPU instances.
-CMD ["python", "run_websocket_bridge.py", "--ws-port", "8765", "--device", "cuda"] 
+CMD ["python", "rp_handler.py"] 
