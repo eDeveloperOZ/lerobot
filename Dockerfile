@@ -52,12 +52,10 @@ RUN pip install \
     "websockets" \
     "runpod"
 
-# Copy the run script and make it executable
-COPY run.sh .
-RUN chmod +x run.sh
-
 # Expose the WebSocket port that the server listens on
 EXPOSE 8765
 
-# Command to run the shell script which starts both the bridge and the worker.
-CMD ["./run.sh"] 
+# Command to run the WebSocket bridge.
+# Assumes `run_websocket_bridge.py` is in the root directory.
+# The device is set to "cuda" for use with Runpod GPU instances.
+CMD ["python", "rp_handler.py"] 
