@@ -16,6 +16,7 @@ def handler(job):
     The handler for the Runpod serverless worker.
     It returns the public IP and the assigned TCP port.
     """
+    print(f"Job: {job}")
     input_data = job.get("input", {})
     print(f"Input data: {input_data}")
     public_ip = os.environ.get('RUNPOD_PUBLIC_IP')
