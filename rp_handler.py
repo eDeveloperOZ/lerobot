@@ -6,10 +6,8 @@ from lerobot.robots.so100_follower.websocket_bridge import websocket_bridge
 
 def start_bridge_process():
     """This function is the entry point for the new process."""
-    import sys
-    sys.argv = ["run_websocket_bridge.py", "--ws-port", "8765", "--device", "cuda", "--no-signals"]
-    # asyncio.run() is safe here as it runs in the main thread of the new process.
-    asyncio.run(websocket_bridge.main())
+    ws_bridge = websocket_bridge.WebSocketBridge()
+    ws_bridge.start()
     print("Bridge process finished")
 
 def handler(job):
@@ -32,8 +30,7 @@ if __name__ == '__main__':
     # It prevents child processes from re-executing the main script's code.
     
     # Run the bridge in a separate process for complete isolation.
-    bridge_process = multiprocessing.Process(target=start_bridge_process, daemon=True)
-    bridge_process.start()
+    start_bridge_process()
     print("Bridge process started")
 
     # Start the Runpod serverless worker in the main process.
