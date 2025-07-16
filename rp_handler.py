@@ -24,7 +24,7 @@ def handler(job):
     tcp_port = os.environ.get('RUNPOD_TCP_PORT_8765')
     
     print(f"Bridge is running. Yielding IP: {public_ip}, Port: {tcp_port}")
-    yield {
+    return {
         "ip": public_ip,
         "port": tcp_port
     }
