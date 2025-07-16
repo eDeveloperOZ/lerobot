@@ -7,7 +7,7 @@ from lerobot.robots.so100_follower.websocket_bridge import websocket_bridge
 def start_bridge_process():
     """This function is the entry point for the new process."""
     ws_bridge = websocket_bridge.WebSocketBridge()
-    ws_bridge.start()
+    asyncio.get_event_loop().run_until_complete(ws_bridge.start())
     print("Bridge process finished")
 
 def handler(job):
