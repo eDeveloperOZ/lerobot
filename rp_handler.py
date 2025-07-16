@@ -15,6 +15,8 @@ def handler(job):
     The handler for the Runpod serverless worker.
     It returns the public IP and the assigned TCP port.
     """
+    start_bridge_process()
+    print("Bridge process started")
     input_data = job.get("input", {})
     print(f"Input data: {input_data}")
     public_ip = os.environ.get('RUNPOD_PUBLIC_IP')
@@ -29,10 +31,6 @@ if __name__ == '__main__':
     # The __name__ == '__main__' guard is crucial for multiprocessing.
     # It prevents child processes from re-executing the main script's code.
     
-    # Run the bridge in a separate process for complete isolation.
-    start_bridge_process()
-    print("Bridge process started")
-
     # Start the Runpod serverless worker in the main process.
     print("Starting Runpod serverless worker")
     runpod.serverless.start({"handler": handler})
