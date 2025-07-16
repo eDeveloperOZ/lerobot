@@ -10,6 +10,7 @@ def start_bridge_process():
     sys.argv = ["run_websocket_bridge.py", "--ws-port", "8765", "--device", "cuda", "--no-signals"]
     # asyncio.run() is safe here as it runs in the main thread of the new process.
     asyncio.run(websocket_bridge.main())
+    print("Bridge process finished")
 
 def handler(job):
     """
@@ -17,6 +18,7 @@ def handler(job):
     It returns the public IP and the assigned TCP port.
     """
     input_data = job.get("input", {})
+    print(f"Input data: {input_data}")
     public_ip = os.environ.get('RUNPOD_PUBLIC_IP')
     tcp_port = os.environ.get('RUNPOD_TCP_PORT_8765')
     print(f"Public IP: {public_ip}, TCP Port: {tcp_port}")
@@ -30,8 +32,9 @@ if __name__ == '__main__':
     # It prevents child processes from re-executing the main script's code.
     
     # Run the bridge in a separate process for complete isolation.
-    # bridge_process = multiprocessing.Process(target=start_bridge_process, daemon=True)
-    # bridge_process.start()
+    bridge_process = multiprocessing.Process(target=start_bridge_process, daemon=True)
+    bridge_process.start()
+    print("Bridge process started")
 
     # Start the Runpod serverless worker in the main process.
     print("Starting Runpod serverless worker")
