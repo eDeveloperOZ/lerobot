@@ -14,30 +14,19 @@ def start_bridge_process():
 
 def handler(job):
     """
-    The handler for the Runpod serverless worker.
-    It returns the public IP and the assigned TCP port, then waits
-    for a timeout before allowing the worker to exit.
+    This generator handler yields the connection info immediately,
+    then keeps the worker alive for a session timeout.
     """
     input_data = job.get("input", {})
-    session_timeout_s = input_data.get("timeout", 600) # Default to 10 minutes
+    # session_timeout_s = input_data.get("timeout", 600)  # Default to 10 minutes
 
     public_ip = os.environ.get('RUNPOD_PUBLIC_IP')
     tcp_port = os.environ.get('RUNPOD_TCP_PORT_8765')
     
-    print(f"Bridge is running. Returning IP: {public_ip}, Port: {tcp_port}")
-    print(f"This worker will stay alive for {session_timeout_s} seconds.")
-
-    # We return the connection info immediately so the client can connect.
-    # Then we sleep to keep the worker alive for the session.
-    # Runpod only shuts down idle workers; sleeping keeps it busy.
-    runpod.serverless.heartbeat_ping()
-    time.sleep(session_timeout_s)
-
-    print(f"Session timeout reached. Worker will now exit.")
-    return {
+    print(f"Bridge is running. Yielding IP: {public_ip}, Port: {tcp_port}")
+    yield {
         "ip": public_ip,
-        "port": tcp_port,
-        "status": "session_ended"
+        "port": tcp_port
     }
 
 if __name__ == '__main__':
