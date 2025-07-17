@@ -42,8 +42,9 @@ except ImportError:
 
 def handle_training_job(input_data):
     """
-    Handle training job execution by constructing and running the
-    LeRobot training script command.
+    Handle training job execution by constructing and running a single,
+    unified Python script that sets up the environment, patches PyTorch,
+    and executes the LeRobot training.
     """
     try:
         dataset_repo = input_data["dataset_repo"]
@@ -52,45 +53,91 @@ def handle_training_job(input_data):
 
         print(f"Starting training for {dataset_repo} -> {output_repo}")
 
-        # Apply the PyTorch compatibility patch before training
-        apply_pytorch_patch()
+        # This unified script is executed by the python interpreter, ensuring
+        # all setup and execution happens in the same process.
+        unified_script = '''
+import os
+import sys
+from pathlib import Path
 
-        # Set environment variables for the training process
-        env = os.environ.copy()
-        env["HUGGINGFACE_HUB_TOKEN"] = hf_token
-        env["HF_TOKEN"] = hf_token
-        # MKL threading issue fixes
-        env["MKL_SERVICE_FORCE_INTEL"] = "1"
-        env["MKL_THREADING_LAYER"] = "GNU"
+# 1. Set Environment Variables
+print("Setting up environment variables...")
+os.environ['MKL_SERVICE_FORCE_INTEL'] = '1'
+os.environ['MKL_THREADING_LAYER'] = 'GNU'
+os.environ['HUGGINGFACE_HUB_TOKEN'] = "{hf_token}"
+os.environ['HF_TOKEN'] = "{hf_token}"
+
+# 2. Apply PyTorch GradScaler Patch
+print("Applying PyTorch compatibility patch...")
+try:
+    import torch
+    print(f"PyTorch version: {{torch.__version__}}")
+    from torch.amp import GradScaler
+    print("GradScaler patch not needed.")
+except ImportError:
+    try:
+        from torch.cuda.amp import GradScaler
+        import torch.amp
+        torch.amp.GradScaler = GradScaler
+        print("Successfully applied GradScaler patch to torch.amp.")
+    except ImportError as e:
+        print(f"FATAL: Failed to import GradScaler from torch.cuda.amp: {{e}}")
+        sys.exit(1)
+
+# 3. Find and Execute LeRobot Training Script
+print("Executing LeRobot training script...")
+try:
+    import lerobot
+    train_script_path = Path(lerobot.__file__).parent / "scripts" / "train.py"
+    
+    if not train_script_path.exists():
+        print(f"FATAL: LeRobot train.py not found at {{train_script_path}}")
+        sys.exit(1)
+
+    # 4. Set arguments for the training script
+    sys.argv = [
+        str(train_script_path),
+        f"--dataset.repo_id={dataset_repo}",
+        f"--policy.repo_id={output_repo}",
+        "--policy.type=act",
+        "--output_dir=/tmp/training_output",
+        "--steps=2000",
+        "--batch_size=8",
+        "--num_workers=4",
+        "--policy.device=cuda",
+        "--save_checkpoint=true",
+        "--eval_freq=0",
+        "--log_freq=100",
+    ]
+
+    print(f"Executing: python {{' '.join(sys.argv)}}")
+    
+    # Execute the script's code in the current process
+    exec(open(train_script_path).read())
+    
+except SystemExit as e:
+    print(f"Training script exited with code: {{e.code}}")
+    sys.exit(e.code)
+except Exception as e:
+    import traceback
+    print("FATAL: An unexpected error occurred during training execution.")
+    traceback.print_exc()
+    sys.exit(1)
+'''.format(
+    hf_token=hf_token,
+    dataset_repo=dataset_repo,
+    output_repo=output_repo,
+)
         
-        # Construct the training command
-        # Arguments are based on LeRobot's train.py script
-        cmd = [
-            sys.executable,
-            "-m", "lerobot.scripts.train",
-            f"--dataset.repo_id={dataset_repo}",
-            f"--policy.repo_id={output_repo}",
-            "--policy.type=act",
-            "--output_dir=/tmp/training_output",
-            "--steps=2000",
-            "--batch_size=8",
-            "--num_workers=4",
-            "--policy.device=cuda",
-            "--save_checkpoint=true",
-            "--eval_freq=0",
-            "--log_freq=100",
-        ]
+        # Execute the unified script
+        cmd = [sys.executable, "-c", unified_script]
         
-        print(f"Executing command: {' '.join(cmd)}")
-        
-        # Execute the script and capture output in real-time
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             bufsize=1,
-            env=env
         )
         
         output_list = []
@@ -105,9 +152,9 @@ def handle_training_job(input_data):
         output_list.append({"exit_code": return_code})
         
         if return_code == 0:
-            print("Training job completed successfully.")
+            print("Unified training script completed successfully.")
         else:
-            print(f"Training job failed with exit code {return_code}.")
+            print(f"Unified training script failed with exit code {return_code}.")
             
         return output_list
             
@@ -116,7 +163,7 @@ def handle_training_job(input_data):
         print(error_msg)
         return [{"output": error_msg, "exit_code": 1}]
     except Exception as e:
-        error_msg = f"An unexpected error occurred in training job: {str(e)}"
+        error_msg = f"An unexpected error occurred in training job handler: {str(e)}"
         print(error_msg)
         return [{"output": error_msg, "exit_code": 1}]
 
