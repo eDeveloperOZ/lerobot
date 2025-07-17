@@ -84,7 +84,37 @@ except ImportError:
         print(f"FATAL: Failed to import GradScaler from torch.cuda.amp: {{e}}")
         sys.exit(1)
 
-# 3. Find and Execute LeRobot Training Script
+# 3. Apply LeRobot Dataset Patch
+print("Applying LeRobot dataset patch for timestamp handling...")
+try:
+    import lerobot.datasets.lerobot_dataset
+    from lerobot.datasets.lerobot_dataset import LeRobotDataset
+    import torch
+
+    # Store the original __init__
+    original_init = LeRobotDataset.__init__
+
+    # Define the new __init__ with the patch
+    def patched_init(self, *args, **kwargs):
+        # Call the original constructor first
+        original_init(self, *args, **kwargs)
+        # Now, patch the timestamp loading logic
+        if isinstance(self.hf_dataset["timestamp"], dict):
+             print("Timestamp column already processed, skipping patch.")
+             return
+        print("Patching timestamp loading: converting Column to list of Tensors.")
+        timestamps_list = [torch.tensor(t) for t in self.hf_dataset["timestamp"]]
+        self.timestamps = torch.stack(timestamps_list).numpy()
+
+    # Monkey-patch the class
+    LeRobotDataset.__init__ = patched_init
+    print("Successfully patched LeRobotDataset for timestamp handling.")
+
+except Exception as e:
+    print(f"WARNING: Failed to apply LeRobot dataset patch: {{e}}")
+    # This might not be fatal, so we'll continue
+
+# 4. Find and Execute LeRobot Training Script
 print("Executing LeRobot training script...")
 try:
     import lerobot
