@@ -12,66 +12,113 @@ from lerobot.robots.so100_follower.websocket_bridge import websocket_bridge
 # Global variable to hold the process
 bridge_process = None
 
-def handle_training_job(input_data):
+def apply_pytorch_patch():
     """
-    Handle training job execution
+    Apply a patch to torch.amp for GradScaler compatibility if needed.
+    This is necessary for some versions of PyTorch where LeRobot's
+    hardcoded import fails.
     """
     try:
-        # Decode the training script
-        script = base64.b64decode(input_data["script"]).decode()
-        print(f"Executing training script...")
+        # Create a small script to perform the patch.
+        # This is executed in a separate process to not affect the handler.
+        patch_script = """
+import torch
+try:
+    from torch.amp import GradScaler
+    print("GradScaler patch not needed.")
+except ImportError:
+    try:
+        from torch.cuda.amp import GradScaler
+        import torch.amp
+        torch.amp.GradScaler = GradScaler
+        print("Successfully applied GradScaler patch to torch.amp.")
+    except ImportError as e:
+        print(f"Failed to import GradScaler from torch.cuda.amp: {e}")
+"""
+        # Execute the patch script using the same python interpreter
+        subprocess.run([sys.executable, "-c", patch_script], check=True)
+    except Exception as e:
+        print(f"An error occurred during PyTorch patching: {e}")
+
+def handle_training_job(input_data):
+    """
+    Handle training job execution by constructing and running the
+    LeRobot training script command.
+    """
+    try:
+        dataset_repo = input_data["dataset_repo"]
+        output_repo = input_data["output_repo"]
+        hf_token = input_data["hf_token"]
+
+        print(f"Starting training for {dataset_repo} -> {output_repo}")
+
+        # Apply the PyTorch compatibility patch before training
+        apply_pytorch_patch()
+
+        # Set environment variables for the training process
+        env = os.environ.copy()
+        env["HUGGINGFACE_HUB_TOKEN"] = hf_token
+        env["HF_TOKEN"] = hf_token
+        # MKL threading issue fixes
+        env["MKL_SERVICE_FORCE_INTEL"] = "1"
+        env["MKL_THREADING_LAYER"] = "GNU"
         
-        # Create a temporary script file
-        script_path = "/tmp/training_script.sh"
-        with open(script_path, "w") as f:
-            f.write("#!/bin/bash\n")
-            f.write("set -e\n")  # Exit on any error
-            f.write(script)
+        # Construct the training command
+        # Arguments are based on LeRobot's train.py script
+        cmd = [
+            sys.executable,
+            "-m", "lerobot.scripts.train",
+            f"--dataset.repo_id={dataset_repo}",
+            f"--policy.repo_id={output_repo}",
+            "--policy.type=act",
+            "--output_dir=/tmp/training_output",
+            "--steps=2000",
+            "--batch_size=8",
+            "--num_workers=4",
+            "--policy.device=cuda",
+            "--save_checkpoint=true",
+            "--eval_freq=0",
+            "--log_freq=100",
+        ]
         
-        # Make script executable
-        os.chmod(script_path, 0o755)
+        print(f"Executing command: {' '.join(cmd)}")
         
         # Execute the script and capture output in real-time
         process = subprocess.Popen(
-            ["/bin/bash", script_path],
+            cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            bufsize=1
+            bufsize=1,
+            env=env
         )
         
-        # Capture output in RunPod expected format
         output_list = []
-        while True:
-            line = process.stdout.readline()
-            if line == '' and process.poll() is not None:
-                break
-            if line:
-                line = line.strip()
-                print(line)  # Print to container logs
-                # Add to output list in RunPod format
-                output_list.append({"output": line})
+        for line in iter(process.stdout.readline, ''):
+            line = line.strip()
+            print(line)
+            output_list.append({"output": line})
         
-        # Wait for completion
-        return_code = process.poll()
+        process.stdout.close()
+        return_code = process.wait()
         
-        # Clean up
-        if os.path.exists(script_path):
-            os.remove(script_path)
-        
-        # Add exit code to output
         output_list.append({"exit_code": return_code})
         
-        # Return in RunPod expected format
+        if return_code == 0:
+            print("Training job completed successfully.")
+        else:
+            print(f"Training job failed with exit code {return_code}.")
+            
         return output_list
             
+    except KeyError as e:
+        error_msg = f"Missing required input parameter: {e}"
+        print(error_msg)
+        return [{"output": error_msg, "exit_code": 1}]
     except Exception as e:
-        print(f"Training job error: {str(e)}")
-        # Return error in RunPod format
-        return [
-            {"output": f"Training job error: {str(e)}"},
-            {"exit_code": 1}
-        ]
+        error_msg = f"An unexpected error occurred in training job: {str(e)}"
+        print(error_msg)
+        return [{"output": error_msg, "exit_code": 1}]
 
 def handle_inference_job():
     """
