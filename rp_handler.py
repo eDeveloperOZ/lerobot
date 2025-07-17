@@ -31,7 +31,7 @@ def handle_training_job(input_data):
         # Make script executable
         os.chmod(script_path, 0o755)
         
-        # Execute the script
+        # Execute the script and capture output in real-time
         process = subprocess.Popen(
             ["/bin/bash", script_path],
             stdout=subprocess.PIPE,
@@ -40,16 +40,17 @@ def handle_training_job(input_data):
             bufsize=1
         )
         
-        # Capture output
-        output_lines = []
+        # Capture output in RunPod expected format
+        output_list = []
         while True:
-            output = process.stdout.readline()
-            if output == '' and process.poll() is not None:
+            line = process.stdout.readline()
+            if line == '' and process.poll() is not None:
                 break
-            if output:
-                line = output.strip()
-                output_lines.append(line)
+            if line:
+                line = line.strip()
                 print(line)  # Print to container logs
+                # Add to output list in RunPod format
+                output_list.append({"output": line})
         
         # Wait for completion
         return_code = process.poll()
@@ -58,26 +59,19 @@ def handle_training_job(input_data):
         if os.path.exists(script_path):
             os.remove(script_path)
         
-        if return_code == 0:
-            return {
-                "status": "COMPLETED",
-                "message": "Training completed successfully",
-                "output": "\n".join(output_lines[-50:])  # Last 50 lines
-            }
-        else:
-            return {
-                "status": "FAILED", 
-                "message": f"Training failed with exit code {return_code}",
-                "output": "\n".join(output_lines[-50:])  # Last 50 lines
-            }
+        # Add exit code to output
+        output_list.append({"exit_code": return_code})
+        
+        # Return in RunPod expected format
+        return output_list
             
     except Exception as e:
         print(f"Training job error: {str(e)}")
-        return {
-            "status": "FAILED",
-            "message": f"Training job failed: {str(e)}",
-            "output": str(e)
-        }
+        # Return error in RunPod format
+        return [
+            {"output": f"Training job error: {str(e)}"},
+            {"exit_code": 1}
+        ]
 
 def handle_inference_job():
     """
