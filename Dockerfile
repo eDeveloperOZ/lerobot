@@ -27,7 +27,6 @@ RUN /opt/venv/bin/pip install --upgrade --no-cache-dir pip \
 
 # Install additional dependencies for RunPod
 RUN /opt/venv/bin/pip install --no-cache-dir \
-    "websockets" \
     "runpod"
 
 # Expose the WebSocket port that the server listens on
