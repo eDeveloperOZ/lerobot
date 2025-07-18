@@ -31,6 +31,7 @@ def handler(job):
         # Create the configuration object
         policy_config = make_policy_config(policy_type)
         policy_config.device = "cuda"
+        policy_config.repo_id = model_repo_id
         policy_config.tags = ["cubix"]
         
         cfg = TrainPipelineConfig(
