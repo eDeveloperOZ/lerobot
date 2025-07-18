@@ -1,11 +1,35 @@
 import runpod
 import tempfile
 import os
+import torch
 from huggingface_hub import HfApi
 from lerobot.scripts.train import train
 from lerobot.configs.train import TrainPipelineConfig
 from lerobot.configs.default import DatasetConfig
 from lerobot.policies.factory import make_policy_config
+from lerobot.datasets.utils import hf_transform_to_torch
+
+
+def patched_hf_transform_to_torch(items_dict):
+    """Patched version of hf_transform_to_torch that handles Column objects"""
+    for key in items_dict:
+        # Handle case where items_dict[key] is a Column object
+        if hasattr(items_dict[key], 'to_list'):
+            # Convert Column to list first
+            items_dict[key] = items_dict[key].to_list()
+        
+        if not items_dict[key]:  # Empty list
+            continue
+            
+        first_item = items_dict[key][0]
+        if hasattr(first_item, 'convert'):  # PIL Image
+            to_tensor = torch.nn.functional.to_tensor
+            items_dict[key] = [to_tensor(img) for img in items_dict[key]]
+        elif first_item is None:
+            pass
+        else:
+            items_dict[key] = [x if isinstance(x, str) else torch.tensor(x) for x in items_dict[key]]
+    return items_dict
 
 
 def handler(job):
@@ -28,6 +52,10 @@ def handler(job):
     # Set HuggingFace token for authentication
     os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
     os.environ["HF_TOKEN"] = hf_token
+
+    # Patch the hf_transform_to_torch function to handle Column objects
+    import lerobot.datasets.utils
+    lerobot.datasets.utils.hf_transform_to_torch = patched_hf_transform_to_torch
 
     # Create a temporary directory for training outputs
     with tempfile.TemporaryDirectory() as temp_dir:
