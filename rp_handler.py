@@ -1,5 +1,6 @@
 import runpod
 import tempfile
+import os
 from huggingface_hub import HfApi
 from lerobot.scripts.train import train
 from lerobot.configs.train import TrainPipelineConfig
@@ -24,6 +25,10 @@ def handler(job):
     print(f"Input data: {input_data}")
     print(f"Job: {job}")
 
+    # Set HuggingFace token for authentication
+    os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
+    os.environ["HF_TOKEN"] = hf_token
+
     # Create a temporary directory for training outputs
     with tempfile.TemporaryDirectory() as temp_dir:
         print(f"Using temporary directory: {temp_dir}")
@@ -36,7 +41,7 @@ def handler(job):
         policy_config.tags = ["cubix"]
         
         cfg = TrainPipelineConfig(
-            dataset=DatasetConfig(repo_id=f"{hf_token}/{dataset_repo_id}"),
+            dataset=DatasetConfig(repo_id=dataset_repo_id),
             policy=policy_config,
             output_dir=temp_dir,
             job_name=job_name,
