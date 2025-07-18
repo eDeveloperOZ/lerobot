@@ -67,37 +67,17 @@ def handler(job):
     try:
         api = HfApi(token=hf_token)
         
-        # Find the latest checkpoint directory
-        checkpoints_dir = Path(temp_dir) / "checkpoints"
-        if checkpoints_dir.exists():
-            # Get the last checkpoint
-            checkpoint_dirs = [d for d in checkpoints_dir.iterdir() if d.is_dir() and d.name != "last"]
-            if checkpoint_dirs:
-                # Sort by step number (assuming directory names are step numbers)
-                latest_checkpoint = max(checkpoint_dirs, key=lambda x: int(x.name))
-                model_dir = latest_checkpoint / "pretrained_model"
-                
-                if model_dir.exists():
-                    print(f"Uploading model from {model_dir} to {model_repo_id}")
-                    api.upload_folder(
-                        folder_path=str(model_dir),
+        api.upload_folder(
+                        folder_path=str(temp_dir),
                         repo_id=model_repo_id,
                         repo_type="model",
                         commit_message=f"Training completed - {steps} steps"
                     )
-                    print("Model uploaded successfully!")
-                else:
-                    print("No model directory found in checkpoint")
-            else:
-                print("No checkpoint directories found")
-        else:
-            print("No checkpoints directory found")
+                    
     except Exception as e:
         print(f"Failed to upload model: {e}")
     
-    # Clean up temporary directory
-    import shutil
-    shutil.rmtree(temp_dir, ignore_errors=True)
+    
     
     return {"status": "completed", "message": "Training finished successfully"}
 
