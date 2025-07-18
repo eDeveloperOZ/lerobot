@@ -29,7 +29,7 @@ def handler(job):
     os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
     os.environ["HF_TOKEN"] = hf_token
 
-    # Create a unique temporary directory for training outputs
+    # Create a unique temporary directory path for training outputs
     import uuid
     import time
     import shutil
@@ -38,13 +38,7 @@ def handler(job):
     timestamp = int(time.time() * 1000)  # milliseconds
     temp_dir = f"/tmp/lerobot_training_{timestamp}_{uuid.uuid4().hex[:8]}"
     
-    # Force remove if it somehow exists
-    if os.path.exists(temp_dir):
-        shutil.rmtree(temp_dir, ignore_errors=True)
-        print(f"Removed existing temporary directory: {temp_dir}")
-    
-    os.makedirs(temp_dir, exist_ok=True)
-    print(f"Using temporary directory: {temp_dir}")
+    print(f"Will use temporary directory: {temp_dir}")
     
     # Create the configuration object
     policy_config = make_policy_config(policy_type)
