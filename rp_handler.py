@@ -11,8 +11,7 @@ from lerobot.policies.factory import make_policy_config
 
 def handler(job):
     """
-    The handler for the Runpod serverless worker.
-    It returns the public IP and the assigned TCP port.
+    Handler for RunPod serverless function
     """
     input_data = job.get("input", {})
     hf_token = input_data.get("hf_token", "")
@@ -30,61 +29,73 @@ def handler(job):
     os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
     os.environ["HF_TOKEN"] = hf_token
 
-    # Create a temporary directory for training outputs
-    with tempfile.TemporaryDirectory() as temp_dir:
-        print(f"Using temporary directory: {temp_dir}")
-        
-        # Create the configuration object
-        policy_config = make_policy_config(policy_type)
-        policy_config.device = "cuda"
-        policy_config.push_to_hub = False  # We'll handle upload manually
-        policy_config.repo_id = model_repo_id
-        policy_config.tags = ["cubix"]
-        
-        cfg = TrainPipelineConfig(
-            dataset=DatasetConfig(repo_id=dataset_repo_id),
-            policy=policy_config,
-            output_dir=Path(temp_dir),
-            job_name=job_name,
-            resume=False,
-            num_workers=4,
-            batch_size=batch_size,
-            steps=steps,
-            eval_freq=eval_freq,
-            save_checkpoint=True,
-        )
-        
-        # Train the policy
-        print("Starting training...")
-        train(cfg)
-        
-        # Upload the trained model to Hugging Face
-        if model_repo_id:
-            print(f"Uploading model to {model_repo_id}...")
-            api = HfApi(token=hf_token)
-            
-            # Upload the entire output directory
-            api.upload_folder(
-                folder_path=temp_dir,
-                repo_id=model_repo_id,
-                repo_type="model",
-                commit_message=f"Trained {policy_type} model with {steps} steps"
-            )
-            print(f"Model uploaded successfully to {model_repo_id}")
-        else:
-            print("No model_repo_id provided, skipping upload")
+    # Create a unique temporary directory for training outputs
+    import uuid
+    temp_dir = f"/tmp/lerobot_training_{uuid.uuid4().hex}"
+    os.makedirs(temp_dir, exist_ok=True)
+    print(f"Using temporary directory: {temp_dir}")
     
-    return {
-        "status": "success",
-        "message": f"Training completed successfully. Model uploaded to {model_repo_id if model_repo_id else 'N/A'}",
-        "policy_type": policy_type,
-        "steps": steps
-    }
+    # Create the configuration object
+    policy_config = make_policy_config(policy_type)
+    policy_config.device = "cuda"
+    policy_config.push_to_hub = False  # We'll handle upload manually
+    policy_config.repo_id = model_repo_id
+    policy_config.tags = ["cubix"]
+    
+    cfg = TrainPipelineConfig(
+        dataset=DatasetConfig(repo_id=dataset_repo_id),
+        policy=policy_config,
+        output_dir=Path(temp_dir),
+        job_name=job_name,
+        resume=False,
+        num_workers=4,
+        batch_size=batch_size,
+        steps=steps,
+        eval_freq=eval_freq,
+        save_checkpoint=True,
+    )
 
-if __name__ == '__main__':
-    # The __name__ == '__main__' guard is crucial for multiprocessing.
-    # It prevents child processes from re-executing the main script's code.
+    # Run training
+    train(cfg)
+
+    # Upload the trained model to HuggingFace Hub
+    try:
+        api = HfApi(token=hf_token)
+        
+        # Find the latest checkpoint directory
+        checkpoints_dir = Path(temp_dir) / "checkpoints"
+        if checkpoints_dir.exists():
+            # Get the last checkpoint
+            checkpoint_dirs = [d for d in checkpoints_dir.iterdir() if d.is_dir() and d.name != "last"]
+            if checkpoint_dirs:
+                # Sort by step number (assuming directory names are step numbers)
+                latest_checkpoint = max(checkpoint_dirs, key=lambda x: int(x.name))
+                model_dir = latest_checkpoint / "pretrained_model"
+                
+                if model_dir.exists():
+                    print(f"Uploading model from {model_dir} to {model_repo_id}")
+                    api.upload_folder(
+                        folder_path=str(model_dir),
+                        repo_id=model_repo_id,
+                        repo_type="model",
+                        commit_message=f"Training completed - {steps} steps"
+                    )
+                    print("Model uploaded successfully!")
+                else:
+                    print("No model directory found in checkpoint")
+            else:
+                print("No checkpoint directories found")
+        else:
+            print("No checkpoints directory found")
+    except Exception as e:
+        print(f"Failed to upload model: {e}")
     
-    # Start the Runpod serverless worker in the main process.
-    print("Starting Runpod serverless worker")
+    # Clean up temporary directory
+    import shutil
+    shutil.rmtree(temp_dir, ignore_errors=True)
+    
+    return {"status": "completed", "message": "Training finished successfully"}
+
+
+if __name__ == "__main__":
     runpod.serverless.start({"handler": handler})
