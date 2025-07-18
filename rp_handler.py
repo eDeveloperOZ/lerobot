@@ -31,11 +31,18 @@ def handler(job):
 
     # Create a unique temporary directory for training outputs
     import uuid
-    temp_dir = f"/tmp/lerobot_training_{uuid.uuid4().hex}"
-    if not os.path.exists(temp_dir):
-        import shutil
+    import time
+    import shutil
+    
+    # Use timestamp + UUID for maximum uniqueness
+    timestamp = int(time.time() * 1000)  # milliseconds
+    temp_dir = f"/tmp/lerobot_training_{timestamp}_{uuid.uuid4().hex[:8]}"
+    
+    # Force remove if it somehow exists
+    if os.path.exists(temp_dir):
         shutil.rmtree(temp_dir, ignore_errors=True)
         print(f"Removed existing temporary directory: {temp_dir}")
+    
     os.makedirs(temp_dir, exist_ok=True)
     print(f"Using temporary directory: {temp_dir}")
     
