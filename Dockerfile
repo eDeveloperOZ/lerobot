@@ -23,7 +23,7 @@ WORKDIR /app
 
 # Install LeRobot with dependencies
 RUN /opt/venv/bin/pip install --upgrade --no-cache-dir pip \
-    && /opt/venv/bin/pip install --no-cache-dir .
+    && /opt/venv/bin/pip install --no-cache-dir "."
 
 # Install additional dependencies for RunPod
 RUN /opt/venv/bin/pip install --no-cache-dir \
