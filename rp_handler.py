@@ -1,6 +1,7 @@
 import runpod
 import tempfile
 import os
+from pathlib import Path
 from huggingface_hub import HfApi
 from lerobot.scripts.train import train
 from lerobot.configs.train import TrainPipelineConfig
@@ -43,7 +44,7 @@ def handler(job):
         cfg = TrainPipelineConfig(
             dataset=DatasetConfig(repo_id=dataset_repo_id),
             policy=policy_config,
-            output_dir=temp_dir,
+            output_dir=Path(temp_dir),
             job_name=job_name,
             resume=False,
             num_workers=4,
