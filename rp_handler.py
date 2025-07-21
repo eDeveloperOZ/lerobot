@@ -130,10 +130,48 @@ def handler(job):
         print(f"✅ Training completed successfully")
 
         # Upload the trained model to HuggingFace Hub
-        print(f"📤 Uploading model to {model_repo_id}...")
+        checkpoints_path = Path(temp_dir) / "checkpoints"
+        if not checkpoints_path.exists() or not checkpoints_path.is_dir():
+             return {
+                "status": "failed",
+                "error": f"Training completed, but checkpoints folder not found in {temp_dir}",
+            }
+        
+        checkpoint_dirs = [d.name for d in checkpoints_path.iterdir() if d.is_dir()]
+        
+        # Upload intermediate checkpoints into subfolders
+        for ckpt_name in checkpoint_dirs:
+            if ckpt_name == "last":
+                continue
+
+            pretrained_model_path = checkpoints_path / ckpt_name / "pretrained_model"
+            if pretrained_model_path.exists():
+                print(f"📤 Uploading intermediate checkpoint {ckpt_name} to {model_repo_id}/{ckpt_name}...")
+                try:
+                    api.upload_folder(
+                        folder_path=str(pretrained_model_path),
+                        repo_id=model_repo_id,
+                        repo_type="model",
+                        path_in_repo=ckpt_name,
+                        commit_message=f"Intermediate checkpoint after {ckpt_name} steps",
+                        token=hf_token,
+                    )
+                    print(f"✅ Checkpoint {ckpt_name} uploaded successfully.")
+                except Exception as e:
+                    print(f"⚠️ Failed to upload intermediate checkpoint {ckpt_name}. Error: {e}")
+
+        # Upload the 'last' checkpoint to the root of the repo
+        last_pretrained_path = checkpoints_path / "last" / "pretrained_model"
+        if not last_pretrained_path.exists():
+            return {
+                "status": "failed",
+                "error": "Training completed, but 'last/pretrained_model' checkpoint not found.",
+            }
+
+        print(f"📤 Uploading final model to the root of {model_repo_id}...")
         try:
             api.upload_folder(
-                folder_path=str(temp_dir),
+                folder_path=str(last_pretrained_path),
                 repo_id=model_repo_id,
                 repo_type="model",
                 commit_message=f"Training completed - {steps} steps",
@@ -154,7 +192,7 @@ def handler(job):
             }
             
         except Exception as upload_error:
-            error_msg = f"Training completed but failed to upload model: {str(upload_error)}"
+            error_msg = f"Training completed but failed to upload final model: {str(upload_error)}"
             print(f"❌ {error_msg}")
             print(f"Full upload error: {traceback.format_exc()}")
             
