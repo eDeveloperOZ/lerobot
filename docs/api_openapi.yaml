@@ -1,0 +1,77 @@
+openapi: 3.1.0
+info:
+  title: LeRobot Remote API
+  version: 0.1.0
+paths:
+  /api/upload_calibration:
+    post:
+      summary: Upload calibration YAML
+      requestBody:
+        required: true
+        content:
+          application/x-yaml:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Calibration stored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  calibration_id:
+                    type: string
+  /api/train:
+    post:
+      summary: Start training job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                policy:
+                  type: string
+                dataset:
+                  type: string
+      responses:
+        '200':
+          description: Job started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+  /api/infer:
+    post:
+      summary: Run inference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                observations:
+                  type: array
+                  items:
+                    type: number
+      responses:
+        '200':
+          description: Inference results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actions:
+                    type: array
+                    items:
+                      type: number
+  /api/video:
+    websocket:
+      summary: Video stream
