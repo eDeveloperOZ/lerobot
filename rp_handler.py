@@ -60,7 +60,7 @@ def handler(job):
     job_name = input_data.get("job_name", "")
     batch_size = input_data.get("batch_size", 4)
     steps = input_data.get("steps", 100_000)
-    save_freq = input_data.get("save_freq", 20_000)
+    save_freq = input_data.get("eval_freq", 20_000)
     model_repo_id = input_data.get("model_repo_id", "")
     
     print(f"🚀 Starting training job with parameters:")
