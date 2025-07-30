@@ -180,10 +180,6 @@ def handler(job):
             )
             print(f"✅ Model uploaded successfully to {model_repo_id}")
             
-            # Clean up temporary directory
-            import shutil
-            shutil.rmtree(temp_dir, ignore_errors=True)
-            print(f"🧹 Cleaned up temporary directory")
             
             return {
                 "status": "completed", 
