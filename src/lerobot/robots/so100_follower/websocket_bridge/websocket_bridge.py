@@ -291,19 +291,25 @@ class WebSocketBridge:
             policy_config.device = str(device)
         except Exception as e:
             logger.warning(f"Custom config loading failed, trying default method: {e}")
-            # Try loading as a simple dict and add type field if missing
+            # Try loading as a simple dict and ensure policy_type field exists
             config_filename = f"{checkpoint_prefix}config.json"
             config_path = hf_hub_download(repo_id=repo_id, filename=config_filename)
             with open(config_path, 'r') as f:
                 config_dict = json.load(f)
             
-            # Infer policy type from config structure
-            if "use_vae" in config_dict and "vision_backbone" in config_dict:
-                config_dict["policy_type"] = "act"
-            elif "diffusion_step_embed_dim" in config_dict:
-                config_dict["policy_type"] = "diffusion"
-            else:
-                raise ValueError("Cannot infer policy type from config")
+            # Ensure policy_type exists
+            if "policy_type" not in config_dict:
+                if "type" in config_dict:
+                    # Copy "type" to "policy_type"
+                    config_dict["policy_type"] = config_dict["type"]
+                else:
+                    # Use heuristics to infer policy type
+                    if "use_vae" in config_dict and "vision_backbone" in config_dict:
+                        config_dict["policy_type"] = "act"
+                    elif "diffusion_step_embed_dim" in config_dict:
+                        config_dict["policy_type"] = "diffusion"
+                    else:
+                        raise ValueError("Cannot infer policy type from config: no 'policy_type' or 'type' field found, and config structure doesn't match known patterns")
 
             policy_config = make_policy_config(policy_type=config_dict["policy_type"], **config_dict)
             policy_config.device = str(device)
