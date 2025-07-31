@@ -282,6 +282,11 @@ class WebSocketBridge:
         repo_id, checkpoint_prefix = self._parse_policy_path(policy_path)
 
         try:
+            # For PreTrainedConfig.from_pretrained, we need to pass the original policy_path
+            # but only if it doesn't have checkpoints, otherwise use repo_id
+            if checkpoint_prefix:
+                # Has checkpoint, so PreTrainedConfig won't work, go to fallback
+                raise ValueError("Checkpoint path detected, using fallback config loading")
             policy_config = PreTrainedConfig.from_pretrained(self.policy_path)
             policy_config.device = str(device)
         except Exception as e:
@@ -294,13 +299,13 @@ class WebSocketBridge:
             
             # Infer policy type from config structure
             if "use_vae" in config_dict and "vision_backbone" in config_dict:
-                config_dict["type"] = "act"
+                config_dict["policy_type"] = "act"
             elif "diffusion_step_embed_dim" in config_dict:
-                config_dict["type"] = "diffusion"
+                config_dict["policy_type"] = "diffusion"
             else:
                 raise ValueError("Cannot infer policy type from config")
 
-            policy_config = make_policy_config(**config_dict)
+            policy_config = make_policy_config(policy_type=config_dict["policy_type"], **config_dict)
             policy_config.device = str(device)
 
         # Ensure pretrained_path is set
