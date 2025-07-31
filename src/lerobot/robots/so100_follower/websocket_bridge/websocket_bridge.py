@@ -246,12 +246,40 @@ class WebSocketBridge:
                 'message': f'Failed to load policy: {str(e)}'
             }))
     
+    def _parse_policy_path(self, policy_path: str) -> tuple[str, str]:
+        """
+        Parse policy path to extract repo_id and checkpoint subfolder.
+        
+        Args:
+            policy_path: Either 'namespace/repo_name' or 'namespace/repo_name/checkpoint'
+            
+        Returns:
+            tuple: (repo_id, checkpoint_prefix)
+                - repo_id: Always in format 'namespace/repo_name'
+                - checkpoint_prefix: Empty string if no checkpoint, otherwise 'checkpoint/' for filename prefix
+        """
+        path_parts = policy_path.split('/')
+        
+        if len(path_parts) < 2:
+            raise ValueError(f"Invalid policy path: {policy_path}. Must be at least 'namespace/repo_name'")
+        elif len(path_parts) == 2:
+            # Just repo_id
+            return policy_path, ""
+        else:
+            # Has checkpoint subfolder(s)
+            repo_id = '/'.join(path_parts[:2])
+            checkpoint = '/'.join(path_parts[2:])
+            return repo_id, f"{checkpoint}/"
+
     async def _load_policy(self, policy_path: str):
         """Load policy model with proper configuration"""
         logger.info(f"Loading policy from: {policy_path}")
         
         self.policy_path = policy_path
         device = get_safe_torch_device(self.device)
+        
+        # Parse policy path to handle checkpoint subfolders
+        repo_id, checkpoint_prefix = self._parse_policy_path(policy_path)
 
         try:
             policy_config = PreTrainedConfig.from_pretrained(self.policy_path)
@@ -259,7 +287,8 @@ class WebSocketBridge:
         except Exception as e:
             logger.warning(f"Custom config loading failed, trying default method: {e}")
             # Try loading as a simple dict and add type field if missing
-            config_path = hf_hub_download(repo_id=self.policy_path, filename="config.json")
+            config_filename = f"{checkpoint_prefix}config.json"
+            config_path = hf_hub_download(repo_id=repo_id, filename=config_filename)
             with open(config_path, 'r') as f:
                 config_dict = json.load(f)
             
@@ -295,7 +324,10 @@ class WebSocketBridge:
         # If dataset_repo_id is present, try to load dataset config
         if dataset_repo_id:
             try:
-                dataset_config_path = hf_hub_download(repo_id=dataset_repo_id, filename="config.json")
+                # Parse dataset repo_id in case it contains subfolders
+                dataset_repo_id_parsed, dataset_checkpoint_prefix = self._parse_policy_path(dataset_repo_id)
+                dataset_config_filename = f"{dataset_checkpoint_prefix}config.json"
+                dataset_config_path = hf_hub_download(repo_id=dataset_repo_id_parsed, filename=dataset_config_filename)
                 with open(dataset_config_path, 'r') as f:
                     dataset_config = json.load(f)
             except Exception as e:
