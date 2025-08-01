@@ -141,6 +141,11 @@ def train(cfg: TrainPipelineConfig):
         ds_meta=dataset.meta,
     )
 
+    if torch.cuda.device_count() > 1:
+        logging.info(f"Using {torch.cuda.device_count()} GPUs with DataParallel")
+        policy = torch.nn.DataParallel(policy)
+    policy = policy.to(device)
+
     logging.info("Creating optimizer and scheduler")
     optimizer, lr_scheduler = make_optimizer_and_scheduler(cfg, policy)
     grad_scaler = GradScaler(device.type, enabled=cfg.policy.use_amp)
