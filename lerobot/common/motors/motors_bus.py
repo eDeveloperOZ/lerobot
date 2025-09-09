@@ -454,7 +454,7 @@ class MotorsBus(abc.ABC):
         pass
 
     def disconnect(self, disable_torque: bool = True) -> None:
-        """Close the serial port (optionally disabling torque first).
+        """Disconnect from the motor bus.
 
         Args:
             disable_torque (bool, optional): If `True` (default) torque is disabled on every motor before
@@ -469,7 +469,14 @@ class MotorsBus(abc.ABC):
         if disable_torque:
             self.port_handler.clearPort()
             self.port_handler.is_using = False
-            self.disable_torque(num_retry=5)
+            try:
+                self.disable_torque(num_retry=5)
+            except Exception as e:
+                # During disconnection, overload errors are common and expected
+                if "overload" in str(e).lower():
+                    logger.warning("Overload errors during disconnect are common - continuing with disconnection")
+                else:
+                    logger.warning(f"Error during torque disable on disconnect: {e}")
 
         self.port_handler.closePort()
         logger.debug(f"{self.__class__.__name__} disconnected.")

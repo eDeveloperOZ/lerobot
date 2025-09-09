@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeRobot SO100 Controller</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        .content {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #4f46e5;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-connected { background-color: #10b981; }
+        .status-disconnected { background-color: #ef4444; }
+        .status-calibrated { background-color: #10b981; }
+        .status-not-calibrated { background-color: #f59e0b; }
+        .status-unknown { background-color: #6b7280; }
+        
+        button {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin: 4px;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .button-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        .button-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .button-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        #video {
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .video-section {
+            grid-column: span 2;
+        }
+        
+        .log-container {
+            background: #1f2937;
+            color: #f3f4f6;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .calibration-section {
+            grid-column: span 2;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .calibration-instructions {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+        }
+        
+        .calibration-instructions ol {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .calibration-instructions li {
+            margin: 0.5rem 0;
+        }
+        
+        .input-group {
+            margin: 1rem 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 LeRobot SO100 Controller</h1>
+            <p>Real-time robotics control and AI inference</p>
+        </div>
+        
+        <div class="content">
+            <!-- Robot Connection Section -->
+            <div class="section">
+                <h2>🔌 Robot Connection</h2>
+                <div id="robotStatus">
+                    <span class="status-indicator status-disconnected"></span>
+                    <span>Disconnected</span>
+                </div>
+                
+                <div class="input-group">
+                    <label>USB Vendor ID:</label>
+                    <input type="number" id="usbVendorId" value="6790" placeholder="6790">
+                </div>
+                
+                <div class="input-group">
+                    <label>USB Product ID:</label>
+                    <input type="number" id="usbProductId" value="21971" placeholder="21971">
+                </div>
+                
+                <button onclick="connectArm()">Connect Arm</button>
+                <button onclick="disconnectArm()" class="button-danger">Disconnect</button>
+            </div>
+
+            <!-- Camera Connection Section -->
+            <div class="section">
+                <h2>📹 Camera Connection</h2>
+                <div id="cameraStatus">
+                    <span class="status-indicator status-disconnected"></span>
+                    <span>Disconnected</span>
+                </div>
+                
+                <div class="input-group">
+                    <label>Camera Index:</label>
+                    <input type="number" id="cameraIndex" value="0" placeholder="0">
+                </div>
+                
+                <button onclick="connectCamera()">Connect Camera</button>
+                <button onclick="disconnectCamera()" class="button-danger">Disconnect</button>
+            </div>
+
+            <!-- Calibration Management Section -->
+            <div class="section calibration-section">
+                <h2>🎯 Calibration Management</h2>
+                <div id="calibrationStatus">
+                    <span class="status-indicator status-unknown"></span>
+                    <span>Unknown</span>
+                </div>
+                
+                <div style="margin: 1rem 0;">
+                    <button onclick="checkCalibration()">Check Calibration</button>
+                    <button onclick="startGuidedCalibration()" class="button-warning">Start Guided Calibration</button>
+                    <button onclick="skipCalibration()" class="button-success">Create Default Calibration</button>
+                </div>
+                
+                <div id="calibrationInstructions" class="calibration-instructions">
+                    <h4>📋 Calibration Instructions:</h4>
+                    <ol id="instructionsList">
+                        <!-- Instructions will be populated dynamically -->
+                    </ol>
+                    <div style="margin-top: 1rem;">
+                        <button onclick="setHomePosition()" class="button-warning">Set Home Position</button>
+                        <button onclick="recordRange()" class="button-success">Record Range</button>
+                    </div>
+                </div>
+                
+                <div id="calibrationMessage" style="margin-top: 1rem; padding: 1rem; background: #f3f4f6; border-radius: 6px; display: none;">
+                    <!-- Calibration messages will appear here -->
+                </div>
+            </div>
+
+            <!-- Video Stream Section -->
+            <div class="section video-section">
+                <h2>📺 Live Video Stream</h2>
+                <video id="video" controls muted></video>
+                <div style="margin-top: 1rem;">
+                    <button onclick="startInference()">Start AI Inference</button>
+                    <button onclick="stopInference()" class="button-danger">Stop Inference</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Section -->
+        <div style="padding: 2rem;">
+            <h3>📋 System Logs</h3>
+            <div id="logs" class="log-container">
+                <!-- Logs will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let websocket = null;
+        let isInferenceRunning = false;
+
+        function log(message) {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            logs.innerHTML += `[${timestamp}] ${message}\n`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function updateStatus(elementId, isConnected, text, additionalClass = '') {
+            const element = document.getElementById(elementId);
+            const indicator = element.querySelector('.status-indicator');
+            const span = element.querySelector('span:last-child');
+            
+            indicator.className = `status-indicator ${isConnected ? 'status-connected' : 'status-disconnected'} ${additionalClass}`;
+            span.textContent = text;
+        }
+
+        function updateCalibrationStatus(status, message, additionalInfo = {}) {
+            const element = document.getElementById('calibrationStatus');
+            const indicator = element.querySelector('.status-indicator');
+            const span = element.querySelector('span:last-child');
+            
+            let statusClass = 'status-unknown';
+            if (status === 'calibrated') statusClass = 'status-calibrated';
+            else if (status === 'not_calibrated') statusClass = 'status-not-calibrated';
+            
+            indicator.className = `status-indicator ${statusClass}`;
+            span.textContent = message;
+            
+            // Show calibration message
+            const messageDiv = document.getElementById('calibrationMessage');
+            if (additionalInfo.calibration_message) {
+                messageDiv.innerHTML = `<strong>Status:</strong> ${additionalInfo.calibration_message}`;
+                messageDiv.style.display = 'block';
+            }
+        }
+
+        async function connectArm() {
+            const usbVendorId = parseInt(document.getElementById('usbVendorId').value);
+            const usbProductId = parseInt(document.getElementById('usbProductId').value);
+            
+            const motorConfig = {
+                shoulder_pan: 1,
+                shoulder_lift: 2,
+                elbow_flex: 3,
+                wrist_flex: 4,
+                wrist_roll: 5,
+                gripper: 6
+            };
+
+            log('Connecting to robot arm...');
+            
+            try {
+                const response = await fetch('/force_connect_arm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usbVendorId, usbProductId, motorConfig })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    updateStatus('robotStatus', true, `Connected (${result.port})`);
+                    log(`✅ Robot connected: ${result.message}`);
+                    
+                    // Update calibration status
+                    updateCalibrationStatus(result.calibration_status, result.calibration_status, result);
+                    
+                    // Auto-check calibration after connection
+                    setTimeout(checkCalibration, 1000);
+                } else {
+                    updateStatus('robotStatus', false, 'Connection Failed');
+                    log(`❌ Connection failed: ${result.message}`);
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`);
+                updateStatus('robotStatus', false, 'Error');
+            }
+        }
+
+        async function disconnectArm() {
+            log('Disconnecting robot arm...');
+            
+            try {
+                const response = await fetch('/disconnect_arm', { method: 'POST' });
+                const result = await response.json();
+                
+                updateStatus('robotStatus', false, 'Disconnected');
+                updateCalibrationStatus('unknown', 'Unknown', {});
+                log('✅ Robot disconnected');
+            } catch (error) {
+                log(`❌ Disconnect error: ${error.message}`);
+            }
+        }
+
+        async function connectCamera() {
+            const cameraIndex = parseInt(document.getElementById('cameraIndex').value);
+            
+            log('Connecting to camera...');
+            
+            try {
+                const response = await fetch('/connect_camera', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ camera_index: cameraIndex })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    updateStatus('cameraStatus', true, `Connected (Index: ${cameraIndex})`);
+                    log('✅ Camera connected');
+                } else {
+                    updateStatus('cameraStatus', false, 'Connection Failed');
+                    log(`❌ Camera connection failed: ${result.message}`);
+                }
+            } catch (error) {
+                log(`❌ Camera connection error: ${error.message}`);
+                updateStatus('cameraStatus', false, 'Error');
+            }
+        }
+
+        async function disconnectCamera() {
+            log('Disconnecting camera...');
+            
+            try {
+                const response = await fetch('/disconnect_camera', { method: 'POST' });
+                const result = await response.json();
+                
+                updateStatus('cameraStatus', false, 'Disconnected');
+                log('✅ Camera disconnected');
+            } catch (error) {
+                log(`❌ Camera disconnect error: ${error.message}`);
+            }
+        }
+
+        async function checkCalibration() {
+            log('Checking calibration status...');
+            
+            try {
+                const response = await fetch('/check_calibration', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const status = result.is_calibrated ? 'calibrated' : 'not_calibrated';
+                    const message = result.is_calibrated ? 'Calibrated' : 'Not Calibrated';
+                    
+                    updateCalibrationStatus(status, message, result);
+                    
+                    if (result.calibration_info && Object.keys(result.calibration_info).length > 0) {
+                        log('✅ Calibration data found:');
+                        Object.entries(result.calibration_info).forEach(([motor, info]) => {
+                            log(`   ${motor}: ID=${info.id}, offset=${info.homing_offset}, range=${info.range_min}-${info.range_max}`);
+                        });
+                    } else {
+                        log('⚠️ No calibration data found');
+                    }
+                } else {
+                    log(`❌ Calibration check failed: ${result.message}`);
+                }
+            } catch (error) {
+                log(`❌ Calibration check error: ${error.message}`);
+            }
+        }
+
+        async function startGuidedCalibration() {
+            log('Starting guided calibration...');
+            
+            try {
+                const response = await fetch('/start_guided_calibration', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    log('✅ Calibration mode activated');
+                    
+                    // Show instructions
+                    const instructionsDiv = document.getElementById('calibrationInstructions');
+                    const instructionsList = document.getElementById('instructionsList');
+                    
+                    instructionsList.innerHTML = '';
+                    result.instructions.forEach(instruction => {
+                        const li = document.createElement('li');
+                        li.textContent = instruction;
+                        instructionsList.appendChild(li);
+                    });
+                    
+                    instructionsDiv.style.display = 'block';
+                    
+                    log('📋 Follow the calibration instructions shown above');
+                } else {
+                    log(`❌ Calibration start failed: ${result.message}`);
+                }
+            } catch (error) {
+                log(`❌ Calibration start error: ${error.message}`);
+            }
+        }
+
+        async function setHomePosition() {
+            log('Setting home position...');
+            
+            try {
+                const response = await fetch('/set_home_position', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    log('✅ Home position set');
+                    log(`Current positions: ${JSON.stringify(result.positions)}`);
+                    
+                    const messageDiv = document.getElementById('calibrationMessage');
+                    messageDiv.innerHTML = `<strong>✅ ${result.message}</strong><br>${result.next_instruction}`;
+                    messageDiv.style.display = 'block';
+                } else {
+                    log(`❌ Set home position failed: ${result.message}`);
+                }
+            } catch (error) {
+                log(`❌ Set home position error: ${error.message}`);
+            }
+        }
+
+        async function recordRange() {
+            log('Recording range of motion...');
+            
+            try {
+                const response = await fetch('/record_range', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    log('✅ Calibration completed successfully!');
+                    log(`Calibration saved to: ${result.calibration_file}`);
+                    
+                    // Hide instructions
+                    document.getElementById('calibrationInstructions').style.display = 'none';
+                    
+                    // Update status
+                    updateCalibrationStatus('calibrated', 'Calibrated', result);
+                    
+                    const messageDiv = document.getElementById('calibrationMessage');
+                    messageDiv.innerHTML = `<strong>🎉 ${result.message}</strong>`;
+                    messageDiv.style.display = 'block';
+                    
+                    // Check calibration status to confirm
+                    setTimeout(checkCalibration, 1000);
+                } else {
+                    log(`❌ Record range failed: ${result.message}`);
+                }
+            } catch (error) {
+                log(`❌ Record range error: ${error.message}`);
+            }
+        }
+
+        async function skipCalibration() {
+            log('Creating default calibration...');
+            
+            try {
+                const response = await fetch('/skip_calibration', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    log('✅ Default calibration created');
+                    if (result.warning) {
+                        log(`⚠️ ${result.warning}`);
+                    }
+                    
+                    updateCalibrationStatus('calibrated', 'Default Calibration', result);
+                    
+                    const messageDiv = document.getElementById('calibrationMessage');
+                    messageDiv.innerHTML = `<strong>✅ ${result.message}</strong><br><em>${result.warning}</em>`;
+                    messageDiv.style.display = 'block';
+                } else {
+                    log(`❌ Default calibration failed: ${result.message}`);
+                }
+            } catch (error) {
+                log(`❌ Default calibration error: ${error.message}`);
+            }
+        }
+
+        async function startInference() {
+            if (isInferenceRunning) return;
+            
+            log('Starting AI inference...');
+            
+            try {
+                const response = await fetch('/token?device=webapp');
+                const token = await response.text();
+                
+                if (websocket) {
+                    websocket.close();
+                }
+                
+                const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${wsProtocol}//${window.location.host}/video?t=${token}`;
+                
+                websocket = new WebSocket(wsUrl);
+                
+                websocket.onopen = () => {
+                    log('✅ WebSocket connected - inference started');
+                    isInferenceRunning = true;
+                };
+                
+                websocket.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.error) {
+                            log(`⚠️ Inference: ${data.error}`);
+                        } else if (data.frame) {
+                            // Update video frame
+                            const video = document.getElementById('video');
+                            video.src = `data:image/jpeg;base64,${data.frame}`;
+                        }
+                    } catch (e) {
+                        log(`❌ WebSocket message error: ${e.message}`);
+                    }
+                };
+                
+                websocket.onclose = () => {
+                    log('📡 WebSocket disconnected');
+                    isInferenceRunning = false;
+                };
+                
+                websocket.onerror = (error) => {
+                    log(`❌ WebSocket error: ${error}`);
+                    isInferenceRunning = false;
+                };
+                
+            } catch (error) {
+                log(`❌ Inference start error: ${error.message}`);
+            }
+        }
+
+        function stopInference() {
+            if (websocket) {
+                websocket.close();
+                websocket = null;
+            }
+            isInferenceRunning = false;
+            log('🛑 Inference stopped');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 LeRobot SO100 Controller initialized');
+            log('📝 Connect your robot and camera to begin');
+        });
+    </script>
+</body>
+</html> 
