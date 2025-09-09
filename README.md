@@ -407,7 +407,27 @@ Additionally, if you are using any of the particular policy architecture, pretra
   journal={arXiv preprint arXiv:2403.03181},
   year={2024}
 }
-```
-## Star History
+## Web Teleoperation Demo
 
+Install & run in one line:
+```bash
+pip install -e .[dynamixel,feetech] && uvicorn server.main:app --reload
+```
+
+Pass a local policy path with `MODEL_PATH`:
+```bash
+MODEL_PATH=/path/to/model.pt uvicorn server.main:app
+```
+
+The web UI lives in `web/`. Install deps then start Vite:
+```bash
+cd web && npm install && npm run dev
+```
+
+To stream video via LiveKit instead of plain WebSockets, set
+`VITE_LIVEKIT_URL` and `VITE_LIVEKIT_TOKEN` before `npm run dev` (same props
+as PR #1172).
+
+
+## Star History
 [![Star History Chart](https://api.star-history.com/svg?repos=huggingface/lerobot&type=Timeline)](https://star-history.com/#huggingface/lerobot&Timeline)
