@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LeRobot PoC</title>
+  <style>
+    body { font-family: sans-serif; }
+    video, canvas { display: block; margin: 8px 0; }
+    #log { list-style: none; padding: 0; }
+  </style>
+</head>
+<body>
+  <button id="cameraBtn">Connect Camera</button>
+  <button id="armBtn">Connect Arm</button>
+  <video id="preview" autoplay playsinline width="320" height="240"></video>
+  <canvas id="latency" width="160" height="30"></canvas>
+  <ul id="log"></ul>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
